@@ -16,6 +16,22 @@
 		18FE545F2402D4BD00B6307E /* NoteWithFireStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE545E2402D4BD00B6307E /* NoteWithFireStoreTests.swift */; };
 		18FE546A2402D4BD00B6307E /* NoteWithFireStoreUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54692402D4BD00B6307E /* NoteWithFireStoreUITests.swift */; };
 		18FE547A2402D73D00B6307E /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 18FE54792402D73D00B6307E /* GoogleService-Info.plist */; };
+		18FE54802402DD6800B6307E /* UserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE547F2402DD6800B6307E /* UserModel.swift */; };
+		18FE54822402DD7F00B6307E /* FireBaseProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54812402DD7E00B6307E /* FireBaseProxy.swift */; };
+		18FE54842402DD8A00B6307E /* NoteModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54832402DD8A00B6307E /* NoteModel.swift */; };
+		18FE54862402DDAA00B6307E /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54852402DDAA00B6307E /* LoginViewModel.swift */; };
+		18FE54882402DDD400B6307E /* SignUpViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54872402DDD400B6307E /* SignUpViewModel.swift */; };
+		18FE548A2402DDE300B6307E /* NoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54892402DDE300B6307E /* NoteViewModel.swift */; };
+		18FE548C2402DDF700B6307E /* NoteDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE548B2402DDF700B6307E /* NoteDetailViewModel.swift */; };
+		18FE548E2402DE0900B6307E /* CreateNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE548D2402DE0900B6307E /* CreateNoteViewModel.swift */; };
+		18FE54902402DE1A00B6307E /* SetPasscodeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE548F2402DE1A00B6307E /* SetPasscodeViewModel.swift */; };
+		18FE54922402DE3D00B6307E /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54912402DE3D00B6307E /* LoginViewController.swift */; };
+		18FE54942402DE4F00B6307E /* SignUpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54932402DE4E00B6307E /* SignUpViewController.swift */; };
+		18FE54962402DE6000B6307E /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54952402DE6000B6307E /* NoteViewController.swift */; };
+		18FE54982402DE7E00B6307E /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54972402DE7E00B6307E /* NoteTableViewCell.swift */; };
+		18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54992402DE9A00B6307E /* NoteDetailViewController.swift */; };
+		18FE549C2402DEA600B6307E /* CreateNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE549B2402DEA600B6307E /* CreateNoteViewController.swift */; };
+		18FE549E2402DEB400B6307E /* SetPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE549D2402DEB400B6307E /* SetPasscodeViewController.swift */; };
 		505A87BA721BD9176167C5D3 /* Pods_NoteWithFireStoreTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F977FCC9A7FFD0B4975EF7B /* Pods_NoteWithFireStoreTests.framework */; };
 		61C24A04AD8FAC18FAFC2052 /* Pods_NoteWithFireStore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8E5A360CC54616E28E87B5F3 /* Pods_NoteWithFireStore.framework */; };
 		8FC9359C23AEF73C55FC3FA5 /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E69D1359A337B20A700C358E /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework */; };
@@ -55,6 +71,22 @@
 		18FE54692402D4BD00B6307E /* NoteWithFireStoreUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteWithFireStoreUITests.swift; sourceTree = "<group>"; };
 		18FE546B2402D4BD00B6307E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		18FE54792402D73D00B6307E /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		18FE547F2402DD6800B6307E /* UserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModel.swift; sourceTree = "<group>"; };
+		18FE54812402DD7E00B6307E /* FireBaseProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FireBaseProxy.swift; path = /Users/alicema/NoteWithFireStore/NoteWithFireStore/NoteWithFireStore/Model/FireBaseProxy.swift; sourceTree = "<absolute>"; };
+		18FE54832402DD8A00B6307E /* NoteModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteModel.swift; sourceTree = "<group>"; };
+		18FE54852402DDAA00B6307E /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		18FE54872402DDD400B6307E /* SignUpViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewModel.swift; sourceTree = "<group>"; };
+		18FE54892402DDE300B6307E /* NoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewModel.swift; sourceTree = "<group>"; };
+		18FE548B2402DDF700B6307E /* NoteDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailViewModel.swift; sourceTree = "<group>"; };
+		18FE548D2402DE0900B6307E /* CreateNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewModel.swift; sourceTree = "<group>"; };
+		18FE548F2402DE1A00B6307E /* SetPasscodeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPasscodeViewModel.swift; sourceTree = "<group>"; };
+		18FE54912402DE3D00B6307E /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		18FE54932402DE4E00B6307E /* SignUpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpViewController.swift; sourceTree = "<group>"; };
+		18FE54952402DE6000B6307E /* NoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
+		18FE54972402DE7E00B6307E /* NoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
+		18FE54992402DE9A00B6307E /* NoteDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailViewController.swift; sourceTree = "<group>"; };
+		18FE549B2402DEA600B6307E /* CreateNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewController.swift; sourceTree = "<group>"; };
+		18FE549D2402DEB400B6307E /* SetPasscodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPasscodeViewController.swift; sourceTree = "<group>"; };
 		41CE0D1E950FD607E02B57E4 /* Pods-NoteWithFireStore-NoteWithFireStoreUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoteWithFireStore-NoteWithFireStoreUITests.debug.xcconfig"; path = "Target Support Files/Pods-NoteWithFireStore-NoteWithFireStoreUITests/Pods-NoteWithFireStore-NoteWithFireStoreUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		4DDC271519E62E09A6391157 /* Pods-NoteWithFireStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoteWithFireStore.release.xcconfig"; path = "Target Support Files/Pods-NoteWithFireStore/Pods-NoteWithFireStore.release.xcconfig"; sourceTree = "<group>"; };
 		6784C23BA5B913AE16B73644 /* Pods-NoteWithFireStoreTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoteWithFireStoreTests.debug.xcconfig"; path = "Target Support Files/Pods-NoteWithFireStoreTests/Pods-NoteWithFireStoreTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -131,6 +163,9 @@
 		18FE54462402D4B700B6307E /* NoteWithFireStore */ = {
 			isa = PBXGroup;
 			children = (
+				18FE547B2402DCA000B6307E /* ViewModel */,
+				18FE547D2402DCDC00B6307E /* Model */,
+				18FE547E2402DD1B00B6307E /* View */,
 				18FE54472402D4B700B6307E /* AppDelegate.swift */,
 				18FE54492402D4B700B6307E /* SceneDelegate.swift */,
 				18FE544B2402D4B700B6307E /* ViewController.swift */,
@@ -159,6 +194,43 @@
 				18FE546B2402D4BD00B6307E /* Info.plist */,
 			);
 			path = NoteWithFireStoreUITests;
+			sourceTree = "<group>";
+		};
+		18FE547B2402DCA000B6307E /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				18FE54852402DDAA00B6307E /* LoginViewModel.swift */,
+				18FE54872402DDD400B6307E /* SignUpViewModel.swift */,
+				18FE54892402DDE300B6307E /* NoteViewModel.swift */,
+				18FE548B2402DDF700B6307E /* NoteDetailViewModel.swift */,
+				18FE548D2402DE0900B6307E /* CreateNoteViewModel.swift */,
+				18FE548F2402DE1A00B6307E /* SetPasscodeViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		18FE547D2402DCDC00B6307E /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				18FE547F2402DD6800B6307E /* UserModel.swift */,
+				18FE54812402DD7E00B6307E /* FireBaseProxy.swift */,
+				18FE54832402DD8A00B6307E /* NoteModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		18FE547E2402DD1B00B6307E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				18FE54912402DE3D00B6307E /* LoginViewController.swift */,
+				18FE54932402DE4E00B6307E /* SignUpViewController.swift */,
+				18FE54952402DE6000B6307E /* NoteViewController.swift */,
+				18FE54972402DE7E00B6307E /* NoteTableViewCell.swift */,
+				18FE54992402DE9A00B6307E /* NoteDetailViewController.swift */,
+				18FE549B2402DEA600B6307E /* CreateNoteViewController.swift */,
+				18FE549D2402DEB400B6307E /* SetPasscodeViewController.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		871201ED7889C24FC52FC9C1 /* Frameworks */ = {
@@ -412,8 +484,24 @@
 			buildActionMask = 2147483647;
 			files = (
 				18FE544C2402D4B700B6307E /* ViewController.swift in Sources */,
+				18FE54842402DD8A00B6307E /* NoteModel.swift in Sources */,
+				18FE548A2402DDE300B6307E /* NoteViewModel.swift in Sources */,
+				18FE54882402DDD400B6307E /* SignUpViewModel.swift in Sources */,
+				18FE549C2402DEA600B6307E /* CreateNoteViewController.swift in Sources */,
 				18FE54482402D4B700B6307E /* AppDelegate.swift in Sources */,
+				18FE54822402DD7F00B6307E /* FireBaseProxy.swift in Sources */,
+				18FE54802402DD6800B6307E /* UserModel.swift in Sources */,
+				18FE54902402DE1A00B6307E /* SetPasscodeViewModel.swift in Sources */,
+				18FE54942402DE4F00B6307E /* SignUpViewController.swift in Sources */,
+				18FE548C2402DDF700B6307E /* NoteDetailViewModel.swift in Sources */,
 				18FE544A2402D4B700B6307E /* SceneDelegate.swift in Sources */,
+				18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */,
+				18FE54982402DE7E00B6307E /* NoteTableViewCell.swift in Sources */,
+				18FE54862402DDAA00B6307E /* LoginViewModel.swift in Sources */,
+				18FE54922402DE3D00B6307E /* LoginViewController.swift in Sources */,
+				18FE54962402DE6000B6307E /* NoteViewController.swift in Sources */,
+				18FE549E2402DEB400B6307E /* SetPasscodeViewController.swift in Sources */,
+				18FE548E2402DE0900B6307E /* CreateNoteViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

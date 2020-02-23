@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/alicema/NoteWithFireStore/NoteWithFireStore/NoteWithFireStore/Model/FireBaseProxy.swift">
+   </FileRef>
+   <FileRef
       location = "group:NoteWithFireStore.xcodeproj">
    </FileRef>
    <FileRef
