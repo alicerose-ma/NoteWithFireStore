@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertable {
+class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable {
     var uniqueID = 0
     var noteDetailViewModel = NoteDetailViewModel()
     var createNoteViewModel = CreateNoteViewModel()
@@ -21,8 +21,18 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
     var hasLock: Bool = false
     var lockStatus: Bool = false
     
-    //    setup nav bar and lock view visibility before content view presented
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {}
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        noteDetailViewModel.getNoteByID(id: uniqueID, completion: { notes in
+            for note in notes {
+                self.titleTextField.text = note.title
+                self.desTextView.text = note.des
+                self.lockStatus = note.isLocked
+            }
+        })
+        
         insertLockForNoteBtn = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(addOrRemoveLock))
         
         if lockStatus == true {
@@ -39,23 +49,11 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
         }
     }
     
-    //    controller content is created and loaded
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        noteDetailViewModel.getNoteByID(id: uniqueID, completion: { notes in
-            for note in notes {
-                self.titleTextField.text = note.title
-                self.desTextView.text = note.des
-                self.lockStatus = note.isLocked
-            }
-        })
-    }
-    
     
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-            
+        
         let title = titleTextField.text!
         let description = desTextView.text!
         
@@ -79,6 +77,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
     
     func showAddOrRemoveLockActionSheet(hasLock: Bool) {
         let alert = UIAlertController(title: "Lock Note", message: "Select Lock Options" , preferredStyle: .actionSheet)
+        let hasPasscode = UserDefaults.standard.string(forKey: self.noteDetailViewModel.username!)
         
         if hasLock {
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
@@ -88,7 +87,6 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
                 self.hasLock = true
-                let hasPasscode = UserDefaults.standard.string(forKey: self.noteDetailViewModel.username!)
                 if hasPasscode == nil {
                     self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
                 } else {
@@ -96,10 +94,13 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
                 }
             }))
             
-            alert.addAction(UIAlertAction(title: "Delete Passcode", style: .destructive, handler: { (_) in
-                UserDefaults.standard.removeObject(forKey: self.noteDetailViewModel.username!)
-                print("removed")
-            }))
+            
+            if hasPasscode != nil {
+                alert.addAction(UIAlertAction(title: "Edit Passcode", style: .default, handler: { (_) in
+                    let hasPasscode = UserDefaults.standard.string(forKey: self.createNoteViewModel.username!)!
+                    self.enterPasscodeToEdit(passcode: hasPasscode)
+                }))
+            }
         }
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
@@ -121,6 +122,27 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
     }
     
     
+    func enterPasscodeToEdit(passcode: String) {
+        let alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        alert.addTextField(configurationHandler: { textField in
+            textField.placeholder = "Enter Passcode"
+        })
+        
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
+            if let password = alert.textFields?.first?.text {
+                if password == passcode {
+                    self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
+                } else {
+                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
+                }
+            }})
+        )
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     //    enter passcode to unlock note
     func enterPasscodeToUnLock(passcode: String) {
         let alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
@@ -138,9 +160,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
                     self.addLockStatus()
                     self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
                     self.lockView.isHidden = true
-                    
                 } else {
-                     self.showAlert(title: "Passcode", message: "The passcode is incorrect")
+                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
                 }
             }})
         )
@@ -152,6 +173,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate , Alertabl
         if segue.identifier == "ShowSetPassViewFromEdit" {
             let destinationVC  = segue.destination as! SetPasscodeViewController
             destinationVC.setPasscodeDelegate = self
+            destinationVC.passcode = UserDefaults.standard.string(forKey: createNoteViewModel.username!)
             
         }
     }

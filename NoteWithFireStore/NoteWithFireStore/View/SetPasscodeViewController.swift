@@ -19,13 +19,19 @@ class SetPasscodeViewController: UIViewController, Alertable {
     var setPasscodeViewModel = SetPasscodeViewModel()
     var setPasscodeDelegate: SetPasscodeDelegate?
     
+    var passcode: String?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        if passcode != nil {
+           passcodeTextField.text = passcode
+           confirmPasscode.text = passcode
+       }
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let setPasscodeBtn = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(setPasscode))
-        navigationItem.rightBarButtonItem = setPasscodeBtn
+         let setPasscodeBtn = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(setPasscode))
+         navigationItem.rightBarButtonItem = setPasscodeBtn
     }
     
     @objc func setPasscode() {
