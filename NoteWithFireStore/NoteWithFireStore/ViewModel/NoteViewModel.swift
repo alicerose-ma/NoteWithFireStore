@@ -9,7 +9,7 @@
 import Foundation
 
 class NoteViewModel {
-    let username = UserDefaultValues.username
+    let username = UserDefaults.standard.string(forKey: "username")
     
 //  get all notes based on username
     public func getNoteList(completion: @escaping ([NoteData]) -> Void) {

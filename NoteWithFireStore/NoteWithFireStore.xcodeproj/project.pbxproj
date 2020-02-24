@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		180922862403993E0073E3F9 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180922852403993E0073E3F9 /* Alertable.swift */; };
-		1809228C2403AF1A0073E3F9 /* UserDefaultValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1809228B2403AF1A0073E3F9 /* UserDefaultValues.swift */; };
 		18FE54482402D4B700B6307E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54472402D4B700B6307E /* AppDelegate.swift */; };
 		18FE544A2402D4B700B6307E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54492402D4B700B6307E /* SceneDelegate.swift */; };
 		18FE544C2402D4B700B6307E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE544B2402D4B700B6307E /* ViewController.swift */; };
@@ -59,7 +58,6 @@
 /* Begin PBXFileReference section */
 		0F977FCC9A7FFD0B4975EF7B /* Pods_NoteWithFireStoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NoteWithFireStoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		180922852403993E0073E3F9 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
-		1809228B2403AF1A0073E3F9 /* UserDefaultValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultValues.swift; sourceTree = "<group>"; };
 		18FE54442402D4B700B6307E /* NoteWithFireStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoteWithFireStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18FE54472402D4B700B6307E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		18FE54492402D4B700B6307E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -146,7 +144,6 @@
 			isa = PBXGroup;
 			children = (
 				180922852403993E0073E3F9 /* Alertable.swift */,
-				1809228B2403AF1A0073E3F9 /* UserDefaultValues.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -516,7 +513,6 @@
 				18FE54922402DE3D00B6307E /* LoginViewController.swift in Sources */,
 				18FE54962402DE6000B6307E /* NoteViewController.swift in Sources */,
 				18FE549E2402DEB400B6307E /* SetPasscodeViewController.swift in Sources */,
-				1809228C2403AF1A0073E3F9 /* UserDefaultValues.swift in Sources */,
 				18FE548E2402DE0900B6307E /* CreateNoteViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,7 +9,7 @@
 import Foundation
 
 class NoteDetailViewModel {
-    let username = UserDefaultValues.username
+    let username = UserDefaults.standard.string(forKey: "username")
     
 //    edit note base on document ID
     public func editNote(uniqueID: Int, newNote: NoteData) {

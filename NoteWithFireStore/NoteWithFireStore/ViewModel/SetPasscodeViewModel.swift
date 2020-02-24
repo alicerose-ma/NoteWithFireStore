@@ -9,7 +9,7 @@
 import Foundation
 
 class SetPasscodeViewModel {
-    let username = UserDefaultValues.username
+    let username = UserDefaults.standard.string(forKey: "username")
     
     public func storePasscode(passcode: String) {
         let defaults = UserDefaults.standard

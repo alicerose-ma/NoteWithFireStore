@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 class CreateNoteViewModel {
-    let username = UserDefaultValues.username
+    let username = UserDefaults.standard.string(forKey: "username")
     
     public func addNewNote(documentID: String, newNote: NoteData) {
         FireBaseProxy.shared.addNewNote(documentID: documentID, newNote: newNote)
