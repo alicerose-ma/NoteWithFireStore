@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CreateNoteViewController: UIViewController, SetPasscodeDelegate {
+final class CreateNoteViewController: UIViewController, SetPasscodeDelegate,  Alertable {
     
     var uniqueID: Int = 0
     var hasLock: Bool = false
@@ -129,7 +129,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate {
                     self.lockView.isHidden = true
                     
                 } else {
-                    self.createNoteViewModel.showAlert(title: "Passcode Alert", message: "Incorrect")
+                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
                 }
             }})
         )

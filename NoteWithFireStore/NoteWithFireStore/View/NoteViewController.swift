@@ -75,7 +75,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.desLabel.text = noteList[indexPath.row].des
         } else {
             cell.titleLabel.text = noteList[indexPath.row].title
-            cell.desLabel.text = "content locked"
+            cell.desLabel.text = "locked"
         }
         return cell
     }

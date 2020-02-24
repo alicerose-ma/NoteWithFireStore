@@ -12,7 +12,7 @@ protocol SetPasscodeDelegate {
     func addLockStatus()
 }
 
-class SetPasscodeViewController: UIViewController {
+class SetPasscodeViewController: UIViewController, Alertable {
 
     @IBOutlet weak var passcodeTextField: UITextField!
     @IBOutlet weak var confirmPasscode: UITextField!
@@ -30,30 +30,17 @@ class SetPasscodeViewController: UIViewController {
     
     @objc func setPasscode() {
         if passcodeTextField!.text == "" {
-            self.showPasscodeAlert(goBackPreviousView: false, message: "passcode can not empty")
+            showStoredPasscodeAlert(goBackPreviousView: false,title: "Passcode", message: "passcode can not empty")
         } else {
             let validPasscode = setPasscodeViewModel.confirmPasscode(passcode: passcodeTextField.text!, confirmCode: confirmPasscode.text!)
                 
             if validPasscode {
                 setPasscodeDelegate.self?.addLockStatus()
                 setPasscodeViewModel.storePasscode(passcode: passcodeTextField!.text!)
-                self.showPasscodeAlert(goBackPreviousView: true, message: "stored passcode")
+                showStoredPasscodeAlert(goBackPreviousView: true,title: "Passcode", message: "passcode successful stored")
             } else {
-                self.showPasscodeAlert(goBackPreviousView: false, message: "passcode does not match")
+                showStoredPasscodeAlert(goBackPreviousView: false,title: "Passcode", message: "passcode and confirm passcode does not match")
             }
         }
     }
-    
-    func showPasscodeAlert(goBackPreviousView: Bool, message: String) {
-         let alert = UIAlertController(title: message, message: nil, preferredStyle: UIAlertController.Style.alert)
-
-         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
-            if goBackPreviousView {
-                self.navigationController?.popViewController(animated: true)
-            }
-         }
-         ))
-         self.present(alert, animated: true, completion: nil)
-    }
-
 }

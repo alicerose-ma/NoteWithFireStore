@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		180922862403993E0073E3F9 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180922852403993E0073E3F9 /* Alertable.swift */; };
 		18FE54482402D4B700B6307E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54472402D4B700B6307E /* AppDelegate.swift */; };
 		18FE544A2402D4B700B6307E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54492402D4B700B6307E /* SceneDelegate.swift */; };
 		18FE544C2402D4B700B6307E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE544B2402D4B700B6307E /* ViewController.swift */; };
@@ -56,6 +57,7 @@
 
 /* Begin PBXFileReference section */
 		0F977FCC9A7FFD0B4975EF7B /* Pods_NoteWithFireStoreTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NoteWithFireStoreTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		180922852403993E0073E3F9 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		18FE54442402D4B700B6307E /* NoteWithFireStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoteWithFireStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18FE54472402D4B700B6307E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		18FE54492402D4B700B6307E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -138,6 +140,22 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		18092282240398F80073E3F9 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				1809228724039F380073E3F9 /* View Protocols */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
+		1809228724039F380073E3F9 /* View Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				180922852403993E0073E3F9 /* Alertable.swift */,
+			);
+			path = "View Protocols";
+			sourceTree = "<group>";
+		};
 		18FE543B2402D4B600B6307E = {
 			isa = PBXGroup;
 			children = (
@@ -163,6 +181,7 @@
 		18FE54462402D4B700B6307E /* NoteWithFireStore */ = {
 			isa = PBXGroup;
 			children = (
+				18092282240398F80073E3F9 /* Utils */,
 				18FE547B2402DCA000B6307E /* ViewModel */,
 				18FE547D2402DCDC00B6307E /* Model */,
 				18FE547E2402DD1B00B6307E /* View */,
@@ -498,6 +517,7 @@
 				18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */,
 				18FE54982402DE7E00B6307E /* NoteTableViewCell.swift in Sources */,
 				18FE54862402DDAA00B6307E /* LoginViewModel.swift in Sources */,
+				180922862403993E0073E3F9 /* Alertable.swift in Sources */,
 				18FE54922402DE3D00B6307E /* LoginViewController.swift in Sources */,
 				18FE54962402DE6000B6307E /* NoteViewController.swift in Sources */,
 				18FE549E2402DEB400B6307E /* SetPasscodeViewController.swift in Sources */,
