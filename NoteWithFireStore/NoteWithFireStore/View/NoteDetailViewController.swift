@@ -136,7 +136,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                 if password == passcode {
                     self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
                 } else {
-                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
+                    self.showAlert(title: .passcodeValidation, message: .wrong)
                 }
             }})
         )
@@ -161,7 +161,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                     self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
                     self.lockView.isHidden = true
                 } else {
-                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
+                    self.showAlert(title: .passcodeValidation, message: .wrong)
                 }
             }})
         )

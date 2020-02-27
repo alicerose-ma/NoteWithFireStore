@@ -130,7 +130,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
                 if password == passcode {
                     self.performSegue(withIdentifier: "ShowSetPassView", sender: self)
                 } else {
-                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
+                    self.showAlert(title: .passcodeValidation, message: .wrong)
                 }
             }})
         )
@@ -158,7 +158,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
                     self.lockView.isHidden = true
                     
                 } else {
-                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
+                    self.showAlert(title: .passcodeValidation, message: .wrong)
                 }
             }})
         )
@@ -173,14 +173,6 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         }
     }
     
-    
-    
-    public func showAlert(title: String, message: String) {
-          let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
-
-          alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default))
-        self.present(alert, animated: true)
-      }
 }
 
 

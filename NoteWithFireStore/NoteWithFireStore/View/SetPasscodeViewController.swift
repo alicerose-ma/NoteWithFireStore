@@ -36,16 +36,20 @@ class SetPasscodeViewController: UIViewController, Alertable {
     
     @objc func setPasscode() {
         if passcodeTextField!.text == "" {
-            showStoredPasscodeAlert(goBackPreviousView: false,title: "Passcode", message: "passcode can not empty")
+            showStoredPasscodeAlert(goBackPreviousView: false,title: .passcodeSetup, message: .emptyPasscode)
         } else {
             let validPasscode = setPasscodeViewModel.confirmPasscode(passcode: passcodeTextField.text!, confirmCode: confirmPasscode.text!)
                 
             if validPasscode {
                 setPasscodeDelegate.self?.addLockStatus()
                 setPasscodeViewModel.storePasscode(passcode: passcodeTextField!.text!)
-                showStoredPasscodeAlert(goBackPreviousView: true,title: "Passcode", message: "passcode successful stored")
+                if passcode == nil {
+                    showStoredPasscodeAlert(goBackPreviousView: true,title: .passcodeSetup, message: .storePasscode)
+                } else {
+                    showStoredPasscodeAlert(goBackPreviousView: true,title: .passcodeSetup, message: .updatePasscode)
+                }
             } else {
-                showStoredPasscodeAlert(goBackPreviousView: false,title: "Passcode", message: "passcode and confirm passcode does not match")
+                showStoredPasscodeAlert(goBackPreviousView: false,title: .passcodeSetup, message: .invalidConfirm)
             }
         }
     }
