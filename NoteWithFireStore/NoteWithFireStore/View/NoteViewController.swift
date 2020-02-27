@@ -9,7 +9,7 @@
 import UIKit
 
 
-class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable {
     @IBOutlet weak var noteTableView: UITableView!
     
     var noteList = [NoteData]()
@@ -21,7 +21,10 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         noteTableView.dataSource = self
         noteTableView.delegate = self
         self.title = "Notes"
-        
+        setupNavUI()
+    }
+    
+    func setupNavUI() {
         let addBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
         self.navigationItem.rightBarButtonItem = addBtn
         
@@ -53,6 +56,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             }
         })
     }
+    
     
     @objc func addNote() {
         self.performSegue(withIdentifier: "AddNewNote", sender: self)
@@ -135,19 +139,10 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.noteTableView.deleteRows(at: [indexPath], with: .fade)
                 } else {
                     print("incorrect passcode")
-                    self.showResultAlert(message: "Incorrect Passcode")
+                    self.showAlert(title: .passcodeValidation, message: .wrong)
                 }
             }})
         )
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    func showResultAlert(message: String) {
-        let alert = UIAlertController(title: "Note Alert", message: message, preferredStyle: UIAlertController.Style.alert)
-        
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
-        }
-        ))
         self.present(alert, animated: true, completion: nil)
     }
     
