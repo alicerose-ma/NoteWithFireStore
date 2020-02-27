@@ -4,7 +4,7 @@
 //
 //  Created by Ma Alice on 2/1/20.
 //  Copyright © 2020 Ma Alice. All rights reserved.
-//
+//  error enum
 
 import Foundation
 import UIKit
