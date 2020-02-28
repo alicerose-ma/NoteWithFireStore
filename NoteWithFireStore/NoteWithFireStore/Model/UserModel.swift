@@ -14,19 +14,22 @@ public struct UserData: Decodable {
     var password: String
     var phone: String
     var email: String
+    var passcode: String
     
     init() {
         self.username = ""
         self.password = ""
         self.phone = ""
         self.email = ""
+        self.passcode = ""
     }
     
-    init(username: String, password: String, phone: String, email: String) {
+    init(username: String, password: String, phone: String, email: String, passcode: String) {
         self.username = username
         self.password = password
         self.phone = phone
         self.email = email
+        self.passcode = passcode
     }
     
     var dictionary: [String: Any] {
@@ -35,6 +38,7 @@ public struct UserData: Decodable {
             "password": password,
             "phone": phone,
             "email": email,
+            "passcode": passcode
         ]
     }
 }

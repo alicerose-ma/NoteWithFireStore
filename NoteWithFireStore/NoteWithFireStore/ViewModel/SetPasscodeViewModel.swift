@@ -16,6 +16,13 @@ class SetPasscodeViewModel {
         defaults.set(passcode, forKey: username!)
     }
     
+    public func updateUserPasscode(passcode: String, completion: @escaping (String) -> Void){
+        FireBaseProxy.shared.updateUserPasscode(username: username!, passcode: passcode, completion: { isUpdated in
+            completion("Passcode added")
+        } )
+    }
+    
+    
     public func confirmPasscode(passcode: String, confirmCode: String) -> Bool {
         if passcode == confirmCode {
             return true
@@ -23,6 +30,8 @@ class SetPasscodeViewModel {
             return false
         }
     }
+    
+    
     
     
   

@@ -41,7 +41,10 @@ class SetPasscodeViewController: UIViewController, Alertable {
             let validPasscode = setPasscodeViewModel.confirmPasscode(passcode: passcodeTextField.text!, confirmCode: confirmPasscode.text!)
                 
             if validPasscode {
-                setPasscodeViewModel.storePasscode(passcode: passcodeTextField!.text!)
+//                setPasscodeViewModel.storePasscode(passcode: passcodeTextField!.text!)
+                setPasscodeViewModel.updateUserPasscode(passcode: passcodeTextField.text!, completion: {isUpdated in
+                    print("here =  \(isUpdated)")
+                })
                 if passcode == nil {
                     setPasscodeDelegate.self?.addLockStatus()
                     showStoredPasscodeAlert(goBackPreviousView: true,title: .passcodeSetup, message: .storePasscode)
