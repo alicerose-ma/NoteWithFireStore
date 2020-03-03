@@ -9,18 +9,37 @@
 import Foundation
 import UIKit
 
+
+//validate passcode to lock
+public enum PasscodeValidationError: String {
+    case wrong = "Wrong Passcode"
+}
+
+//set up passcode
+public enum PasscodeMessage: String {
+    case storePasscode =  "Passcode successfully stored"
+    case updatePasscode = "Passcode successfully updated"
+    case emptyPasscode = "Passcode can not empty"
+    case invalidConfirm = "Passcode and confirm passcode does not match"
+}
+
+public enum alertTitle: String {
+    case passcodeSetup = "Passcode Setup"
+    case passcodeValidation = "Passcode Validation"
+}
+
 public protocol Alertable {}
 
 public extension Alertable where Self: UIViewController {
     
-    func showAlert(title: String = "", message: String, preferredStyle: UIAlertController.Style = .alert, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    func showAlert(title: alertTitle, message: PasscodeValidationError, preferredStyle: UIAlertController.Style = .alert, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title.rawValue, message: message.rawValue, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: completion)
     }
     
-    func showStoredPasscodeAlert(goBackPreviousView: Bool, title: String = "", message: String) {
-         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
+    func showStoredPasscodeAlert(goBackPreviousView: Bool, title: alertTitle, message: PasscodeMessage) {
+        let alert = UIAlertController(title: title.rawValue, message: message.rawValue, preferredStyle: UIAlertController.Style.alert)
 
          alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
             if goBackPreviousView {

@@ -98,6 +98,38 @@ public class FireBaseProxy {
         }
     }
     
+    
+//    PASSCODE UPDATE
+     public func updateUserPasscode(username: String, passcode: String, completion: @escaping (Bool) -> Void){
+         usersCollection.document(username).updateData([
+             "passcode": passcode,
+         ]) { err in
+             if let err = err {
+                 print("Error updating passcode: \(err)")
+                 completion(false)
+             } else {
+                 print("Passcode successfully updated")
+                 completion(true)
+             }
+         }
+     }
+     
+        public func getUserPasscode(username: String, completion: @escaping (String) -> Void) {
+          usersCollection.whereField("username", isEqualTo: username)
+              .getDocuments() { (querySnapshot, err) in
+                  if let err = err {
+                      print("Error getting documents: \(err)")
+                  } else {
+                     do {
+                         let myUsers: [UserData] = try querySnapshot!.decoded()
+                        print(myUsers[0].passcode)
+                        completion(myUsers[0].passcode)
+                     } catch {
+                         print("decoded User error")
+                     }
+                  }
+          }
+      }
 
     
     

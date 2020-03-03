@@ -8,6 +8,11 @@
 
 import UIKit
 
+enum InputPasscodeCase: String {
+    case editPasscode
+    case unlockNote
+}
+
 class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable {
     
     var uniqueID: Int = 0
@@ -15,56 +20,59 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     var lockStatus: Bool = false
     
     var insertLockForNoteBtn = UIBarButtonItem()
+    var lockStatusBtn = UIBarButtonItem()
+    var unlockStatusBtn = UIBarButtonItem()
+    
     var createNoteViewModel = CreateNoteViewModel()
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var desTextView: UITextView!
     @IBOutlet weak var lockView: UIView!
     
-    override func viewWillAppear(_ animated: Bool) {
-        lockView.isHidden = true
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        insertLockForNoteBtn = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(addOrRemoveLock))
-        
+        lockView.isHidden = true
+        navBarItemSetUp()
         navigationItem.rightBarButtonItems = [insertLockForNoteBtn]
     }
     
+    func navBarItemSetUp() {
+        insertLockForNoteBtn = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(addOrRemoveLock))
+        lockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock"), style: .plain, target: self, action: #selector(self.lockOFF))
+        unlockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock.open"), style: .plain, target: self, action: #selector(self.lockON))
+    }
+    
     @IBAction func enterPasscodeToUnlockBtn(_ sender: Any) {
-        let hasPasscode = UserDefaults.standard.string(forKey: createNoteViewModel.username!)!
-        enterPasscodeToUnLock(passcode: hasPasscode)
+        self.createNoteViewModel.getUserPasscode(completion: { passcode in
+            self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
+        })
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         let title = titleTextField.text!
         let description = desTextView.text!
         
-        let noteID = createNoteViewModel.createUniqueNoteDocID(username: createNoteViewModel.username!, uniqueID: uniqueID)
-        let note = NoteData(username: createNoteViewModel.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus) //create a new note model with lock
-        
-        if !title.isEmpty || !description.isEmpty{
+        if !title.isEmpty || !description.isEmpty {
+            let noteID = createNoteViewModel.createUniqueNoteDocID(username: createNoteViewModel.username!, uniqueID: uniqueID)
+            let note = NoteData(username: createNoteViewModel.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus) //create a new note model with lock
             createNoteViewModel.addNewNote(documentID: noteID, newNote: note)
         }
     }
     
     //    delegate to add lock status
-    func addLockStatus() {
-        let unlockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock.open"), style: .plain, target: self, action: #selector(self.lockON))
-        navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn, unlockStatusBtn]
+    func addLockIconToNavBar() {
+        hasLock = true
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,unlockStatusBtn]
     }
     
     @objc func addOrRemoveLock() {
-        showAddOrRemoveLockActionSheet(hasLock: hasLock)
+        showAddOrRemoveLockOrEditPasscodeActionSheet(hasLock: hasLock)
     }
     
-    func showAddOrRemoveLockActionSheet(hasLock: Bool) {
+    func showAddOrRemoveLockOrEditPasscodeActionSheet(hasLock: Bool) {
         let alert = UIAlertController(title: "Lock Note", message: "Select Lock Options" , preferredStyle: .actionSheet)
-        let hasPasscode = UserDefaults.standard.string(forKey: self.createNoteViewModel.username!)
         
         if hasLock {
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
@@ -74,49 +82,49 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
                 self.hasLock = true
-                if hasPasscode == nil {
-                    self.performSegue(withIdentifier: "ShowSetPassView", sender: self)
-                } else {
-                    self.addLockStatus()
-                }
+                self.createNoteViewModel.getUserPasscode(completion: { passcode in
+                    if passcode == "" {
+                        self.performSegue(withIdentifier: "ShowSetPassView", sender: self)
+                    } else {
+                        self.addLockIconToNavBar()
+                    }
+                })
             }))
-            
-            if hasPasscode != nil {
+        }
+        
+        //        edit passcode action
+        self.createNoteViewModel.getUserPasscode(completion: { passcode in
+            if passcode != "" {
                 alert.addAction(UIAlertAction(title: "Edit Passcode", style: .default, handler: { (_) in
-                    let hasPasscode = UserDefaults.standard.string(forKey: self.createNoteViewModel.username!)!
-                    self.enterPasscodeToEdit(passcode: hasPasscode)
+                    self.createNoteViewModel.getUserPasscode(completion: { passcode in
+                        self.enterPasscodeAlert(passcode: passcode, passcodeCase: .editPasscode)
+                    })
                 }))
             }
-           
-//FOR TESTING BEHAVIOR
-//            alert.addAction(UIAlertAction(title: "Delete Passcode", style: .destructive, handler: { (_) in
-//                  UserDefaults.standard.removeObject(forKey: self.createNoteViewModel.username!)
-//                  print("removed")
-//              }))
-            
-        }
+        })
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
         self.present(alert, animated: true)
     }
     
+    //    note is locked
     @objc func lockON(){
         lockStatus = true
-        let lockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock"), style: .plain, target: self, action: #selector(self.lockOFF))
-        navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn, lockStatusBtn]
-        navigationItem.rightBarButtonItems?.first?.isEnabled = false
-        
-        print("status = \(lockStatus)")
         lockView.isHidden = false
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,lockStatusBtn]
+        navigationItem.rightBarButtonItems?.first?.isEnabled = false
     }
     
+    //    note is unlocked
     @objc func lockOFF() {
-        let hasPasscode = UserDefaults.standard.string(forKey: createNoteViewModel.username!)!
-        enterPasscodeToUnLock(passcode: hasPasscode)
+        self.createNoteViewModel.getUserPasscode(completion: { passcode in
+            self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
+        })
     }
     
     
-    func enterPasscodeToEdit(passcode: String) {
+    //    enter passcode to edit and unlock
+    func enterPasscodeAlert(passcode: String, passcodeCase: InputPasscodeCase) {
         let alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -128,40 +136,19 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
             if let password = alert.textFields?.first?.text {
                 if password == passcode {
-                    self.performSegue(withIdentifier: "ShowSetPassView", sender: self)
+                    switch passcodeCase {
+                    case .editPasscode:
+                        self.performSegue(withIdentifier: "ShowSetPassView", sender: self)
+                    case .unlockNote:
+                        self.lockStatus = false
+                        self.lockView.isHidden = true
+                        self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
+                        self.addLockIconToNavBar()
+                    }
                 } else {
-                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
+                    self.showAlert(title: .passcodeValidation, message: .wrong)
                 }
-            }})
-        )
-        self.present(alert, animated: true, completion: nil)
-    }
-    
-    //    enter passcode to unlock note
-    func enterPasscodeToUnLock(passcode: String) {
-        let alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        
-        alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = "Enter Passcode"
-        })
-        
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            if let password = alert.textFields?.first?.text {
-                if password == passcode {
-                    self.lockStatus = false
-                    self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
-                    self.addLockStatus()
-                    
-                    print("status = \(self.lockStatus)")
-                    self.lockView.isHidden = true
-                    
-                } else {
-                    self.showAlert(title: "Passcode", message: "The passcode is incorrect")
-                }
-            }})
-        )
+            }}))
         self.present(alert, animated: true, completion: nil)
     }
     
@@ -169,18 +156,9 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         if segue.identifier == "ShowSetPassView" {
             let destinationVC  = segue.destination as! SetPasscodeViewController
             destinationVC.setPasscodeDelegate = self
-            destinationVC.passcode = UserDefaults.standard.string(forKey: createNoteViewModel.username!)
         }
     }
     
-    
-    
-    public func showAlert(title: String, message: String) {
-          let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
-
-          alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default))
-        self.present(alert, animated: true)
-      }
 }
 
 
