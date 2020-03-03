@@ -100,7 +100,6 @@ public class FireBaseProxy {
     
     
 //    PASSCODE UPDATE
-    
      public func updateUserPasscode(username: String, passcode: String, completion: @escaping (Bool) -> Void){
          usersCollection.document(username).updateData([
              "passcode": passcode,

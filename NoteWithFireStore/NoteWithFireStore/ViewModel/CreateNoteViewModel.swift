@@ -21,10 +21,10 @@ class CreateNoteViewModel {
     }
     
     public func getUserPasscode(completion: @escaping (String) -> Void){
-            FireBaseProxy.shared.getUserPasscode(username: username!, completion: { passcode in
-                completion(passcode)
-            })
-        }
+        FireBaseProxy.shared.getUserPasscode(username: username!, completion: { passcode in
+            completion(passcode)
+        })
+    }
     
 
 }

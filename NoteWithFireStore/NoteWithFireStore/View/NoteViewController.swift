@@ -38,9 +38,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         didLogin()
-        noteViewModel.getUserPasscode(completion: {
-            passcode in print(passcode)
-        })
+//        noteViewModel.getUserPasscode(completion: {
+//            passcode in print(passcode)
+//        })
     }
     
     //    check if user login before
@@ -116,10 +116,10 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.noteList.remove(at: indexPath.row)
                 self.noteTableView.deleteRows(at: [indexPath], with: .fade)
             } else {
-                let passcode = UserDefaults.standard.string(forKey: self.noteViewModel.username! )
-                self.enterPasscodeToDelete(passcode: passcode!, indexPath: indexPath)
+                self.noteViewModel.getUserPasscode(completion: { passcode in
+                    self.enterPasscodeToDelete(passcode: passcode, indexPath: indexPath)
+                })
             }
-            
         })
         let swipeActions = UISwipeActionsConfiguration(actions: [deleteAction])
         return swipeActions
