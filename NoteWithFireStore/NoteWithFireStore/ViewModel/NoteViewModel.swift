@@ -44,4 +44,12 @@ class NoteViewModel {
         UserDefaults.standard.removeObject(forKey: "username")
     }
     
+    
+    public func getUserPasscode(completion: @escaping (String) -> Void){
+        FireBaseProxy.shared.getUserPasscode(username: username!, completion: { passcode in
+            completion(passcode)
+        })
+    }
+
+    
 }

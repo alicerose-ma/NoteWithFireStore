@@ -4,7 +4,7 @@
 //
 //  Created by Ma Alice on 2/1/20.
 //  Copyright © 2020 Ma Alice. All rights reserved.
-//
+
 
 import Foundation
 import UIKit
@@ -19,5 +19,13 @@ class CreateNoteViewModel {
     public func createUniqueNoteDocID(username: String, uniqueID: Int) -> String {
         return username + "note" + String(uniqueID)
     }
+    
+    public func getUserPasscode(completion: @escaping (String) -> Void){
+        FireBaseProxy.shared.getUserPasscode(username: username!, completion: { passcode in
+            completion(passcode)
+        })
+    }
+    
+
 }
 

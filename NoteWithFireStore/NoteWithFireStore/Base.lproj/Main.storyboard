@@ -337,7 +337,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="NoteTableViewCell" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteTableViewCell" rowHeight="119" id="EvX-AP-EOi" customClass="NoteTableViewCell" customModule="note" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="NoteTableViewCell" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteTableViewCell" rowHeight="119" id="EvX-AP-EOi" customClass="NoteTableViewCell" customModule="NoteWithFireStore" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="119"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EvX-AP-EOi" id="xeU-L9-llB">
@@ -436,7 +436,7 @@
                                                 <state key="normal" title="Enter passcode to unlock"/>
                                                 <connections>
                                                     <action selector="enterPasscodeToUnlockBtn:" destination="dXS-hR-ojP" eventType="touchUpInside" id="31Y-yz-2a8"/>
-                                                    <action selector="enterPasscodeToUnlockBtn:" destination="uji-D5-ZTr" eventType="touchUpInside" id="It0-Ob-dOj"/>
+                                                    <action selector="enterPasscodeToUnlockBtn:" destination="uji-D5-ZTr" eventType="touchUpInside" id="IEM-gA-990"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -677,7 +677,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="lock.fill" catalog="system" width="32" height="32"/>
+        <image name="lock.fill" catalog="system" width="64" height="64"/>
         <image name="logo" width="105" height="84"/>
     </resources>
     <inferredMetricsTieBreakers>
