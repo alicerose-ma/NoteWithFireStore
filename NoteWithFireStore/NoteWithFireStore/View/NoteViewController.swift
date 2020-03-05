@@ -13,14 +13,12 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var noteTableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
     
-    var filterNoteList = [NoteData]()
     var noteViewModel =  NoteViewModel()
     var setPasscodeViewModel = SetPasscodeViewModel()
     var selectedRow: Int = -1
     
-//    var filterdata:[NoteData]?
+    var filterNoteList = [NoteData]()
     var allNoteList = [NoteData]()
-//    var searching = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
