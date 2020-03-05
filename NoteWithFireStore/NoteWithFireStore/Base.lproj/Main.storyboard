@@ -333,7 +333,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="A2Y-TQ-eHq">
-                                <rect key="frame" x="0.0" y="85" width="414" height="725"/>
+                                <rect key="frame" x="0.0" y="159" width="414" height="651"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
@@ -373,8 +373,18 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="V4h-RI-oPY">
+                                <rect key="frame" x="0.0" y="88" width="414" height="71"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="V4h-RI-oPY" firstAttribute="leading" secondItem="1As-xe-P8s" secondAttribute="leading" id="0Ld-8O-vqM"/>
+                            <constraint firstItem="A2Y-TQ-eHq" firstAttribute="top" secondItem="V4h-RI-oPY" secondAttribute="bottom" symbolic="YES" id="1dH-fj-zZP"/>
+                            <constraint firstItem="V4h-RI-oPY" firstAttribute="trailing" secondItem="1As-xe-P8s" secondAttribute="trailing" id="1e3-J0-2Ar"/>
+                            <constraint firstItem="V4h-RI-oPY" firstAttribute="top" secondItem="1As-xe-P8s" secondAttribute="top" id="AJf-3y-da2"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="1As-xe-P8s"/>
                     </view>
                     <toolbarItems/>
@@ -382,6 +392,7 @@
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="noteTableView" destination="A2Y-TQ-eHq" id="iay-fj-0es"/>
+                        <outlet property="searchBar" destination="V4h-RI-oPY" id="8RS-m3-Pen"/>
                         <segue destination="uji-D5-ZTr" kind="show" identifier="EditNote" id="Yzk-k6-ajZ"/>
                         <segue destination="dXS-hR-ojP" kind="show" identifier="AddNewNote" id="1FF-pV-Ndn"/>
                         <segue destination="RMK-vI-sEY" kind="show" identifier="ShowLoginView" animates="NO" id="JkU-VO-kDN"/>
