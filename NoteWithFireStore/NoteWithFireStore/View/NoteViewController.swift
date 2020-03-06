@@ -9,24 +9,42 @@
 import UIKit
 
 
-class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable {
-    @IBOutlet weak var noteTableView: UITableView!
+class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchBarDelegate {
     
-    var noteList = [NoteData]()
+    @IBOutlet weak var noteTableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
+
     var noteViewModel =  NoteViewModel()
+    var setPasscodeViewModel = SetPasscodeViewModel()
     var selectedRow: Int = -1
+    
+    var filterNoteList = [NoteData]()
+    var allNoteList = [NoteData]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         noteTableView.dataSource = self
         noteTableView.delegate = self
+        searchBar.delegate = self
+        searchBar.placeholder = "Enter Keywords to search"
         self.title = "Notes"
         setupNavUI()
-        
-        
-        
     }
     
+ 
+//    search bar for filter notes
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        let filterdata = searchText.isEmpty ? allNoteList : allNoteList.filter { ($0.title.range(of: searchText, options: .caseInsensitive) != nil) || ($0.des.range(of: searchText, options: .caseInsensitive) != nil) }
+
+        if !searchText.isEmpty {
+            filterNoteList = filterdata
+        } else {
+            filterNoteList = allNoteList
+        }
+        noteTableView.reloadData()
+    }
+
+     
     func setupNavUI() {
         let addBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
         self.navigationItem.rightBarButtonItem = addBtn
@@ -38,9 +56,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         didLogin()
-//        noteViewModel.getUserPasscode(completion: {
-//            passcode in print(passcode)
-//        })
+        searchBar.text = ""
     }
     
     //    check if user login before
@@ -56,7 +72,8 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     //    load note list of user
     func loadNoteList() {
         noteViewModel.getNoteList(completion: { notes in
-            self.noteList = notes
+            self.filterNoteList = notes
+            self.allNoteList = notes
             DispatchQueue.main.async {
                 self.noteTableView.reloadData()
             }
@@ -74,19 +91,19 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return noteList.count
+            return filterNoteList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell =  noteTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
+            if (filterNoteList[indexPath.row].isLocked == false) {
+                cell.titleLabel.text = filterNoteList[indexPath.row].title
+                cell.desLabel.text = filterNoteList[indexPath.row].des
+            } else {
+                cell.titleLabel.text = filterNoteList[indexPath.row].title
+                cell.desLabel.text = "locked"
+            }
         
-        if (noteList[indexPath.row].isLocked == false ) {
-            cell.titleLabel.text = noteList[indexPath.row].title
-            cell.desLabel.text = noteList[indexPath.row].des
-        } else {
-            cell.titleLabel.text = noteList[indexPath.row].title
-            cell.desLabel.text = "locked"
-        }
         return cell
     }
     
@@ -109,17 +126,28 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: {(contextualAction, view, boolValue) in
             
             //            check lock status to delete, no lock => delete, locked => input pass to delete
-            if (self.noteList[indexPath.row].isLocked == false) {
-                self.noteViewModel.deleteNote(uniqueID: self.noteList[indexPath.row].id, completion: { message in
-                    print(message)
-                })
-                self.noteList.remove(at: indexPath.row)
-                self.noteTableView.deleteRows(at: [indexPath], with: .fade)
-            } else {
-                self.noteViewModel.getUserPasscode(completion: { passcode in
-                    self.enterPasscodeToDelete(passcode: passcode, indexPath: indexPath)
+                if (self.filterNoteList[indexPath.row].isLocked == false) {
+//                    delete on firebase
+                    self.noteViewModel.deleteNote(uniqueID: self.filterNoteList[indexPath.row].id, completion: { message in
+                        print(message)
+                    })
+
+//                    delete noteList UI
+                    for note in self.allNoteList {
+                        if note.id == self.filterNoteList[indexPath.row].id {
+                            self.allNoteList.removeAll{$0.id == note.id}
+                        }
+                    }
+//                    delete filter UI
+                    self.filterNoteList.remove(at: indexPath.row)
+                    self.noteTableView.deleteRows(at: [indexPath], with: .fade)
+                } else {
+                    self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
+                        self.enterPasscodeToDelete(passcode: passcode, indexPath: indexPath)
                 })
             }
+            self.noteTableView.reloadData()
+            
         })
         let swipeActions = UISwipeActionsConfiguration(actions: [deleteAction])
         return swipeActions
@@ -138,10 +166,15 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             if let password = alert.textFields?.first?.text {
                 print("Your password: \(password)")
                 if password == passcode {
-                    self.noteViewModel.deleteNote(uniqueID: self.noteList[indexPath.row].id, completion: { message in
+                    self.noteViewModel.deleteNote(uniqueID: self.filterNoteList[indexPath.row].id, completion: { message in
                         print(message)
                     })
-                    self.noteList.remove(at: indexPath.row)
+                    for note in self.allNoteList {
+                        if note.id == self.filterNoteList[indexPath.row].id {
+                            self.allNoteList.removeAll{$0.id == note.id}
+                        }
+                    }
+                    self.filterNoteList.remove(at: indexPath.row)
                     self.noteTableView.deleteRows(at: [indexPath], with: .fade)
                 } else {
                     print("incorrect passcode")
@@ -156,16 +189,17 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "AddNewNote" {
             let destinationVC  = segue.destination as! CreateNoteViewController
-            destinationVC.uniqueID = noteViewModel.createNewUniqueNoteID(noteList: noteList)
+            destinationVC.uniqueID = noteViewModel.createNewUniqueNoteID(noteList: filterNoteList)
         }
         
         if segue.identifier == "EditNote" {
-            let destinationVC  = segue.destination as! NoteDetailViewController
-            selectedRow = noteTableView.indexPathForSelectedRow!.row
-            let uniqueID = noteList[selectedRow].id
-            destinationVC.uniqueID = uniqueID
-            let lockStatus = noteList[selectedRow].isLocked
-            destinationVC.lockStatus = lockStatus
+                let destinationVC  = segue.destination as! NoteDetailViewController
+                selectedRow = noteTableView.indexPathForSelectedRow!.row
+                let uniqueID = filterNoteList[selectedRow].id
+                destinationVC.uniqueID = uniqueID
+                let lockStatus = filterNoteList[selectedRow].isLocked
+                destinationVC.lockStatus = lockStatus
+//            }
         }
         
         if segue.identifier == "ShowLoginView" {

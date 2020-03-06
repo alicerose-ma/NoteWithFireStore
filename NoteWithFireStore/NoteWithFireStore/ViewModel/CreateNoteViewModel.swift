@@ -19,13 +19,6 @@ class CreateNoteViewModel {
     public func createUniqueNoteDocID(username: String, uniqueID: Int) -> String {
         return username + "note" + String(uniqueID)
     }
-    
-    public func getUserPasscode(completion: @escaping (String) -> Void){
-        FireBaseProxy.shared.getUserPasscode(username: username!, completion: { passcode in
-            completion(passcode)
-        })
-    }
-    
 
 }
 

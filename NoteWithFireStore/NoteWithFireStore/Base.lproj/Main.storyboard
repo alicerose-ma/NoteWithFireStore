@@ -333,7 +333,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="A2Y-TQ-eHq">
-                                <rect key="frame" x="0.0" y="85" width="414" height="725"/>
+                                <rect key="frame" x="0.0" y="158" width="414" height="655"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
@@ -373,15 +373,29 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="paQ-yG-cBV">
+                                <rect key="frame" x="0.0" y="88" width="414" height="70"/>
+                                <textInputTraits key="textInputTraits"/>
+                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="paQ-yG-cBV" firstAttribute="leading" secondItem="1As-xe-P8s" secondAttribute="leading" id="2t0-5k-Bd6"/>
+                            <constraint firstItem="paQ-yG-cBV" firstAttribute="trailing" secondItem="1As-xe-P8s" secondAttribute="trailing" id="EXg-r0-opL"/>
+                            <constraint firstItem="paQ-yG-cBV" firstAttribute="top" secondItem="1As-xe-P8s" secondAttribute="top" id="NRr-aP-OZu"/>
+                            <constraint firstItem="A2Y-TQ-eHq" firstAttribute="top" secondItem="paQ-yG-cBV" secondAttribute="bottom" symbolic="YES" id="NVG-b4-H7Q"/>
+                            <constraint firstItem="A2Y-TQ-eHq" firstAttribute="top" secondItem="paQ-yG-cBV" secondAttribute="bottom" id="TSZ-kA-aRM"/>
+                            <constraint firstItem="paQ-yG-cBV" firstAttribute="leading" secondItem="1As-xe-P8s" secondAttribute="leading" id="bMM-iq-0Ld"/>
+                            <constraint firstItem="paQ-yG-cBV" firstAttribute="trailing" secondItem="1As-xe-P8s" secondAttribute="trailing" id="fM8-zy-efr"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="1As-xe-P8s"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="4VM-8M-GBj"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="noteTableView" destination="A2Y-TQ-eHq" id="iay-fj-0es"/>
+                        <outlet property="noteTableView" destination="A2Y-TQ-eHq" id="wqX-al-kd4"/>
+                        <outlet property="searchBar" destination="paQ-yG-cBV" id="ohb-Fi-DZV"/>
                         <segue destination="uji-D5-ZTr" kind="show" identifier="EditNote" id="Yzk-k6-ajZ"/>
                         <segue destination="dXS-hR-ojP" kind="show" identifier="AddNewNote" id="1FF-pV-Ndn"/>
                         <segue destination="RMK-vI-sEY" kind="show" identifier="ShowLoginView" animates="NO" id="JkU-VO-kDN"/>

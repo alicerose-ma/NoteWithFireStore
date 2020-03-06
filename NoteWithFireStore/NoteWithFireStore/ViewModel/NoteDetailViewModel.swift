@@ -21,12 +21,5 @@ class NoteDetailViewModel {
         FireBaseProxy.shared.getNoteByID(username: username!, id: id, completion: { notes in
             completion(notes)
         })
-    }
-
-    public func getUserPasscode(completion: @escaping (String) -> Void){
-        FireBaseProxy.shared.getUserPasscode(username: username!, completion: { passcode in
-            completion(passcode)
-        })
-    }
-    
+    }    
 }

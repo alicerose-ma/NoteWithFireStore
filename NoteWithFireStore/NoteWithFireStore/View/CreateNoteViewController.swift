@@ -24,6 +24,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     var unlockStatusBtn = UIBarButtonItem()
     
     var createNoteViewModel = CreateNoteViewModel()
+    var setPasscodeViewModel = SetPasscodeViewModel()
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var desTextView: UITextView!
@@ -43,7 +44,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     @IBAction func enterPasscodeToUnlockBtn(_ sender: Any) {
-        self.createNoteViewModel.getUserPasscode(completion: { passcode in
+        setPasscodeViewModel.getUserPasscode(completion: { passcode in
             self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
         })
         
@@ -82,7 +83,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
                 self.hasLock = true
-                self.createNoteViewModel.getUserPasscode(completion: { passcode in
+                self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
                     if passcode == "" {
                         self.performSegue(withIdentifier: "ShowSetPassView", sender: self)
                     } else {
@@ -93,10 +94,10 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         }
         
         //        edit passcode action
-        self.createNoteViewModel.getUserPasscode(completion: { passcode in
+        self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
             if passcode != "" {
                 alert.addAction(UIAlertAction(title: "Edit Passcode", style: .default, handler: { (_) in
-                    self.createNoteViewModel.getUserPasscode(completion: { passcode in
+                    self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
                         self.enterPasscodeAlert(passcode: passcode, passcodeCase: .editPasscode)
                     })
                 }))
@@ -117,7 +118,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     //    note is unlocked
     @objc func lockOFF() {
-        self.createNoteViewModel.getUserPasscode(completion: { passcode in
+        self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
             self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
         })
     }
