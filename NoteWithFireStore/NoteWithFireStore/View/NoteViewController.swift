@@ -9,46 +9,11 @@
 import UIKit
 
 
-class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate {
-    
-    var filteredCandies: [NoteData] = []
-    var isSearchBarEmpty: Bool {
-      return searchController.searchBar.text?.isEmpty ?? true
-    }
-    var isFiltering: Bool {
-      return searchController.isActive && !isSearchBarEmpty
-    }
-
-
-    func updateSearchResults(for searchController: UISearchController) {
-        let searchBar = searchController.searchBar
-        filterContentForSearchText(searchBar.text!)
-
-    }
-    
-    func filterContentForSearchText(_ searchText: String) {
-//      filteredCandies = allNoteList.filter { (note: NoteData) -> Bool in
-//        return note.title.lowercased().contains(searchText.lowercased())
-//      }
-        
-        if isFiltering {
-            let filterdata = allNoteList.filter { ($0.title.range(of: searchText, options: .caseInsensitive) != nil) || ($0.des.range(of: searchText, options: .caseInsensitive) != nil) }
-             filterNoteList = filterdata
-        } else {
-            filterNoteList = allNoteList
-        }
-             
-      
-      noteTableView.reloadData()
-    }
-    
-    
+class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchBarDelegate {
     
     @IBOutlet weak var noteTableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
-    let searchController = UISearchController(searchResultsController: nil)
 
-    
     var noteViewModel =  NoteViewModel()
     var setPasscodeViewModel = SetPasscodeViewModel()
     var selectedRow: Int = -1
@@ -61,26 +26,11 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         noteTableView.dataSource = self
         noteTableView.delegate = self
         searchBar.delegate = self
-        searchController.searchBar.delegate = self
+        searchBar.placeholder = "Enter Keywords to search"
         self.title = "Notes"
         setupNavUI()
-        alterLayout()
     }
     
-    func alterLayout(){
-        // 1
-        searchController.searchResultsUpdater = self
-        // 2
-        searchController.obscuresBackgroundDuringPresentation = false
-        // 3
-        searchController.searchBar.placeholder = "Search Candies"
-        searchController.searchBar.scopeButtonTitles = ["All","Unlock","Lock"]
-        searchController.searchBar.showsScopeBar = true
-        // 4
-        navigationItem.searchController = searchController
-        // 5
-        definesPresentationContext = true
-    }
  
 //    search bar for filter notes
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -93,45 +43,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         noteTableView.reloadData()
     }
-//
-//
-//        filterNoteList = allNoteList.filter({ note -> Bool in
-//            switch searchBar.selectedScopeButtonIndex {
-//            case 0:
-//                if searchText.isEmpty { return true }
-//                return (note.title.range(of: searchText, options: .caseInsensitive) != nil) || (note.des.range(of: searchText, options: .caseInsensitive) != nil)
-//            case 1:
-//                if searchText.isEmpty { return note.isLocked == true }
-//                return (note.title.range(of: searchText, options: .caseInsensitive) != nil) || (note.des.range(of: searchText, options: .caseInsensitive) != nil) && note.isLocked == true
-//            case 2:
-//                if searchText.isEmpty { return note.isLocked == false }
-//                return (note.title.range(of: searchText, options: .caseInsensitive) != nil) || (note.des.range(of: searchText, options: .caseInsensitive) != nil) && note.isLocked == false
-//            default:
-//                return false
-//            }
-//        })
-//        noteTableView.reloadData()
-//    }
-//
-    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-      switch selectedScope {
-      case 0:
-          filterNoteList = allNoteList
-      case 1:
-          filterNoteList = allNoteList.filter({ note -> Bool in
-            note.isLocked == true
-          })
-      case 2:
-          filterNoteList = allNoteList.filter({ note -> Bool in
-            note.isLocked == false
-          })
-      default:
-          break
-      }
-        print(filterNoteList)
-      noteTableView.reloadData()
 
-  }
      
     func setupNavUI() {
         let addBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
@@ -144,7 +56,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         didLogin()
-        searchController.searchBar.text = ""
+        searchBar.text = ""
     }
     
     //    check if user login before

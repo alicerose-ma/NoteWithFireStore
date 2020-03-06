@@ -16,9 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         
 //      change appearance of nav bar
-        UINavigationBar.appearance().barTintColor = .white
-        UINavigationBar.appearance().tintColor = .black
-        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.black]
+        UINavigationBar.appearance().barTintColor = .black
+        UINavigationBar.appearance().tintColor = .white
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         
         return true
     }
@@ -41,9 +41,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 // change color of nav controller battery icon, time, wifi connection
-//extension UINavigationController {
-//    @objc override open var preferredStatusBarStyle: UIStatusBarStyle {
-//        return .lightContent
-//    }
-//}
+extension UINavigationController {
+    @objc override open var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+}
 
