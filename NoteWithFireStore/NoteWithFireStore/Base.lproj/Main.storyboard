@@ -511,6 +511,13 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0CE-9J-LMA">
+                                <rect key="frame" x="0.0" y="763" width="414" height="30"/>
+                                <state key="normal" title="Record"/>
+                                <connections>
+                                    <action selector="RecordBtn:" destination="dXS-hR-ojP" eventType="touchUpInside" id="zCB-EG-lOm"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pU6-Pm-cPc">
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <subviews>
@@ -552,11 +559,14 @@
                         <constraints>
                             <constraint firstItem="Yyd-xs-fVr" firstAttribute="bottom" secondItem="pU6-Pm-cPc" secondAttribute="bottom" id="0uh-Wv-npi"/>
                             <constraint firstItem="Yyd-xs-fVr" firstAttribute="bottom" secondItem="dPS-eJ-Gc6" secondAttribute="bottom" constant="20" id="28J-gL-lfu"/>
+                            <constraint firstItem="0CE-9J-LMA" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" id="BF8-y0-PEs"/>
                             <constraint firstItem="dPS-eJ-Gc6" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" constant="20" id="BZF-i3-bb9"/>
                             <constraint firstItem="GM9-F3-8dg" firstAttribute="top" secondItem="Yyd-xs-fVr" secondAttribute="top" constant="20" id="Gmv-ch-fvI"/>
                             <constraint firstItem="pU6-Pm-cPc" firstAttribute="top" secondItem="Yyd-xs-fVr" secondAttribute="top" id="JG1-5x-j0F"/>
                             <constraint firstItem="Yyd-xs-fVr" firstAttribute="trailing" secondItem="dPS-eJ-Gc6" secondAttribute="trailing" constant="20" id="UVS-e2-bZS"/>
                             <constraint firstItem="pU6-Pm-cPc" firstAttribute="trailing" secondItem="Yyd-xs-fVr" secondAttribute="trailing" id="Va8-KD-fXT"/>
+                            <constraint firstItem="Yyd-xs-fVr" firstAttribute="trailing" secondItem="0CE-9J-LMA" secondAttribute="trailing" id="gLN-2C-9BU"/>
+                            <constraint firstItem="Yyd-xs-fVr" firstAttribute="bottom" secondItem="0CE-9J-LMA" secondAttribute="bottom" constant="20" id="kHO-MC-gzD"/>
                             <constraint firstItem="dPS-eJ-Gc6" firstAttribute="top" secondItem="GM9-F3-8dg" secondAttribute="bottom" constant="20" id="kuv-h3-DSL"/>
                             <constraint firstItem="GM9-F3-8dg" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" constant="20" id="mu7-an-fVs"/>
                             <constraint firstItem="pU6-Pm-cPc" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" id="uIl-Wn-lyi"/>
@@ -568,6 +578,7 @@
                     <connections>
                         <outlet property="desTextView" destination="dPS-eJ-Gc6" id="Cwd-iX-hKy"/>
                         <outlet property="lockView" destination="pU6-Pm-cPc" id="KVt-Yu-h0e"/>
+                        <outlet property="recordOutlet" destination="0CE-9J-LMA" id="Sbj-g2-6Dl"/>
                         <outlet property="titleTextField" destination="GM9-F3-8dg" id="TFu-bK-7v0"/>
                         <segue destination="w8r-qw-qzr" kind="show" identifier="ShowSetPassView" id="2ge-Lf-jyC"/>
                     </connections>
@@ -695,7 +706,7 @@
         <image name="logo" width="105" height="84"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="48G-La-mKq"/>
-        <segue reference="JkU-VO-kDN"/>
+        <segue reference="2ge-Lf-jyC"/>
+        <segue reference="WwU-nz-Dxa"/>
     </inferredMetricsTieBreakers>
 </document>
