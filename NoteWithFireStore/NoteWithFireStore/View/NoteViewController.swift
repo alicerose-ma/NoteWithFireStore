@@ -32,9 +32,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func updateSearchResults(for searchController: UISearchController) {
          if !searchController.isActive {
-             print("Cancelled")
              filteredNoteList = allNoteList
-             print(filteredNoteList)
              noteTableView.reloadData()
          } else {
              let searchBar = searchController.searchBar
@@ -118,6 +116,8 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Enter Keywords to search"
+        // to hide it when the view is first presented.
+        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -158,7 +158,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        //            return filterNoteList.count
         return filteredNoteList.count
     }
     
