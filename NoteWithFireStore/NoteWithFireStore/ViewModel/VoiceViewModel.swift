@@ -130,7 +130,7 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
             if let res = res {
                 
                 let bestStr = self.subStr1 + res.bestTranscription.formattedString +  " " + self.subStr2
-                
+            
                 if titleTextField.isFirstResponder {
                     titleTextField.text = bestStr
                 } else {
@@ -232,6 +232,51 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
         }
     }
     
+    
+    func startRecordingForPasscode(textField: UITextField) {
+           prepareAudioSession()
+           
+           recognitionRequest = SFSpeechAudioBufferRecognitionRequest() //read from buffer
+           let inputNode = audioEngine.inputNode
+           
+           guard let recognitionRequest = recognitionRequest else {
+               fatalError("Could not create request instance")
+           }
+           
+           // Configure the microphone input.
+           let format = inputNode.outputFormat(forBus: 0)
+           inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) {
+               buffer, _ in
+               self.recognitionRequest?.append(buffer)
+           }
+           audioEngine.prepare()
+           
+           do {
+               try audioEngine.start()
+           } catch {
+               print("Can't start the engine")
+           }
+           
+           recognitionRequest.shouldReportPartialResults = true
+           recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { res, err in
+               var isLast = false
+               if let res = res {
+                   let bestStr =  res.bestTranscription.formattedString
+                   textField.text = bestStr
+                   isLast = (res.isFinal)
+               }
+               
+               if err != nil || isLast {
+                   self.audioEngine.stop()
+                   inputNode.removeTap(onBus: 0)
+                   
+                   self.recognitionRequest = nil
+                   self.recognitionTask = nil
+                   
+                   print("Recording stopped")
+               }
+           }
+       }
     
     
 

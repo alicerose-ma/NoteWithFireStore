@@ -12,9 +12,10 @@ import Speech
 
 class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate {
     
-    let voiceViewModel = VoiceViewModel()
-    
     var alert = UIAlertController()
+    var isPasscodeRecord  = false
+    
+    let voiceViewModel = VoiceViewModel()
     
     
     
@@ -274,17 +275,64 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         return swipeActions
     }
     
-    func enterPasscodeToDelete(passcode: String, indexPath: IndexPath) {
-        let alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+    @objc func recordPasscodeStart(_ sender: Any) {
+        print("start passcode")
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.message = "Is Recording ..."
+        voiceViewModel.startRecordingForPasscode(textField: (alert.textFields?.first)!)
+        alert.textFields?.first?.rightView = nil
+        isPasscodeRecord = false
+        
+        //        self.showAlertWithInputStringForPasscode(title: "Say passcode", tf: self.alert.textFields?.first)
+    }
+    
+//    @objc func recordPasscodeStop(_ sender: Any) {
+//        print("stop passcode ")
+//        isPasscodeRecord = false
+//        voiceViewModel.stopRecording()
+//    }
+    
+    func enterPasscodeToDelete(passcode: String, indexPath: IndexPath) {
+        alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action in
+            self.voiceViewModel.stopRecording()
+        }))
         
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "Enter Passcode"
+            
+            let micStart = UIButton(type: .custom)
+            micStart.setImage(UIImage(systemName: "mic"), for: .normal)
+            micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
+            micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
+            micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
+            
+//            let micStop = UIButton(type: .custom)
+//            micStop.setImage(UIImage(systemName: "mic.circle"), for: .normal)
+//            micStop.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
+//            micStop.frame = CGRect(x: CGFloat(self.textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
+//            micStop.addTarget(self, action: #selector(self.recordPasscodeStop), for: .touchUpInside)
+//
+//            passTextField = textField
+
+//            if (!self.isPasscodeRecord) {
+//                textField.rightView = micStart
+//                print("start")
+//
+//            } else{
+//                textField.rightView = micStop
+//                print("stop")
+//
+//            }
+            textField.rightView = micStart
+            textField.rightViewMode = .unlessEditing
+            
         })
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            if let password = alert.textFields?.first?.text {
+            self.voiceViewModel.stopRecording()
+            if let password = self.alert.textFields?.first?.text {
                 print("Your password: \(password)")
                 if password == passcode {
                     self.noteViewModel.deleteNote(uniqueID: self.filteredNoteList[indexPath.row].id, completion: { message in
@@ -329,22 +377,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        self.showAlertWithInputString(title: "Search")
+        showAlertWithInputString(title: "Search", searchController: searchController)
     }
     
     
-    func showAlertWithInputString(title: String, preferredStyle: UIAlertController.Style = .alert) {
-        voiceViewModel.startRecordingWithAlert()
-        
-        voiceViewModel.alert = UIAlertController(title: title, message: "Say something, I'm listening", preferredStyle: .alert)
-        voiceViewModel.alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { _ in
-            self.voiceViewModel.stopRecording()
-
-        }))
-        voiceViewModel.alert.addAction(UIAlertAction(title: "OK",style: UIAlertAction.Style.default, handler: {(_: UIAlertAction!) in
-            self.voiceViewModel.stopRecording()
-            self.searchController.searchBar.text = self.voiceViewModel.alert.message
-        }))
-        self.present(voiceViewModel.alert, animated: true)
-    }
+    
 }

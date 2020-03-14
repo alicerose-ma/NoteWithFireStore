@@ -41,14 +41,48 @@ public extension Alertable where Self: UIViewController {
     
     func showStoredPasscodeAlert(goBackPreviousView: Bool, title: alertTitle, message: PasscodeMessage) {
         let alert = UIAlertController(title: title.rawValue, message: message.rawValue, preferredStyle: UIAlertController.Style.alert)
-
-         alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
+        
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
             if goBackPreviousView {
                 self.navigationController?.popViewController(animated: true)
             }
-         }
-         ))
-         self.present(alert, animated: true, completion: nil)
+        }
+        ))
+        self.present(alert, animated: true, completion: nil)
     }
+    
+    
+    func showAlertWithInputString(title: String,searchController: UISearchController) {
+        let voiceViewModel = VoiceViewModel()
+        voiceViewModel.startRecordingWithAlert()
+        
+        voiceViewModel.alert = UIAlertController(title: title, message: "Say something, I'm listening", preferredStyle: .alert)
+        voiceViewModel.alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { _ in
+            voiceViewModel.stopRecording()
+            
+        }))
+        voiceViewModel.alert.addAction(UIAlertAction(title: "OK",style: UIAlertAction.Style.default, handler: {(_: UIAlertAction!) in
+            voiceViewModel.stopRecording()
+            searchController.searchBar.text = voiceViewModel.alert.message
+        }))
+        self.present(voiceViewModel.alert, animated: true)
+    }
+    
+//    
+//    func showAlertWithInputStringForPasscode(title: String, tf: UITextField?) {
+//        let voiceViewModel = VoiceViewModel()
+//        voiceViewModel.startRecordingWithAlert()
+//        
+//        voiceViewModel.alert = UIAlertController(title: title, message: "Say something, I'm listening", preferredStyle: .alert)
+//        voiceViewModel.alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { _ in
+//            voiceViewModel.stopRecording()
+//            
+//        }))
+//        voiceViewModel.alert.addAction(UIAlertAction(title: "OK",style: UIAlertAction.Style.default, handler: {(_: UIAlertAction!) in
+//            voiceViewModel.stopRecording()
+//            tf!.text = voiceViewModel.alert.message
+//        }))
+//        self.present(voiceViewModel.alert, animated: true)
+//    }
 }
 
