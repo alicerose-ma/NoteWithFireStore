@@ -7,9 +7,16 @@
 //
 
 import UIKit
+import Speech
 
 
-class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate {
+class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate {
+    
+    let voiceViewModel = VoiceViewModel()
+    
+    var alert = UIAlertController()
+    
+    
     
     let searchController = UISearchController(searchResultsController: nil)
     @IBOutlet weak var noteTableView: UITableView!
@@ -21,25 +28,99 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     var allNoteList = [NoteData]()
     var filteredNoteList = [NoteData]()
     
+    
+    var pinList = [NoteData]()
+    var data = [[NoteData]]()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        //        pinList.append(NoteData(username: "AA", id: 777, title: "AAA", des: "AAA", isLocked: false))
         noteTableView.dataSource = self
         noteTableView.delegate = self
         self.title = "Notes"
         setupNavUI()
         setupSearchController()
+        voiceViewModel.voiceSetupWithoutRecordBtn()
     }
     
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if (pinList.count == 0) {
+            data = [filteredNoteList]
+        } else {
+            data = [pinList,filteredNoteList]
+        }
+        return data.count
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if (pinList.count == 0) {
+            data = [filteredNoteList]
+        } else {
+            data = [pinList,filteredNoteList]
+        }
+        return data[section].count
+    }
+    
+    
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let headerTitles = ["Notes"]
+        if section < headerTitles.count {
+            return headerTitles[section]
+        }
+        
+        return nil
+    }
+    
+    
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell =  noteTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
+        //        if (filteredNoteList[indexPath.row].isLocked == false) {
+        //            cell.titleLabel.text = filteredNoteList[indexPath.row].title
+        //            cell.desLabel.text = filteredNoteList[indexPath.row].des
+        //        } else {
+        //            cell.titleLabel.text = filteredNoteList[indexPath.row].title
+        //            cell.desLabel.text = "locked"
+        //        }
+        //        return cell
+        
+        if (pinList.count == 0) {
+            data = [filteredNoteList]
+        } else {
+            data = [pinList,filteredNoteList]
+        }
+        
+        if (data[indexPath.section][indexPath.row].isLocked == false) {
+            cell.titleLabel.text = data[indexPath.section][indexPath.row].title
+            cell.desLabel.text = data[indexPath.section][indexPath.row].des
+        } else {
+            cell.titleLabel.text = data[indexPath.section][indexPath.row].title
+            cell.desLabel.text = "locked"
+        }
+        return cell
+        
+        
+        //        cell.titleLabel.text = data[indexPath.section][indexPath.row].title
+        //        return cell
+    }
+    
+    
+    
+    
     func updateSearchResults(for searchController: UISearchController) {
-         if !searchController.isActive {
-             filteredNoteList = allNoteList
-             noteTableView.reloadData()
-         } else {
-             let searchBar = searchController.searchBar
-             let selectedScope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
-             applySearch(searchText: searchController.searchBar.text!,scope: selectedScope)
-         }
-     }
+        if !searchController.isActive {
+            filteredNoteList = allNoteList
+            noteTableView.reloadData()
+        } else {
+            let searchBar = searchController.searchBar
+            let selectedScope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
+            applySearch(searchText: searchController.searchBar.text!,scope: selectedScope)
+        }
+    }
     
     func applySearch(searchText: String, scope: String = "All") {
         if searchController.searchBar.text! == "" {
@@ -53,8 +134,8 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                 }
             case "Unlock":
                 filteredNoteList = allNoteList.filter { note in
-                   let unlockNote = note.isLocked == false
-                   return unlockNote
+                    let unlockNote = note.isLocked == false
+                    return unlockNote
                 }
             default:
                 filteredNoteList = allNoteList
@@ -83,20 +164,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         applySearch(searchText: searchController.searchBar.text!,scope: searchBar.scopeButtonTitles![selectedScope])
     }
     
-    
-    //    search bar for filter notes
-    //    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    //        let filterdata = searchText.isEmpty ? allNoteList : allNoteList.filter { ($0.title.range(of: searchText, options: .caseInsensitive) != nil) || ($0.des.range(of: searchText, options: .caseInsensitive) != nil) }
-    //
-    //        if !searchText.isEmpty {
-    //            filterNoteList = filterdata
-    //        } else {
-    //            filterNoteList = allNoteList
-    //        }
-    //        noteTableView.reloadData()
-    //    }
-    
-    
     func setupNavUI() {
         let addBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
         self.navigationItem.rightBarButtonItem = addBtn
@@ -116,9 +183,13 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Enter Keywords to search"
+        
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(UIImage(systemName: "mic.fill"), for: .bookmark, state: .normal)
         // to hide it when the view is first presented.
-        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
+        //        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -157,22 +228,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.performSegue(withIdentifier: "ShowLoginView", sender: self)
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredNoteList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell =  noteTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
-        if (filteredNoteList[indexPath.row].isLocked == false) {
-            cell.titleLabel.text = filteredNoteList[indexPath.row].title
-            cell.desLabel.text = filteredNoteList[indexPath.row].des
-        } else {
-            cell.titleLabel.text = filteredNoteList[indexPath.row].title
-            cell.desLabel.text = "locked"
-        }
-        return cell
-    }
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "EditNote", sender: self)
     }
@@ -198,13 +253,13 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                     print(message)
                 })
                 
-                //                    delete noteList UI
+                // delete noteList UI
                 for note in self.allNoteList {
                     if note.id == self.filteredNoteList[indexPath.row].id {
                         self.allNoteList.removeAll{$0.id == note.id}
                     }
                 }
-                //                    delete filter UI
+                // delete filter UI
                 self.filteredNoteList.remove(at: indexPath.row)
                 self.noteTableView.deleteRows(at: [indexPath], with: .fade)
             } else {
@@ -273,4 +328,23 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        self.showAlertWithInputString(title: "Search")
+    }
+    
+    
+    func showAlertWithInputString(title: String, preferredStyle: UIAlertController.Style = .alert) {
+        voiceViewModel.startRecordingWithAlert()
+        
+        voiceViewModel.alert = UIAlertController(title: title, message: "Say something, I'm listening", preferredStyle: .alert)
+        voiceViewModel.alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { _ in
+            self.voiceViewModel.stopRecording()
+
+        }))
+        voiceViewModel.alert.addAction(UIAlertAction(title: "OK",style: UIAlertAction.Style.default, handler: {(_: UIAlertAction!) in
+            self.voiceViewModel.stopRecording()
+            self.searchController.searchBar.text = self.voiceViewModel.alert.message
+        }))
+        self.present(voiceViewModel.alert, animated: true)
+    }
 }

@@ -9,6 +9,9 @@
 import UIKit
 
 class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable {
+    @IBOutlet weak var recordOutlet: UIButton!
+    var voiceViewModel = VoiceViewModel()
+    
     var uniqueID = 0
     var noteDetailViewModel = NoteDetailViewModel()
     var setPasscodeViewModel = SetPasscodeViewModel()
@@ -168,5 +171,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         }
     }
     
+    @IBAction func recordAction(_ sender: Any) {
+        voiceViewModel.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView, recordOutlet: recordOutlet)
+    }
 }
 

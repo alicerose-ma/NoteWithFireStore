@@ -411,6 +411,14 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ibc-PG-6rG" userLabel="Record Outlet">
+                                <rect key="frame" x="0.0" y="763" width="414" height="30"/>
+                                <state key="normal" title="Record"/>
+                                <connections>
+                                    <action selector="RecordBtn:" destination="dXS-hR-ojP" eventType="touchUpInside" id="jL1-bP-ap5"/>
+                                    <action selector="recordAction:" destination="uji-D5-ZTr" eventType="touchUpInside" id="mQ6-MQ-F6g"/>
+                                </connections>
+                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w4N-ep-lYW">
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                                 <subviews>
@@ -452,9 +460,12 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="EXI-gB-5fu" firstAttribute="top" secondItem="5sS-cI-zzC" secondAttribute="bottom" constant="27" id="4Wg-ug-otG"/>
+                            <constraint firstItem="vaf-5Z-psP" firstAttribute="bottom" secondItem="Ibc-PG-6rG" secondAttribute="bottom" constant="20" id="AMt-QW-Ydv"/>
                             <constraint firstItem="vaf-5Z-psP" firstAttribute="bottom" secondItem="EXI-gB-5fu" secondAttribute="bottom" constant="20" id="Dfm-TE-9fM"/>
+                            <constraint firstItem="Ibc-PG-6rG" firstAttribute="leading" secondItem="vaf-5Z-psP" secondAttribute="leading" id="QAP-aM-gTE"/>
                             <constraint firstItem="vaf-5Z-psP" firstAttribute="trailing" secondItem="EXI-gB-5fu" secondAttribute="trailing" constant="20" id="Zmy-Oj-c8S"/>
                             <constraint firstItem="w4N-ep-lYW" firstAttribute="top" secondItem="vaf-5Z-psP" secondAttribute="top" id="Zzl-OV-4wx"/>
+                            <constraint firstItem="Ibc-PG-6rG" firstAttribute="trailing" secondItem="vaf-5Z-psP" secondAttribute="trailing" id="dRI-14-I9Y"/>
                             <constraint firstAttribute="bottom" secondItem="w4N-ep-lYW" secondAttribute="bottom" id="dgA-ds-Veo"/>
                             <constraint firstItem="w4N-ep-lYW" firstAttribute="trailing" secondItem="vaf-5Z-psP" secondAttribute="trailing" id="eCn-uF-BqB"/>
                             <constraint firstItem="w4N-ep-lYW" firstAttribute="leading" secondItem="vaf-5Z-psP" secondAttribute="leading" id="hO7-sK-S7N"/>
@@ -469,6 +480,7 @@
                     <connections>
                         <outlet property="desTextView" destination="EXI-gB-5fu" id="BTq-IN-hvW"/>
                         <outlet property="lockView" destination="w4N-ep-lYW" id="R8J-j2-acY"/>
+                        <outlet property="recordOutlet" destination="Ibc-PG-6rG" id="HO7-JU-3Jv"/>
                         <outlet property="titleTextField" destination="5sS-cI-zzC" id="hai-KB-Tix"/>
                         <segue destination="w8r-qw-qzr" kind="show" identifier="ShowSetPassViewFromEdit" id="48G-La-mKq"/>
                     </connections>
@@ -692,7 +704,7 @@
         <image name="logo" width="105" height="84"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="2ge-Lf-jyC"/>
+        <segue reference="48G-La-mKq"/>
         <segue reference="JkU-VO-kDN"/>
     </inferredMetricsTieBreakers>
 </document>
