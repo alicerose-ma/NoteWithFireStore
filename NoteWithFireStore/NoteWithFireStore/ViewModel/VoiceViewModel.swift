@@ -277,7 +277,5 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
                }
            }
        }
-    
-    
 
 }

@@ -52,7 +52,7 @@ public extension Alertable where Self: UIViewController {
     }
     
     
-    func showAlertWithInputString(title: String,searchController: UISearchController) {
+    func showAlertWithInputStringForSearch(title: String,searchController: UISearchController) {
         let voiceViewModel = VoiceViewModel()
         voiceViewModel.startRecordingWithAlert()
         
@@ -68,6 +68,22 @@ public extension Alertable where Self: UIViewController {
         self.present(voiceViewModel.alert, animated: true)
     }
     
+    
+    func showAlertWithInputStringForPasscode(title: String,textField: UITextField) {
+        let voiceViewModel = VoiceViewModel()
+        voiceViewModel.startRecordingWithAlert()
+        
+        voiceViewModel.alert = UIAlertController(title: title, message: "Say something, I'm listening", preferredStyle: .alert)
+        voiceViewModel.alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { _ in
+            voiceViewModel.stopRecording()
+            
+        }))
+        voiceViewModel.alert.addAction(UIAlertAction(title: "OK",style: UIAlertAction.Style.default, handler: {(_: UIAlertAction!) in
+            voiceViewModel.stopRecording()
+            textField.text = voiceViewModel.alert.message
+        }))
+        self.present(voiceViewModel.alert, animated: true)
+    }
 //    
 //    func showAlertWithInputStringForPasscode(title: String, tf: UITextField?) {
 //        let voiceViewModel = VoiceViewModel()

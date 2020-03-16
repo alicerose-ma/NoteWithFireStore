@@ -11,6 +11,7 @@ import UIKit
 class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable {
     @IBOutlet weak var recordOutlet: UIButton!
     var voiceViewModel = VoiceViewModel()
+    var alert = UIAlertController()
     
     var uniqueID = 0
     var noteDetailViewModel = NoteDetailViewModel()
@@ -135,17 +136,35 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     
+    @objc func recordPasscodeStart(_ sender: Any) {
+        alert.message = "Is Recording ..."
+        voiceViewModel.startRecordingForPasscode(textField: (alert.textFields?.first)!)
+        alert.textFields?.first?.rightView = nil
+    }
+    
+    
     func enterPasscodeAlert(passcode: String, passcodeCase: InputPasscodeCase) {
-        let alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+        alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {action in
+            self.voiceViewModel.stopRecording()
+        }))
         
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "Enter Passcode"
+            
+            let micStart = UIButton(type: .custom)
+            micStart.setImage(UIImage(systemName: "mic"), for: .normal)
+            micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
+            micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
+            micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
+            textField.rightView = micStart
+            textField.rightViewMode = .unlessEditing
         })
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            if let password = alert.textFields?.first?.text {
+            self.voiceViewModel.stopRecording()
+            if let password = self.alert.textFields?.first?.text {
                 if password == passcode {
                     switch passcodeCase {
                     case .editPasscode:

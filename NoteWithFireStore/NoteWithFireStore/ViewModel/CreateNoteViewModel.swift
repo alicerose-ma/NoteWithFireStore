@@ -19,6 +19,5 @@ class CreateNoteViewModel {
     public func createUniqueNoteDocID(username: String, uniqueID: Int) -> String {
         return username + "note" + String(uniqueID)
     }
-
 }
 

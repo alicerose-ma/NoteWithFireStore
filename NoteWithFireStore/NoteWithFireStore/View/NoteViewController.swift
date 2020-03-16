@@ -13,7 +13,7 @@ import Speech
 class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate {
     
     var alert = UIAlertController()
-    var isPasscodeRecord  = false
+//    var isPasscodeRecord  = false
     
     let voiceViewModel = VoiceViewModel()
     
@@ -103,10 +103,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.desLabel.text = "locked"
         }
         return cell
-        
-        
-        //        cell.titleLabel.text = data[indexPath.section][indexPath.row].title
-        //        return cell
     }
     
     
@@ -276,21 +272,10 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     @objc func recordPasscodeStart(_ sender: Any) {
-        print("start passcode")
-        
         alert.message = "Is Recording ..."
         voiceViewModel.startRecordingForPasscode(textField: (alert.textFields?.first)!)
         alert.textFields?.first?.rightView = nil
-        isPasscodeRecord = false
-        
-        //        self.showAlertWithInputStringForPasscode(title: "Say passcode", tf: self.alert.textFields?.first)
     }
-    
-//    @objc func recordPasscodeStop(_ sender: Any) {
-//        print("stop passcode ")
-//        isPasscodeRecord = false
-//        voiceViewModel.stopRecording()
-//    }
     
     func enterPasscodeToDelete(passcode: String, indexPath: IndexPath) {
         alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
@@ -307,24 +292,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
             micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
             micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
-            
-//            let micStop = UIButton(type: .custom)
-//            micStop.setImage(UIImage(systemName: "mic.circle"), for: .normal)
-//            micStop.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
-//            micStop.frame = CGRect(x: CGFloat(self.textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
-//            micStop.addTarget(self, action: #selector(self.recordPasscodeStop), for: .touchUpInside)
-//
-//            passTextField = textField
-
-//            if (!self.isPasscodeRecord) {
-//                textField.rightView = micStart
-//                print("start")
-//
-//            } else{
-//                textField.rightView = micStop
-//                print("stop")
-//
-//            }
             textField.rightView = micStart
             textField.rightViewMode = .unlessEditing
             
@@ -377,7 +344,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        showAlertWithInputString(title: "Search", searchController: searchController)
+        showAlertWithInputStringForSearch(title: "Search", searchController: searchController)
     }
     
     
