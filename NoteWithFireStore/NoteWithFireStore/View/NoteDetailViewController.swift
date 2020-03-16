@@ -13,6 +13,9 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     var voiceViewModel = VoiceViewModel()
     var alert = UIAlertController()
     
+    var micStart = UIButton(type: .custom)
+    var isHidden = true
+    
     var uniqueID = 0
     var noteDetailViewModel = NoteDetailViewModel()
     var setPasscodeViewModel = SetPasscodeViewModel()
@@ -137,34 +140,43 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     
     @objc func recordPasscodeStart(_ sender: Any) {
-        alert.message = "Is Recording ..."
-        voiceViewModel.startRecordingForPasscode(textField: (alert.textFields?.first)!)
-        alert.textFields?.first?.rightView = nil
+        if isHidden {
+            alert.textFields?.first?.isSecureTextEntry = false
+            isHidden = false
+            setPasscodeIcon(name: "eye.slash", textField: (alert.textFields?.first)!)
+        } else {
+            alert.textFields?.first?.isSecureTextEntry = true
+            isHidden = true
+            setPasscodeIcon(name: "eye", textField: (alert.textFields?.first)!)
+        }
     }
     
     
+    func setPasscodeIcon(name: String, textField: UITextField) {
+            self.micStart.setImage(UIImage(systemName: name), for: .normal)
+            self.micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
+            self.micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
+        }
+    
+
+
     func enterPasscodeAlert(passcode: String, passcodeCase: InputPasscodeCase) {
         alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {action in
-            self.voiceViewModel.stopRecording()
         }))
         
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "Enter Passcode"
+            textField.isSecureTextEntry = true
             
-            let micStart = UIButton(type: .custom)
-            micStart.setImage(UIImage(systemName: "mic"), for: .normal)
-            micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
-            micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
-            micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
-            textField.rightView = micStart
-            textField.rightViewMode = .unlessEditing
+            self.setPasscodeIcon(name: "eye", textField: textField)
+            self.micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
+            textField.rightView = self.micStart
+            textField.rightViewMode = .always
         })
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            self.voiceViewModel.stopRecording()
-            if let password = self.alert.textFields?.first?.text {
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in            if let password = self.alert.textFields?.first?.text {
                 if password == passcode {
                     switch passcodeCase {
                     case .editPasscode:
