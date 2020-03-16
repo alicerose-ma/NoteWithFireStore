@@ -13,12 +13,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     var voiceViewModel = VoiceViewModel()
     var alert = UIAlertController()
     
-    var micStart = UIButton(type: .custom)
-    var isHidden = true
-    
     var uniqueID = 0
     var noteDetailViewModel = NoteDetailViewModel()
     var setPasscodeViewModel = SetPasscodeViewModel()
+    var createNoteViewModel = CreateNoteViewModel()
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var desTextView: UITextView!
@@ -67,7 +65,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         let description = desTextView.text!
         
         if !title.isEmpty || !description.isEmpty {
-            let note = NoteData(username: noteDetailViewModel.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus) //create a new note model with lock
+            let note = NoteData(username: noteDetailViewModel.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus, sharedUsers: []) //create a new note model with lock
             noteDetailViewModel.editNote(uniqueID: uniqueID, newNote: note)
         }
     }
@@ -140,26 +138,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     
     @objc func recordPasscodeStart(_ sender: Any) {
-        if isHidden {
-            alert.textFields?.first?.isSecureTextEntry = false
-            isHidden = false
-            setPasscodeIcon(name: "eye.slash", textField: (alert.textFields?.first)!)
-        } else {
-            alert.textFields?.first?.isSecureTextEntry = true
-            isHidden = true
-            setPasscodeIcon(name: "eye", textField: (alert.textFields?.first)!)
-        }
+        createNoteViewModel.displayPasscode(alert: alert)
     }
     
     
-    func setPasscodeIcon(name: String, textField: UITextField) {
-            self.micStart.setImage(UIImage(systemName: name), for: .normal)
-            self.micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
-            self.micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
-        }
-    
-
-
     func enterPasscodeAlert(passcode: String, passcodeCase: InputPasscodeCase) {
         alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
         
@@ -170,26 +152,26 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
             
-            self.setPasscodeIcon(name: "eye", textField: textField)
-            self.micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
-            textField.rightView = self.micStart
+            self.createNoteViewModel.setPasscodeIcon(name: "eye", textField: textField)
+            self.createNoteViewModel.micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
+            textField.rightView = self.createNoteViewModel.micStart
             textField.rightViewMode = .always
         })
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in            if let password = self.alert.textFields?.first?.text {
-                if password == passcode {
-                    switch passcodeCase {
-                    case .editPasscode:
-                        self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
-                    case .unlockNote:
-                        self.lockStatus = false
-                        self.lockView.isHidden = true
-                        self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
-                        self.addLockIconToNavBar()
-                    }
-                }else {
-                    self.showAlert(title: .passcodeValidation, message: .wrong)
+            if password == passcode {
+                switch passcodeCase {
+                case .editPasscode:
+                    self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
+                case .unlockNote:
+                    self.lockStatus = false
+                    self.lockView.isHidden = true
+                    self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
+                    self.addLockIconToNavBar()
                 }
+            }else {
+                self.showAlert(title: .passcodeValidation, message: .wrong)
+            }
             }}))
         self.present(alert, animated: true, completion: nil)
     }

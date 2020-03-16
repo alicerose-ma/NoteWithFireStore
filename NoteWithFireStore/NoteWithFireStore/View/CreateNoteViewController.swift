@@ -20,9 +20,6 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     var voiceViewModel = VoiceViewModel()
     var alert = UIAlertController()
     
-    var micStart = UIButton(type: .custom)
-    var isHidden = true
-    
     var uniqueID: Int = 0
     var hasLock: Bool = false
     var lockStatus: Bool = false
@@ -66,7 +63,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         
         if !title.isEmpty || !description.isEmpty {
             let noteID = createNoteViewModel.createUniqueNoteDocID(username: createNoteViewModel.username!, uniqueID: uniqueID)
-            let note = NoteData(username: createNoteViewModel.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus) //create a new note model with lock
+            let note = NoteData(username: createNoteViewModel.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus, sharedUsers: []) //create a new note model with lock
             createNoteViewModel.addNewNote(documentID: noteID, newNote: note)
         }
     }
@@ -133,48 +130,30 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     @objc func recordPasscodeStart(_ sender: Any) {
-        if isHidden {
-           alert.textFields?.first?.isSecureTextEntry = false
-           isHidden = false
-           setPasscodeIcon(name: "eye.slash", textField: (alert.textFields?.first)!)
-       } else {
-           alert.textFields?.first?.isSecureTextEntry = true
-           isHidden = true
-           setPasscodeIcon(name: "eye", textField: (alert.textFields?.first)!)
-       }
+        createNoteViewModel.displayPasscode(alert: alert)
     }
     
-    
-    func setPasscodeIcon(name: String, textField: UITextField) {
-            self.micStart.setImage(UIImage(systemName: name), for: .normal)
-            self.micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
-            self.micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
-        }
-    
-    
-    
+
     
     //    enter passcode to edit and unlock
     func enterPasscodeAlert(passcode: String, passcodeCase: InputPasscodeCase) {
         alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action in
-//                self.voiceViewModel.stopRecording()
         }))
         
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
-            
-            self.setPasscodeIcon(name: "eye", textField: textField)
-            self.micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
-            textField.rightView = self.micStart
+
+            self.createNoteViewModel.setPasscodeIcon(name: "eye", textField: textField)
+            self.createNoteViewModel.micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
+            textField.rightView = self.createNoteViewModel.micStart
             textField.rightViewMode = .always
-                      
+           
         })
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-//            self.voiceViewModel.stopRecording()
             if let password = self.alert.textFields?.first?.text {
                 if password == passcode {
                     switch passcodeCase {
@@ -204,12 +183,12 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     @IBAction func RecordBtn(_ sender: Any) {
         voiceViewModel.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView, recordOutlet: recordOutlet)
     }
-
-
-  
     
-
-  
+    
+    
+    
+    
+    
     
 }
 
