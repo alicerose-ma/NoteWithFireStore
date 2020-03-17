@@ -104,24 +104,6 @@
                                                     </button>
                                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5V-62-h2Q" userLabel="Forget Pass Stack View">
                                                         <rect key="frame" x="0.0" y="380" width="300" height="30"/>
-                                                        <subviews>
-                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="748" text="Don't remember password?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ckc-9h-VAl">
-                                                                <rect key="frame" x="0.0" y="0.0" width="166.5" height="30"/>
-                                                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
-                                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                                <nil key="highlightedColor"/>
-                                                            </label>
-                                                            <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="w3C-eu-zgc">
-                                                                <rect key="frame" x="166.5" y="0.0" width="133.5" height="30"/>
-                                                                <constraints>
-                                                                    <constraint firstAttribute="height" constant="30" id="0nc-cx-w3i"/>
-                                                                </constraints>
-                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="13"/>
-                                                                <state key="normal" title="Forget password">
-                                                                    <color key="titleColor" red="0.40000000000000002" green="0.98823529409999999" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
-                                                                </state>
-                                                            </button>
-                                                        </subviews>
                                                     </stackView>
                                                 </subviews>
                                                 <constraints>
@@ -411,14 +393,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ibc-PG-6rG" userLabel="Record Outlet">
-                                <rect key="frame" x="0.0" y="763" width="414" height="30"/>
-                                <state key="normal" title="Record"/>
-                                <connections>
-                                    <action selector="RecordBtn:" destination="dXS-hR-ojP" eventType="touchUpInside" id="jL1-bP-ap5"/>
-                                    <action selector="recordAction:" destination="uji-D5-ZTr" eventType="touchUpInside" id="mQ6-MQ-F6g"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w4N-ep-lYW">
                                 <rect key="frame" x="0.0" y="88" width="414" height="808"/>
                                 <subviews>
@@ -460,12 +434,9 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstItem="EXI-gB-5fu" firstAttribute="top" secondItem="5sS-cI-zzC" secondAttribute="bottom" constant="27" id="4Wg-ug-otG"/>
-                            <constraint firstItem="vaf-5Z-psP" firstAttribute="bottom" secondItem="Ibc-PG-6rG" secondAttribute="bottom" constant="20" id="AMt-QW-Ydv"/>
                             <constraint firstItem="vaf-5Z-psP" firstAttribute="bottom" secondItem="EXI-gB-5fu" secondAttribute="bottom" constant="20" id="Dfm-TE-9fM"/>
-                            <constraint firstItem="Ibc-PG-6rG" firstAttribute="leading" secondItem="vaf-5Z-psP" secondAttribute="leading" id="QAP-aM-gTE"/>
                             <constraint firstItem="vaf-5Z-psP" firstAttribute="trailing" secondItem="EXI-gB-5fu" secondAttribute="trailing" constant="20" id="Zmy-Oj-c8S"/>
                             <constraint firstItem="w4N-ep-lYW" firstAttribute="top" secondItem="vaf-5Z-psP" secondAttribute="top" id="Zzl-OV-4wx"/>
-                            <constraint firstItem="Ibc-PG-6rG" firstAttribute="trailing" secondItem="vaf-5Z-psP" secondAttribute="trailing" id="dRI-14-I9Y"/>
                             <constraint firstAttribute="bottom" secondItem="w4N-ep-lYW" secondAttribute="bottom" id="dgA-ds-Veo"/>
                             <constraint firstItem="w4N-ep-lYW" firstAttribute="trailing" secondItem="vaf-5Z-psP" secondAttribute="trailing" id="eCn-uF-BqB"/>
                             <constraint firstItem="w4N-ep-lYW" firstAttribute="leading" secondItem="vaf-5Z-psP" secondAttribute="leading" id="hO7-sK-S7N"/>
@@ -480,7 +451,6 @@
                     <connections>
                         <outlet property="desTextView" destination="EXI-gB-5fu" id="BTq-IN-hvW"/>
                         <outlet property="lockView" destination="w4N-ep-lYW" id="R8J-j2-acY"/>
-                        <outlet property="recordOutlet" destination="Ibc-PG-6rG" id="HO7-JU-3Jv"/>
                         <outlet property="titleTextField" destination="5sS-cI-zzC" id="hai-KB-Tix"/>
                         <segue destination="w8r-qw-qzr" kind="show" identifier="ShowSetPassViewFromEdit" id="48G-La-mKq"/>
                     </connections>
@@ -509,13 +479,6 @@
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0CE-9J-LMA">
-                                <rect key="frame" x="0.0" y="763" width="414" height="30"/>
-                                <state key="normal" title="Record"/>
-                                <connections>
-                                    <action selector="RecordBtn:" destination="dXS-hR-ojP" eventType="touchUpInside" id="zCB-EG-lOm"/>
-                                </connections>
-                            </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pU6-Pm-cPc">
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <subviews>
@@ -557,14 +520,11 @@
                         <constraints>
                             <constraint firstItem="Yyd-xs-fVr" firstAttribute="bottom" secondItem="pU6-Pm-cPc" secondAttribute="bottom" id="0uh-Wv-npi"/>
                             <constraint firstItem="Yyd-xs-fVr" firstAttribute="bottom" secondItem="dPS-eJ-Gc6" secondAttribute="bottom" constant="20" id="28J-gL-lfu"/>
-                            <constraint firstItem="0CE-9J-LMA" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" id="BF8-y0-PEs"/>
                             <constraint firstItem="dPS-eJ-Gc6" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" constant="20" id="BZF-i3-bb9"/>
                             <constraint firstItem="GM9-F3-8dg" firstAttribute="top" secondItem="Yyd-xs-fVr" secondAttribute="top" constant="20" id="Gmv-ch-fvI"/>
                             <constraint firstItem="pU6-Pm-cPc" firstAttribute="top" secondItem="Yyd-xs-fVr" secondAttribute="top" id="JG1-5x-j0F"/>
                             <constraint firstItem="Yyd-xs-fVr" firstAttribute="trailing" secondItem="dPS-eJ-Gc6" secondAttribute="trailing" constant="20" id="UVS-e2-bZS"/>
                             <constraint firstItem="pU6-Pm-cPc" firstAttribute="trailing" secondItem="Yyd-xs-fVr" secondAttribute="trailing" id="Va8-KD-fXT"/>
-                            <constraint firstItem="Yyd-xs-fVr" firstAttribute="trailing" secondItem="0CE-9J-LMA" secondAttribute="trailing" id="gLN-2C-9BU"/>
-                            <constraint firstItem="Yyd-xs-fVr" firstAttribute="bottom" secondItem="0CE-9J-LMA" secondAttribute="bottom" constant="20" id="kHO-MC-gzD"/>
                             <constraint firstItem="dPS-eJ-Gc6" firstAttribute="top" secondItem="GM9-F3-8dg" secondAttribute="bottom" constant="20" id="kuv-h3-DSL"/>
                             <constraint firstItem="GM9-F3-8dg" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" constant="20" id="mu7-an-fVs"/>
                             <constraint firstItem="pU6-Pm-cPc" firstAttribute="leading" secondItem="Yyd-xs-fVr" secondAttribute="leading" id="uIl-Wn-lyi"/>
@@ -576,7 +536,6 @@
                     <connections>
                         <outlet property="desTextView" destination="dPS-eJ-Gc6" id="Cwd-iX-hKy"/>
                         <outlet property="lockView" destination="pU6-Pm-cPc" id="KVt-Yu-h0e"/>
-                        <outlet property="recordOutlet" destination="0CE-9J-LMA" id="Sbj-g2-6Dl"/>
                         <outlet property="titleTextField" destination="GM9-F3-8dg" id="TFu-bK-7v0"/>
                         <segue destination="w8r-qw-qzr" kind="show" identifier="ShowSetPassView" id="2ge-Lf-jyC"/>
                     </connections>

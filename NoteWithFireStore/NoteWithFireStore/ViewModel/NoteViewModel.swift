@@ -43,6 +43,14 @@ class NoteViewModel {
     public func logOutUser() {
         UserDefaults.standard.removeObject(forKey: "username")
     }
+    
+    public func share(userToShare: String, noteToShare: Int) {
+        let noteName = username! + "note" + String(noteToShare)
+        FireBaseProxy.shared.share(userToShare: userToShare, note: noteName, completion: {
+            isShared in
+            print(isShared)
+        })
+    }
 
     
 }

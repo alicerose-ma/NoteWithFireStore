@@ -13,11 +13,10 @@ import Speech
 class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate {
     
     var alert = UIAlertController()
-//    var isPasscodeRecord  = false
     
     let voiceViewModel = VoiceViewModel()
     var isHidden = true
-    var micStart = UIButton(type: .custom)
+    var hiddenPwdIcon = UIButton(type: .custom)
     
 
     
@@ -46,6 +45,35 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         setupSearchController()
         voiceViewModel.voiceSetupWithoutRecordBtn()
     }
+    
+    
+//  CHECK USER LOGIN BEFORE
+    override func viewWillAppear(_ animated: Bool) {
+           super.viewWillAppear(animated)
+           didLogin()
+           searchController.searchBar.text = nil
+       }
+       
+       //    check if user login before
+       func didLogin() {
+           let didLogin = noteViewModel.didLogin()
+           if didLogin {
+               loadNoteList()
+           } else {
+               self.performSegue(withIdentifier: "ShowLoginView", sender: self)
+           }
+       }
+       
+       //    load note list of user
+       func loadNoteList() {
+           noteViewModel.getNoteList(completion: { notes in
+               self.allNoteList = notes
+               self.filteredNoteList = notes
+               DispatchQueue.main.async {
+                   self.noteTableView.reloadData()
+               }
+           })
+       }
     
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -109,7 +137,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     
     
-    
+//    SEARCH FEATURE
     func updateSearchResults(for searchController: UISearchController) {
         if !searchController.isActive {
             filteredNoteList = allNoteList
@@ -155,92 +183,27 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                 return lockList && (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
             }
         }
-        
         self.noteTableView.reloadData()
     }
     
+    
+//    SEARCH WITH VOICE
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         applySearch(searchText: searchController.searchBar.text!,scope: searchBar.scopeButtonTitles![selectedScope])
     }
     
-    func setupNavUI() {
-        let addBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
-        self.navigationItem.rightBarButtonItem = addBtn
-        
-        let exitBtn = UIBarButtonItem(title: "Log out", style: .done, target: self, action: #selector(exit))
-        self.navigationItem.leftBarButtonItem = exitBtn
+    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
+        showAlertWithInputStringForSearch(title: "Search", searchController: searchController)
     }
     
-    func setupSearchController(){
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        definesPresentationContext = true
-        noteTableView.tableHeaderView = searchController.searchBar
-        
-        searchController.searchBar.sizeToFit()
-        searchController.searchBar.scopeButtonTitles = ["All", "Lock", "Unlock"]
-        
-        searchController.searchBar.delegate = self
-        searchController.searchBar.placeholder = "Enter Keywords to search"
-        
-        searchController.searchBar.showsBookmarkButton = true
-        searchController.searchBar.setImage(UIImage(systemName: "mic.fill"), for: .bookmark, state: .normal)
-        // to hide it when the view is first presented.
-        //        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
-    }
-    
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        didLogin()
-        searchController.searchBar.text = nil
-    }
-    
-    //    check if user login before
-    func didLogin() {
-        let didLogin = noteViewModel.didLogin()
-        if didLogin {
-            loadNoteList()
-        } else {
-            self.performSegue(withIdentifier: "ShowLoginView", sender: self)
-        }
-    }
-    
-    //    load note list of user
-    func loadNoteList() {
-        noteViewModel.getNoteList(completion: { notes in
-            self.allNoteList = notes
-            self.filteredNoteList = notes
-            DispatchQueue.main.async {
-                self.noteTableView.reloadData()
-            }
-        })
-    }
-    
-    
-    @objc func addNote() {
-        self.performSegue(withIdentifier: "AddNewNote", sender: self)
-    }
-    
-    @objc func exit() {
-        noteViewModel.logOutUser()
-        self.performSegue(withIdentifier: "ShowLoginView", sender: self)
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "EditNote", sender: self)
-    }
-    
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
-    }
+
+// SWIPE TO DELETE & SHARE
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
-    //    swipe left to delete note
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: {(contextualAction, view, boolValue) in
@@ -269,15 +232,19 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.noteTableView.reloadData()
             
         })
-        let swipeActions = UISwipeActionsConfiguration(actions: [deleteAction])
+        
+        
+        let shareAction = UIContextualAction(style: .normal, title: "Share", handler: {(contextualAction, view, boolValue) in
+            self.showShareAlert(title: "Share Note", message: "Share to: ",  noteToShare: self.filteredNoteList[indexPath.row].id)
+        })
+        
+        let swipeActions = UISwipeActionsConfiguration(actions: [deleteAction, shareAction])
         return swipeActions
     }
     
-    @objc func recordPasscodeStart(_ sender: Any) {
-//        alert.message = "Is Recording ..."
-//        voiceViewModel.startRecordingForPasscode(textField: (alert.textFields?.first)!)
-//        alert.textFields?.first?.rightView = nil
-
+    
+//    SHOW OR HIDE PASSCODE
+    @objc func showAndHidePasscodeAction(_ sender: Any) {
         if isHidden {
             alert.textFields?.first?.isSecureTextEntry = false
             isHidden = false
@@ -291,9 +258,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func setPasscodeIcon(name: String, textField: UITextField) {
-        self.micStart.setImage(UIImage(systemName: name), for: .normal)
-        self.micStart.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
-        self.micStart.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
+        self.hiddenPwdIcon.setImage(UIImage(systemName: name), for: .normal)
+        self.hiddenPwdIcon.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
+        self.hiddenPwdIcon.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
     }
     
     
@@ -301,7 +268,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action in
-//            self.voiceViewModel.stopRecording()
         }))
         
         alert.addTextField(configurationHandler: { textField in
@@ -309,14 +275,13 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             textField.isSecureTextEntry = true
             
             self.setPasscodeIcon(name: "eye", textField: textField)
-            self.micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
-            textField.rightView = self.micStart
+            self.hiddenPwdIcon.addTarget(self, action: #selector(self.showAndHidePasscodeAction), for: .touchUpInside)
+            textField.rightView = self.hiddenPwdIcon
             textField.rightViewMode = .always
             
         })
         
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-//            self.voiceViewModel.stopRecording()
             if let password = self.alert.textFields?.first?.text {
                 print("Your password: \(password)")
                 if password == passcode {
@@ -338,6 +303,28 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         )
         self.present(alert, animated: true, completion: nil)
     }
+    
+    
+    
+//    PERFORM SEGUES
+    @objc func addNote() {
+        self.performSegue(withIdentifier: "AddNewNote", sender: self)
+    }
+    
+    @objc func exit() {
+        noteViewModel.logOutUser()
+        self.performSegue(withIdentifier: "ShowLoginView", sender: self)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "EditNote", sender: self)
+    }
+    
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
     
     //    transfer to other views by identifier
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -361,9 +348,36 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
-        showAlertWithInputStringForSearch(title: "Search", searchController: searchController)
+    
+    
+//  SET UP UI NAV & SEARCH CONTROLLER
+    func setupNavUI() {
+        let addBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
+        self.navigationItem.rightBarButtonItem = addBtn
+        
+        let exitBtn = UIBarButtonItem(title: "Log out", style: .done, target: self, action: #selector(exit))
+        self.navigationItem.leftBarButtonItem = exitBtn
     }
+    
+    
+    func setupSearchController(){
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        definesPresentationContext = true
+        noteTableView.tableHeaderView = searchController.searchBar
+        
+        searchController.searchBar.sizeToFit()
+        searchController.searchBar.scopeButtonTitles = ["All", "Lock", "Unlock"]
+        
+        searchController.searchBar.delegate = self
+        searchController.searchBar.placeholder = "Enter Keywords to search"
+        
+        searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.setImage(UIImage(systemName: "mic.fill"), for: .bookmark, state: .normal)
+        // to hide it when the view is first presented.
+        //        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
+    }
+    
     
     
     

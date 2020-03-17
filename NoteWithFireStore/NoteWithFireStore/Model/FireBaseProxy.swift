@@ -164,7 +164,63 @@ public class FireBaseProxy {
         }
     }
     
+    //SHARE
+//
+//    public func updateSharedUserForSingleNote(documentId: String, userToShare: String, completion: @escaping (Bool) -> Void){
+//        notesCollection.document(documentId).getDocument { (document, error) in
+//        if let document = document, document.exists {
+//            let dataDescription = document.d
+//            print("Document data: \(dataDescription)")
+//        } else {
+//            print("Document does not exist")
+//        }
+//        }
+//    }
+    
+    public func share(userToShare: String, note: String ,completion: @escaping ((Bool) -> Void)) {
+         usersCollection.whereField("username", isEqualTo: userToShare)
+             .getDocuments() {(querySnapshot, err) in
+                 if let err = err {
+                     print("Error getting documents: \(err)")
+                 } else {
+                     do {
+                        let myUsers: [UserData] = try querySnapshot!.decoded()
+                        print(myUsers[0].sharedNotes)
+                        var sharedNotes = myUsers[0].sharedNotes
+                        sharedNotes.append(note)
+                        
+                        print(myUsers[0].sharedNotes)
+                        self.usersCollection.document(userToShare).updateData([
+                            "sharedNotes": sharedNotes,
+//                            "sharedNotes"FieldValue.arrayUnion('greater_virginia')
+                        ]) { err in
+                            if let err = err {
+                                print("Error updating passcode: \(err)")
+                                completion(false)
+                            } else {
+                                print("Passcode successfully updated")
+                                completion(true)
+                            }
+                        }
+                            
+                         completion(true)
+                     } catch {
+                         print("decoded User error")
+                     }
+                 }
+         }
+     }
+    
 }
+
+
+
+
+    
+     
+
+
+
 
 // decodable 1 single document
 extension QueryDocumentSnapshot {

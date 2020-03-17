@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Speech
 
-class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
+class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer(locale: Locale.init(identifier:"en-us"))
     var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     var recognitionTask: SFSpeechRecognitionTask?
@@ -18,34 +18,9 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
     
     var subStr1 = ""
     var subStr2 = ""
+
     
     var alert = UIAlertController()
-    
-    func voiceSetup(recordOutlet: UIButton) {
-        speechRecognizer?.delegate = self
-        SFSpeechRecognizer.requestAuthorization {
-            status in
-            var buttonState = false
-            switch status {
-            case .authorized:
-                buttonState = true
-                print("Permission received")
-            case .denied:
-                buttonState = false
-                print("User did not give permission to use speech recognition")
-            case .notDetermined:
-                buttonState = false
-                print("Speech recognition not allowed by user")
-            case .restricted:
-                buttonState = false
-                print("Speech recognition not supported on this device")
-            }
-            DispatchQueue.main.async {
-                recordOutlet.isEnabled = buttonState
-            }
-        }
-    }
-    
     
     func voiceSetupWithoutRecordBtn() {
         speechRecognizer?.delegate = self
@@ -100,7 +75,7 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
         }
     }
     
-    func startRecording(titleTextField: UITextField, desTextView: UITextView, recordOutlet: UIButton) {
+    func startRecording(titleTextField: UITextField, desTextView: UITextView) {
         prepareAudioSession()
         
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest() //read from buffer
@@ -146,18 +121,16 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
                 
                 self.recognitionRequest = nil
                 self.recognitionTask = nil
-                
-                recordOutlet.setTitle("Record", for: .normal)
                 print("Recording stopped")
             }
         }
     }
     
-    
-    func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView, recordOutlet: UIButton) {
+
+//    audiEngine running => stop , else => start
+    func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView) {
         if audioEngine.isRunning {
             stopRecording()
-            recordOutlet.setTitle("Record", for: .normal)
         } else {
             
             var cursorPosition = 0
@@ -179,8 +152,7 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate  {
             subStr1 = String(text[text.startIndex..<selectedIndex])
             subStr2 = String(text[selectedIndex..<text.endIndex])
             
-            recordOutlet.setTitle("Stop", for: .normal)
-            startRecording(titleTextField: titleTextField, desTextView: desTextView, recordOutlet: recordOutlet )
+            startRecording(titleTextField: titleTextField, desTextView: desTextView)
             
         }
     }

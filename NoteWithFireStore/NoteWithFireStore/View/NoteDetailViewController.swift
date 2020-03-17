@@ -8,7 +8,7 @@
 
 import UIKit
 
-class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable {
+class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable,  UITextFieldDelegate, UITextViewDelegate {
     @IBOutlet weak var recordOutlet: UIButton!
     var voiceViewModel = VoiceViewModel()
     var alert = UIAlertController()
@@ -25,14 +25,19 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     var insertLockForNoteBtn = UIBarButtonItem()
     var lockStatusBtn = UIBarButtonItem()
     var unlockStatusBtn = UIBarButtonItem()
+    var voiceBtn = UIBarButtonItem()
     
     var hasLock: Bool = false
     var lockStatus: Bool = false
+    var isRecord: Bool = false
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navBarItemSetUp()
+        titleTextField.delegate = self
+        desTextView.delegate = self
+        voiceViewModel.voiceSetupWithoutRecordBtn()
         noteDetailViewModel.getNoteByID(id: uniqueID, completion: { notes in
             for note in notes {
                 self.titleTextField.text = note.title
@@ -43,11 +48,13 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         if lockStatus == true {
             lockView.isHidden = false
             hasLock = true
-            navigationItem.rightBarButtonItems = [insertLockForNoteBtn, lockStatusBtn]
+            navigationItem.rightBarButtonItems = [insertLockForNoteBtn, voiceBtn ,lockStatusBtn]
             navigationItem.rightBarButtonItems?.first?.isEnabled = false
+            voiceBtn.isEnabled = false
         } else {
             lockView.isHidden = true
-            navigationItem.rightBarButtonItems = [insertLockForNoteBtn]
+            voiceBtn.isEnabled = false
+            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn]
             
         }
     }
@@ -56,6 +63,34 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         insertLockForNoteBtn = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"), style: .plain, target: self, action: #selector(addOrRemoveLock))
         lockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock"), style: .plain, target: self, action: #selector(self.lockOFF))
         unlockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock.open"), style: .plain, target: self, action: #selector(self.lockON))
+        voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
+    }
+    
+    @objc func voice(){
+        voiceViewModel.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView)
+        if isRecord {
+            isRecord = false
+            voiceBtn.image = UIImage(systemName: "mic")
+        } else {
+            isRecord = true
+            voiceBtn.image = UIImage(systemName: "mic.slash")
+        }
+    }
+    
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        voiceViewModel.stopRecording()
+        isRecord = false
+        voiceBtn.isEnabled = true
+        voiceBtn.image = UIImage(systemName: "mic")
+    }
+    
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        voiceViewModel.stopRecording()
+        isRecord = false
+        voiceBtn.isEnabled = true
+        voiceBtn.image = UIImage(systemName: "mic")
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -79,7 +114,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     //    delegate to add lock status
     func addLockIconToNavBar() {
         hasLock = true
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,unlockStatusBtn]
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,unlockStatusBtn]
     }
     
     @objc func addOrRemoveLock() {
@@ -91,7 +126,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         if hasLock {
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
                 self.hasLock = false
-                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn]
+                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn, self.voiceBtn]
             }))
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
@@ -125,8 +160,9 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     @objc func lockON(){
         lockStatus = true
         lockView.isHidden = false
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,lockStatusBtn]
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,lockStatusBtn]
         navigationItem.rightBarButtonItems?.first?.isEnabled = false
+        voiceBtn.isEnabled = false
     }
     
     //    note is unlocked
@@ -137,7 +173,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     
-    @objc func recordPasscodeStart(_ sender: Any) {
+    @objc func showAndHiddenPasscodeAction(_ sender: Any) {
         createNoteViewModel.displayPasscode(alert: alert)
     }
     
@@ -153,7 +189,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             textField.isSecureTextEntry = true
             
             self.createNoteViewModel.setPasscodeIcon(name: "eye", textField: textField)
-            self.createNoteViewModel.micStart.addTarget(self, action: #selector(self.recordPasscodeStart), for: .touchUpInside)
+            self.createNoteViewModel.micStart.addTarget(self, action: #selector(self.showAndHiddenPasscodeAction), for: .touchUpInside)
             textField.rightView = self.createNoteViewModel.micStart
             textField.rightViewMode = .always
         })
@@ -182,10 +218,6 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             let destinationVC  = segue.destination as! SetPasscodeViewController
             destinationVC.setPasscodeDelegate = self
         }
-    }
-    
-    @IBAction func recordAction(_ sender: Any) {
-        voiceViewModel.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView, recordOutlet: recordOutlet)
     }
 }
 

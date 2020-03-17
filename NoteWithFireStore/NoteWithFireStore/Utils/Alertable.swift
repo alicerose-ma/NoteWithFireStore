@@ -84,21 +84,21 @@ public extension Alertable where Self: UIViewController {
         }))
         self.present(voiceViewModel.alert, animated: true)
     }
-//    
-//    func showAlertWithInputStringForPasscode(title: String, tf: UITextField?) {
-//        let voiceViewModel = VoiceViewModel()
-//        voiceViewModel.startRecordingWithAlert()
-//        
-//        voiceViewModel.alert = UIAlertController(title: title, message: "Say something, I'm listening", preferredStyle: .alert)
-//        voiceViewModel.alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: { _ in
-//            voiceViewModel.stopRecording()
-//            
-//        }))
-//        voiceViewModel.alert.addAction(UIAlertAction(title: "OK",style: UIAlertAction.Style.default, handler: {(_: UIAlertAction!) in
-//            voiceViewModel.stopRecording()
-//            tf!.text = voiceViewModel.alert.message
-//        }))
-//        self.present(voiceViewModel.alert, animated: true)
-//    }
+    
+    
+    func showShareAlert(title: String, message: String, noteToShare: Int) {
+        let noteViewModel = NoteViewModel()
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addTextField(configurationHandler: { textField in
+            textField.placeholder = "Enter Passcode"
+        })
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler:
+            { action in
+                let userToShare = alert.textFields?.first?.text
+                print(userToShare)
+                noteViewModel.share(userToShare: userToShare!, noteToShare: noteToShare)
+        }))
+        self.present(alert, animated: true)
+    }
 }
 
