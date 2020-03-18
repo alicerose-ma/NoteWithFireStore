@@ -10,6 +10,7 @@
 		0339E4F901361D00A9E6841D /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F226B3D6A03FE98B4AE30E0 /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework */; };
 		180922862403993E0073E3F9 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180922852403993E0073E3F9 /* Alertable.swift */; };
 		18E1B2F02410F9F400E479C1 /* FireBaseProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */; };
+		18E2E0792420D5E60072CCD3 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E2E0782420D5E60072CCD3 /* AttachmentViewModel.swift */; };
 		18ED7539241B7AD8009ADE21 /* VoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18ED7538241B7AD8009ADE21 /* VoiceViewModel.swift */; };
 		18FE54482402D4B700B6307E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54472402D4B700B6307E /* AppDelegate.swift */; };
 		18FE544A2402D4B700B6307E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54492402D4B700B6307E /* SceneDelegate.swift */; };
@@ -59,6 +60,7 @@
 /* Begin PBXFileReference section */
 		180922852403993E0073E3F9 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBaseProxy.swift; sourceTree = "<group>"; };
+		18E2E0782420D5E60072CCD3 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
 		18ED7538241B7AD8009ADE21 /* VoiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceViewModel.swift; sourceTree = "<group>"; };
 		18FE54442402D4B700B6307E /* NoteWithFireStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NoteWithFireStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18FE54472402D4B700B6307E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				18FE548D2402DE0900B6307E /* CreateNoteViewModel.swift */,
 				18FE548F2402DE1A00B6307E /* SetPasscodeViewModel.swift */,
 				18ED7538241B7AD8009ADE21 /* VoiceViewModel.swift */,
+				18E2E0782420D5E60072CCD3 /* AttachmentViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -508,6 +511,7 @@
 				18FE54942402DE4F00B6307E /* SignUpViewController.swift in Sources */,
 				18ED7539241B7AD8009ADE21 /* VoiceViewModel.swift in Sources */,
 				18FE548C2402DDF700B6307E /* NoteDetailViewModel.swift in Sources */,
+				18E2E0792420D5E60072CCD3 /* AttachmentViewModel.swift in Sources */,
 				18FE544A2402D4B700B6307E /* SceneDelegate.swift in Sources */,
 				18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */,
 				18FE54982402DE7E00B6307E /* NoteTableViewCell.swift in Sources */,

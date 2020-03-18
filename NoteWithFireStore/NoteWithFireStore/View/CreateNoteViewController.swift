@@ -29,6 +29,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     var lockStatusBtn = UIBarButtonItem()
     var unlockStatusBtn = UIBarButtonItem()
     var voiceBtn = UIBarButtonItem()
+    var imageBtn = UIBarButtonItem()
     
     var createNoteViewModel = CreateNoteViewModel()
     var setPasscodeViewModel = SetPasscodeViewModel()
@@ -44,7 +45,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         lockView.isHidden = true
         navBarItemSetUp()
         voiceBtn.isEnabled = false
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn]
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn]
         voiceViewModel.voiceSetupWithoutRecordBtn()
     }
     
@@ -53,6 +54,13 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         lockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock"), style: .plain, target: self, action: #selector(self.lockOFF))
         unlockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock.open"), style: .plain, target: self, action: #selector(self.lockON))
         voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
+        imageBtn = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(self.addImage))
+    }
+    
+    
+    @objc func addImage(){
+        print("click add image")
+        showImageAlert(desTextView: desTextView)
     }
     
     
@@ -108,7 +116,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     //    delegate to add lock status
     func addLockIconToNavBar() {
         hasLock = true
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,unlockStatusBtn]
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,unlockStatusBtn]
     }
     
     @objc func addOrRemoveLock() {
@@ -155,9 +163,10 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     @objc func lockON(){
         lockStatus = true
         lockView.isHidden = false
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,lockStatusBtn]
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,lockStatusBtn]
         navigationItem.rightBarButtonItems?.first?.isEnabled = false
         voiceBtn.isEnabled = false
+        imageBtn.isEnabled = false
     }
     
     //    note is unlocked
@@ -200,7 +209,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
                         self.lockStatus = false
                         self.lockView.isHidden = true
                         self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
-                        self.voiceBtn.isEnabled = true
+                        self.imageBtn.isEnabled = true
                         self.addLockIconToNavBar()
                     }
                 } else {

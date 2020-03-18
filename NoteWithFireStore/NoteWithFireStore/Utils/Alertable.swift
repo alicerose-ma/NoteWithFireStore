@@ -100,5 +100,23 @@ public extension Alertable where Self: UIViewController {
         }))
         self.present(alert, animated: true)
     }
+    
+    
+    func showImageAlert(desTextView: UITextView) {
+        let attachmentViewModel = AttachmentViewModel()
+        
+        let alert = UIAlertController(title: "Image Insert", message: "Choose iamge from" , preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "From Gallery", style: .default, handler: { (_) in
+            attachmentViewModel.addImage(desTextView: desTextView)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Camera", style: .default, handler: { (_) in
+                
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        self.present(alert, animated: true)
+    }
 }
 

@@ -173,14 +173,18 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             // Filter the results based on the selected filer and search text
             filteredNoteList = allNoteList.filter { note in
-                var newScope = ""
-                if (note.isLocked == true) {
-                    newScope = "Lock"
-                } else {
-                    newScope = "Unlock"
+                switch scope {s
+                case "All":
+                    return (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
+                case "Lock":
+                    return note.isLocked == true && (note.title.lowercased().contains(searchText.lowercased()))
+                case "Unlock":
+                    return note.isLocked == false && (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
+                default:
+                    print("default")
+                    return (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
+                    
                 }
-                let lockList = (scope == "All") || (newScope == scope)
-                return lockList && (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
             }
         }
         self.noteTableView.reloadData()
