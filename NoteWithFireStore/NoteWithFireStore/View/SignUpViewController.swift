@@ -45,7 +45,7 @@ class SignUpViewController: UIViewController {
         let validInput: Bool = validUsernameAndPassWord(username: usernameText, password: passwordText, confirmPass: confirmText, phone: phoneText, email: emailText)
 
         if validInput {
-            let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "")
+            let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", sharedNotes: [])
             signUpViewModel.addNewUser(username: usernameText, newUser: newUser, completion: { message in
                 self.errorLabel.text = message
             })

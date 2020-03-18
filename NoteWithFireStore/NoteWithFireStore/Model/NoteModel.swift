@@ -14,6 +14,8 @@ public struct NoteData: Decodable {
     var title: String
     var des: String
     var isLocked: Bool
+    var sharedUsers : [String]
+//    var createdTime: String
     
     init() {
         self.username = ""
@@ -21,14 +23,18 @@ public struct NoteData: Decodable {
         self.title = ""
         self.des = ""
         self.isLocked = false
+        self.sharedUsers = []
+//        self.createdTime = ""
     }
     
-    init(username: String, id: Int,title: String, des: String, isLocked: Bool) {
+    init(username: String, id: Int,title: String, des: String, isLocked: Bool, sharedUsers: [String]) {
         self.username = username
         self.id = id
         self.title = title
         self.des = des
         self.isLocked = isLocked
+        self.sharedUsers = sharedUsers
+//        self.createdTime = createdTime
     }
     
     
@@ -38,7 +44,8 @@ public struct NoteData: Decodable {
             "id" : id,
             "title": title,
             "des": des,
-            "isLocked": isLocked
+            "isLocked": isLocked,
+            "sharedUsers" : sharedUsers
         ]
     }
     
