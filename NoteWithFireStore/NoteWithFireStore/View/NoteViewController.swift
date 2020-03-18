@@ -173,7 +173,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             // Filter the results based on the selected filer and search text
             filteredNoteList = allNoteList.filter { note in
-                switch scope {s
+                switch scope {
                 case "All":
                     return (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
                 case "Lock":
