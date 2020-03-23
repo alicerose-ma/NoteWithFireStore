@@ -8,19 +8,21 @@
 
 import Foundation
 
-class SignUpViewModel {
-
-//    check if username does not in firebase yet => add new user
-func addNewUser(username: String, newUser: UserData, completion: @escaping (String) -> Void){
-       FireBaseProxy.shared.isNewUsernameValid(username: username, completion: { isValid in
-           if !isValid {
-               completion("username exists")
-           } else {
-               FireBaseProxy.shared.addNewUser(username: username, newUser: newUser, completion: { message in
-                   print(message)
-                   completion(message)
-               })
-           }
-       })
-   }
+public class SignUpViewModel {
+    static let shared = SignUpViewModel()
+    private init() {}
+    
+    //    check if username does not in firebase yet => add new user
+    func addNewUser(username: String, newUser: UserData, completion: @escaping (String) -> Void){
+        FireBaseProxy.shared.isNewUsernameValid(username: username, completion: { isValid in
+            if !isValid {
+                completion("username exists")
+            } else {
+                FireBaseProxy.shared.addNewUser(username: username, newUser: newUser, completion: { message in
+                    print(message)
+                    completion(message)
+                })
+            }
+        })
+    }
 }

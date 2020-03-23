@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		0339E4F901361D00A9E6841D /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F226B3D6A03FE98B4AE30E0 /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework */; };
 		180922862403993E0073E3F9 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180922852403993E0073E3F9 /* Alertable.swift */; };
+		18A25D432427001F0022061E /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A25D422427001F0022061E /* ImageModel.swift */; };
 		18E1B2F02410F9F400E479C1 /* FireBaseProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */; };
 		18E2E0792420D5E60072CCD3 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E2E0782420D5E60072CCD3 /* AttachmentViewModel.swift */; };
 		18ED7539241B7AD8009ADE21 /* VoiceViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18ED7538241B7AD8009ADE21 /* VoiceViewModel.swift */; };
@@ -59,6 +60,7 @@
 
 /* Begin PBXFileReference section */
 		180922852403993E0073E3F9 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
+		18A25D422427001F0022061E /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
 		18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBaseProxy.swift; sourceTree = "<group>"; };
 		18E2E0782420D5E60072CCD3 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
 		18ED7538241B7AD8009ADE21 /* VoiceViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceViewModel.swift; sourceTree = "<group>"; };
@@ -232,6 +234,7 @@
 				18FE547F2402DD6800B6307E /* UserModel.swift */,
 				18FE54832402DD8A00B6307E /* NoteModel.swift */,
 				18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */,
+				18A25D422427001F0022061E /* ImageModel.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -512,6 +515,7 @@
 				18ED7539241B7AD8009ADE21 /* VoiceViewModel.swift in Sources */,
 				18FE548C2402DDF700B6307E /* NoteDetailViewModel.swift in Sources */,
 				18E2E0792420D5E60072CCD3 /* AttachmentViewModel.swift in Sources */,
+				18A25D432427001F0022061E /* ImageModel.swift in Sources */,
 				18FE544A2402D4B700B6307E /* SceneDelegate.swift in Sources */,
 				18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */,
 				18FE54982402DE7E00B6307E /* NoteTableViewCell.swift in Sources */,

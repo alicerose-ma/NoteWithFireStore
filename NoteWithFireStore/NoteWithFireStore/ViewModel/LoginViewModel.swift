@@ -9,14 +9,16 @@
 import Foundation
 import Firebase
 
-class LoginViewModel {
-
-//    check input username & password vs firebase
+public class LoginViewModel {
+    static let shared = LoginViewModel()
+    private init() {}
+    
+    //    check input username & password vs firebase
     public func checkLogin(username: String, password: String, completion: @escaping (Bool) -> Void) {
-            FireBaseProxy.shared.sendUserRequest(username: username, completion: { users in
-                if users.count == 0 {
-                    completion(false)
-                } else {
+        FireBaseProxy.shared.sendUserRequest(username: username, completion: { users in
+            if users.count == 0 {
+                completion(false)
+            } else {
                 for user in users {
                     if user.username == username && user.password == password {
                         completion(true)
@@ -26,12 +28,12 @@ class LoginViewModel {
                         break
                     }
                 }
-                }
-            })
+            }
+        })
     }
     
-
+    
 }
-                
+
 
 

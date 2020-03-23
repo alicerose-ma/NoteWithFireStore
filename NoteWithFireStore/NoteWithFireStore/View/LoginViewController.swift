@@ -14,7 +14,6 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var loginStatus: UILabel!
-    var loginViewModel = LoginViewModel()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,7 +35,7 @@ class LoginViewController: UIViewController {
         if(usernameText.isEmpty == true || passwordText.isEmpty == true) {
             self.loginStatus.text = "Enter username & password"
         } else {
-            loginViewModel.checkLogin(username: usernameText, password: passwordText, completion: { success in
+            LoginViewModel.shared.checkLogin(username: usernameText, password: passwordText, completion: { success in
                 print(success)
                 if success {
                     self.loginStatus.text = "Success"

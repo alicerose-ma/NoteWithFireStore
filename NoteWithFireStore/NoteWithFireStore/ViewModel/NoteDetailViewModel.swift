@@ -8,7 +8,10 @@
 
 import Foundation
 
-class NoteDetailViewModel {
+public class NoteDetailViewModel {
+    static let shared =  NoteDetailViewModel()
+    private init() {}
+    
     let username = UserDefaults.standard.string(forKey: "username")
     
 //    edit note base on document ID

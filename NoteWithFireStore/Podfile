@@ -9,7 +9,8 @@ target 'NoteWithFireStore' do
   # Pods for NoteWithFireStore
   pod 'Firebase/Analytics'
   pod 'Firebase/Firestore'
-
+  pod 'Firebase/Storage'
+  
   target 'NoteWithFireStoreTests' do
     inherit! :search_paths
     # Pods for testing

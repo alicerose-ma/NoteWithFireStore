@@ -9,7 +9,10 @@
 import Foundation
 import UIKit
 
-class CreateNoteViewModel {
+public class CreateNoteViewModel {
+    static let shared =  CreateNoteViewModel()
+    private init() {}
+    
     let username = UserDefaults.standard.string(forKey: "username")
     var micStart = UIButton(type: .custom)
     var isHidden = true

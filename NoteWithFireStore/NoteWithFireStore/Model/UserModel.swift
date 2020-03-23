@@ -16,15 +16,7 @@ public struct UserData: Decodable {
     var email: String
     var passcode: String
     var sharedNotes: [String]
-    
-    init() {
-        self.username = ""
-        self.password = ""
-        self.phone = ""
-        self.email = ""
-        self.passcode = ""
-        self.sharedNotes = []
-    }
+
     
     init(username: String, password: String, phone: String, email: String, passcode: String, sharedNotes: [String]) {
         self.username = username

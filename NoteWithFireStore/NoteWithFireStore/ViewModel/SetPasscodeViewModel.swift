@@ -8,7 +8,10 @@
 
 import Foundation
 
-class SetPasscodeViewModel {
+public class SetPasscodeViewModel {
+    static let shared =  SetPasscodeViewModel()
+    private init() {}
+    
     let username = UserDefaults.standard.string(forKey: "username")
     
     public func updateUserPasscode(passcode: String){

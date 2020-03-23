@@ -10,7 +10,10 @@ import Foundation
 import UIKit
 import Speech
 
-class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
+public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
+    static let shared =  VoiceViewModel()
+    private override init() {}
+    
     let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer(locale: Locale.init(identifier:"en-us"))
     var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     var recognitionTask: SFSpeechRecognitionTask?

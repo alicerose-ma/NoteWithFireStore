@@ -18,8 +18,6 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
 
-    var signUpViewModel = SignUpViewModel()
-
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -46,7 +44,7 @@ class SignUpViewController: UIViewController {
 
         if validInput {
             let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", sharedNotes: [])
-            signUpViewModel.addNewUser(username: usernameText, newUser: newUser, completion: { message in
+            SignUpViewModel.shared.addNewUser(username: usernameText, newUser: newUser, completion: { message in
                 self.errorLabel.text = message
             })
             self.errorLabel.isHidden = false

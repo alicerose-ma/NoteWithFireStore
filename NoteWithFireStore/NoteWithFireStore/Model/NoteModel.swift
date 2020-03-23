@@ -14,26 +14,22 @@ public struct NoteData: Decodable {
     var title: String
     var des: String
     var isLocked: Bool
+    var imageIDMax: Int
     var sharedUsers : [String]
+    var imagePosition : [Int]
+    var imageURL : [String]
 //    var createdTime: String
     
-    init() {
-        self.username = ""
-        self.id = 0
-        self.title = ""
-        self.des = ""
-        self.isLocked = false
-        self.sharedUsers = []
-//        self.createdTime = ""
-    }
-    
-    init(username: String, id: Int,title: String, des: String, isLocked: Bool, sharedUsers: [String]) {
+    init(username: String, id: Int,title: String, des: String, isLocked: Bool, sharedUsers: [String], imageIDMax: Int, imagePosition: [Int], imageURL: [String]) {
         self.username = username
         self.id = id
         self.title = title
         self.des = des
         self.isLocked = isLocked
         self.sharedUsers = sharedUsers
+        self.imageIDMax = imageIDMax
+        self.imagePosition = imagePosition
+        self.imageURL = imageURL
 //        self.createdTime = createdTime
     }
     
@@ -45,7 +41,10 @@ public struct NoteData: Decodable {
             "title": title,
             "des": des,
             "isLocked": isLocked,
-            "sharedUsers" : sharedUsers
+            "sharedUsers" : sharedUsers,
+            "imageIDMax" : imageIDMax,
+            "imagePosition" : imagePosition,
+            "imageURL" : imageURL
         ]
     }
     

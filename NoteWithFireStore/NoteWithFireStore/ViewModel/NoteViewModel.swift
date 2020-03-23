@@ -8,7 +8,10 @@
 
 import Foundation
 
-class NoteViewModel {
+public class NoteViewModel {
+    static let shared =  NoteViewModel()
+    private init() {}
+    
     let username = UserDefaults.standard.string(forKey: "username")
     
 //  get all notes based on username

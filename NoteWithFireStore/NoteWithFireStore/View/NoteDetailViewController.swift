@@ -8,15 +8,13 @@
 
 import UIKit
 
-class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable,  UITextFieldDelegate, UITextViewDelegate {
+class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable,  UITextFieldDelegate, UITextViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    var imagePicker = UIImagePickerController()
+    
     @IBOutlet weak var recordOutlet: UIButton!
-    var voiceViewModel = VoiceViewModel()
     var alert = UIAlertController()
     
     var uniqueID = 0
-    var noteDetailViewModel = NoteDetailViewModel()
-    var setPasscodeViewModel = SetPasscodeViewModel()
-    var createNoteViewModel = CreateNoteViewModel()
     
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var desTextView: UITextView!
@@ -32,19 +30,152 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     var lockStatus: Bool = false
     var isRecord: Bool = false
     
+    var imagePosition: [Int] = []
+    var imageURL: [String] = []
+    
+    var imageMaxID: Int = 0
+    
+//        func textViewDidChange(_ textView: UITextView) {
+//            var cursorPosition = 0
+//            if let selectedRange = desTextView.selectedTextRange {
+//                cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start)
+//            }
+//            let imagePositionArr = AttachmentViewModel.shared.oldPosition
+//            for (index, position) in imagePositionArr.enumerated() {
+//                if cursorPosition < position {
+//                    AttachmentViewModel.shared.oldPosition[index] = position + 1
+//                }
+//            }
+//            print("cursor ADD")
+//            print(cursorPosition)
+//        }
+    
+    
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        var cursorPosition = 0
+        if text.isBackspace {
+            if let selectedRange = desTextView.selectedTextRange {
+                cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start) - 1
+            }
+            print("cursor REMOVE")
+            print(cursorPosition)
+            
+            let imagePositionArr = AttachmentViewModel.shared.oldPosition
+            for (index, position) in imagePositionArr.enumerated() {
+                if cursorPosition < position  {
+                    AttachmentViewModel.shared.oldPosition[index] = position - 1
+                } else if cursorPosition == position {
+                    AttachmentViewModel.shared.oldPosition[index] = position - 1
+                    AttachmentViewModel.shared.oldPosition.remove(at: index)
+                    AttachmentViewModel.shared.oldURL.remove(at: index)
+                }
+            }
+        } else {
+            if let selectedRange = desTextView.selectedTextRange {
+                cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start)
+            }
+            let imagePositionArr = AttachmentViewModel.shared.oldPosition
+            for (index, position) in imagePositionArr.enumerated() {
+                if cursorPosition <= position {
+                    AttachmentViewModel.shared.oldPosition[index] = position + 1
+                }
+            }
+            print("cursor ADD")
+            print(cursorPosition)
+        }
+        return true
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        
+        
+        self.dismiss(animated: true, completion: nil)
+        
+        if let imgUrl = info[UIImagePickerController.InfoKey.imageURL] as? URL{
+            let imgName = imgUrl.lastPathComponent
+            let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+            let localPath = documentDirectory?.appending(imgName)
+            
+            var image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+            let data = image.pngData()! as NSData
+            data.write(toFile: localPath!, atomically: true)
+            let photoURL = URL.init(fileURLWithPath: localPath!)//NSURL(fileURLWithPath: localPath!)
+            AttachmentViewModel.shared.stringImageURL = "\(photoURL)"
+            
+            
+            let types = AttachmentViewModel.shared.stringImageURL.components(separatedBy: ".")
+            let noteID = NoteDetailViewModel.shared.username! + "note" + String(uniqueID)
+            imageMaxID = AttachmentViewModel.shared.imageIDMax + 1
+            let imageName = noteID + String(imageMaxID)
+            let name = imageName + ".\(types[1])"
+            
+            AttachmentViewModel.shared.imageLink = (username: CreateNoteViewModel.shared.username! , noteID: noteID, imageName: name)
+            
+            print(photoURL)
+            FireBaseProxy.shared.uploadImage(urlImgStr: photoURL,username: CreateNoteViewModel.shared.username!, noteID: noteID, imageName: name)
+        }
+        
+        if let possibleImage = info[.editedImage] as? UIImage {
+            AttachmentViewModel.shared.pickedImage = possibleImage
+        } else if let possibleImage = info[.originalImage] as? UIImage {
+            AttachmentViewModel.shared.pickedImage = possibleImage
+        } else {
+            return
+        }
+        AttachmentViewModel.shared.editImage(desTextView: desTextView)
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         navBarItemSetUp()
         titleTextField.delegate = self
         desTextView.delegate = self
-        voiceViewModel.voiceSetupWithoutRecordBtn()
-        noteDetailViewModel.getNoteByID(id: uniqueID, completion: { notes in
+        imagePicker.delegate = self 
+        VoiceViewModel.shared.voiceSetupWithoutRecordBtn()
+        NoteDetailViewModel.shared.getNoteByID(id: uniqueID, completion: { notes in
             for note in notes {
                 self.titleTextField.text = note.title
                 self.desTextView.text = note.des
+                
+                //                self.imagePosition = note.imagePosition
+                
+                AttachmentViewModel.shared.oldPosition = note.imagePosition
+                AttachmentViewModel.shared.oldURL = note.imageURL
+                
+                AttachmentViewModel.shared.imageIDMax = note.imageIDMax
+                self.imageMaxID = note.imageIDMax
+                
+                self.imageURL = note.imageURL
+                var attributedString = NSMutableAttributedString()
+                for (index, position) in note.imagePosition.enumerated() {
+                    if let newPosition = self.desTextView.position(from: self.desTextView.beginningOfDocument, offset: position) {
+                        self.desTextView.selectedTextRange = self.desTextView.textRange(from: newPosition, to: newPosition)
+                        attributedString = NSMutableAttributedString(attributedString: self.desTextView.attributedText)
+                        
+                        let textAttachment = NSTextAttachment()
+                        do {
+                            let imageData = try Data(contentsOf: URL(string: note.imageURL[index])!)
+                            let image = UIImage(data: imageData)!
+                            textAttachment.image = image
+                            let oldWidth = textAttachment.image!.size.width;
+                            let scaleFactor = oldWidth / (self.desTextView.frame.size.width - 10); //for the padding inside the textView
+                            textAttachment.image = UIImage(cgImage:  textAttachment.image!.cgImage!, scale: scaleFactor, orientation: .up)
+                            let attrStringWithImage = NSMutableAttributedString(attachment: textAttachment)
+                            attributedString.replaceCharacters(in: NSMakeRange(position, 1), with: attrStringWithImage)
+                            
+                            
+                            
+                        } catch {
+                            print("Err")
+                        }
+                        self.desTextView.attributedText = attributedString;
+                    }
+                }
             }
         })
+        
+        
         
         if lockStatus == true {
             lockView.isHidden = false
@@ -56,8 +187,26 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         } else {
             lockView.isHidden = true
             voiceBtn.isEnabled = false
+            imageBtn.isEnabled = false
             navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn]
             
+        }
+    }
+    
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        let title = titleTextField.text!
+        let description = desTextView.text!
+        
+        let imagePosition = AttachmentViewModel.shared.oldPosition
+        let imageURL = AttachmentViewModel.shared.oldURL
+        
+        if !title.isEmpty || !description.isEmpty {
+            let note = NoteData(username:NoteDetailViewModel.shared .username!, id: uniqueID, title: title, des: description, isLocked: lockStatus, sharedUsers: [], imageIDMax: imageMaxID ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+            NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
         }
     }
     
@@ -70,11 +219,12 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     @objc func addImage(){
-           print("click add image")
+        print("click add image")
+        showImageAlert(imagePicker: imagePicker)
     }
     
     @objc func voice(){
-        voiceViewModel.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView)
+        VoiceViewModel.shared.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView)
         if isRecord {
             isRecord = false
             voiceBtn.image = UIImage(systemName: "mic")
@@ -86,34 +236,25 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        voiceViewModel.stopRecording()
+        VoiceViewModel.shared.stopRecording()
         isRecord = false
         voiceBtn.isEnabled = true
+        imageBtn.isEnabled = false
         voiceBtn.image = UIImage(systemName: "mic")
     }
     
     
     func textViewDidBeginEditing(_ textView: UITextView) {
-        voiceViewModel.stopRecording()
+        VoiceViewModel.shared.stopRecording()
         isRecord = false
         voiceBtn.isEnabled = true
+        imageBtn.isEnabled = true
         voiceBtn.image = UIImage(systemName: "mic")
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        let title = titleTextField.text!
-        let description = desTextView.text!
-        
-        if !title.isEmpty || !description.isEmpty {
-            let note = NoteData(username: noteDetailViewModel.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus, sharedUsers: []) //create a new note model with lock
-            noteDetailViewModel.editNote(uniqueID: uniqueID, newNote: note)
-        }
-    }
     
     @IBAction func enterPasscodeToUnlockBtn(_ sender: Any) {
-        self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
+        SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
             self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
         })
     }
@@ -133,12 +274,12 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         if hasLock {
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
                 self.hasLock = false
-                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn, self.voiceBtn]
+                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn, self.voiceBtn,self.imageBtn]
             }))
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
                 self.hasLock = true
-                self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
+                SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
                     if passcode == "" {
                         self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
                     } else {
@@ -148,10 +289,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             }))
         }
         
-        self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
+        SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
             if passcode != "" {
                 alert.addAction(UIAlertAction(title: "Edit Passcode", style: .default, handler: { (_) in
-                    self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
+                    SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
                         self.enterPasscodeAlert(passcode: passcode, passcodeCase: .editPasscode)
                     })
                 }))
@@ -175,14 +316,14 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     //    note is unlocked
     @objc func lockOFF() {
-        self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
+        SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
             self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
         })
     }
     
     
     @objc func showAndHiddenPasscodeAction(_ sender: Any) {
-        createNoteViewModel.displayPasscode(alert: alert)
+        CreateNoteViewModel.shared.displayPasscode(alert: alert)
     }
     
     
@@ -196,9 +337,9 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
             
-            self.createNoteViewModel.setPasscodeIcon(name: "eye", textField: textField)
-            self.createNoteViewModel.micStart.addTarget(self, action: #selector(self.showAndHiddenPasscodeAction), for: .touchUpInside)
-            textField.rightView = self.createNoteViewModel.micStart
+            CreateNoteViewModel.shared.setPasscodeIcon(name: "eye", textField: textField)
+            CreateNoteViewModel.shared.micStart.addTarget(self, action: #selector(self.showAndHiddenPasscodeAction), for: .touchUpInside)
+            textField.rightView = CreateNoteViewModel.shared.micStart
             textField.rightViewMode = .always
         })
         
@@ -211,7 +352,6 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                     self.lockStatus = false
                     self.lockView.isHidden = true
                     self.navigationItem.rightBarButtonItems?.first?.isEnabled = true
-                    self.imageBtn.isEnabled = true
                     self.addLockIconToNavBar()
                 }
             }else {
@@ -230,3 +370,40 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
 }
 
+
+//                            let scaledWidth = self.desTextView.frame.size.width - 10
+
+//                            let scaledHeight = Double(scaledWidth) * Double(height) / Double(width)
+
+//                            let height = image.size.height
+//                            let width = image.size.width
+
+
+
+//                let htmlData = NSString(string: note.des).data(using: String.Encoding.utf8.rawValue)
+//                let options = [NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString.DocumentType.html]
+//                let attributedString = try! NSAttributedString(data: htmlData!,options: options, documentAttributes: nil)
+//
+//                self.desTextView.attributedText = attributedString
+//
+//                print(attributedString)
+
+
+//                let attributeData = Data(note.des.utf8)
+//                print(note.des)
+//
+//                let fullstring = NSMutableAttributedString()
+//
+//
+//                if let attributedString = try? NSAttributedString(data: attributeData, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil) {
+//
+//                    fullstring.append(attributedString)
+//                    self.desTextView.attributedText = fullstring
+//                }
+
+extension String {
+    var isBackspace: Bool {
+        let char = self.cString(using: String.Encoding.utf8)!
+        return strcmp(char, "\\b") == -92
+    }
+}

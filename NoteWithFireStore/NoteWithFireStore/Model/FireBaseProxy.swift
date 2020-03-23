@@ -12,6 +12,7 @@ import Firebase
 public class FireBaseProxy {
     let usersCollection = Firestore.firestore().collection("Users")
     let notesCollection = Firestore.firestore().collection("Notes")
+    let imagesCollection = Firestore.firestore().collection("Images")
     static let shared = FireBaseProxy()
     
     private init() {}
@@ -36,7 +37,7 @@ public class FireBaseProxy {
     
     
     public func sendNoteRequest(username: String, completion: @escaping (([NoteData]) -> Void)) {
-            notesCollection.whereField("username", isEqualTo: username)
+        notesCollection.whereField("username", isEqualTo: username)
             .getDocuments() {(querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
@@ -51,7 +52,7 @@ public class FireBaseProxy {
         }
     }
     
-//    NOTES
+    //    NOTES
     public func addNewNote(documentID: String,newNote: NoteData) {
         notesCollection.document(documentID).setData(newNote.dictionary) { err in
             if let err = err {
@@ -91,49 +92,49 @@ public class FireBaseProxy {
     public func deleteNote(documentID: String, completion: @escaping (Bool) -> Void) {
         notesCollection.document(documentID).delete() { err in
             if let err = err {
-               print("Error removing document: \(err)")
+                print("Error removing document: \(err)")
             } else {
-               print("Document successfully removed!")
+                print("Document successfully removed!")
             }
         }
     }
     
     
-//    PASSCODE UPDATE
-     public func updateUserPasscode(username: String, passcode: String, completion: @escaping (Bool) -> Void){
-         usersCollection.document(username).updateData([
-             "passcode": passcode,
-         ]) { err in
-             if let err = err {
-                 print("Error updating passcode: \(err)")
-                 completion(false)
-             } else {
-                 print("Passcode successfully updated")
-                 completion(true)
-             }
-         }
-     }
-     
-        public func getUserPasscode(username: String, completion: @escaping (String) -> Void) {
-          usersCollection.whereField("username", isEqualTo: username)
-              .getDocuments() { (querySnapshot, err) in
-                  if let err = err {
-                      print("Error getting documents: \(err)")
-                  } else {
-                     do {
-                         let myUsers: [UserData] = try querySnapshot!.decoded()
+    //    PASSCODE UPDATE
+    public func updateUserPasscode(username: String, passcode: String, completion: @escaping (Bool) -> Void){
+        usersCollection.document(username).updateData([
+            "passcode": passcode,
+        ]) { err in
+            if let err = err {
+                print("Error updating passcode: \(err)")
+                completion(false)
+            } else {
+                print("Passcode successfully updated")
+                completion(true)
+            }
+        }
+    }
+    
+    public func getUserPasscode(username: String, completion: @escaping (String) -> Void) {
+        usersCollection.whereField("username", isEqualTo: username)
+            .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    do {
+                        let myUsers: [UserData] = try querySnapshot!.decoded()
                         print(myUsers[0].passcode)
                         completion(myUsers[0].passcode)
-                     } catch {
-                         print("decoded User error")
-                     }
-                  }
-          }
-      }
-
+                    } catch {
+                        print("decoded User error")
+                    }
+                }
+        }
+    }
     
     
-//    USERS
+    
+    //    USERS
     public func isNewUsernameValid(username: String, completion: @escaping (Bool) -> Void) {
         usersCollection.whereField("username", isEqualTo: username)
             .getDocuments() { (querySnapshot, err) in
@@ -165,25 +166,25 @@ public class FireBaseProxy {
     }
     
     //SHARE
-//
-//    public func updateSharedUserForSingleNote(documentId: String, userToShare: String, completion: @escaping (Bool) -> Void){
-//        notesCollection.document(documentId).getDocument { (document, error) in
-//        if let document = document, document.exists {
-//            let dataDescription = document.d
-//            print("Document data: \(dataDescription)")
-//        } else {
-//            print("Document does not exist")
-//        }
-//        }
-//    }
+    //
+    //    public func updateSharedUserForSingleNote(documentId: String, userToShare: String, completion: @escaping (Bool) -> Void){
+    //        notesCollection.document(documentId).getDocument { (document, error) in
+    //        if let document = document, document.exists {
+    //            let dataDescription = document.d
+    //            print("Document data: \(dataDescription)")
+    //        } else {
+    //            print("Document does not exist")
+    //        }
+    //        }
+    //    }
     
     public func share(userToShare: String, note: String ,completion: @escaping ((Bool) -> Void)) {
-         usersCollection.whereField("username", isEqualTo: userToShare)
-             .getDocuments() {(querySnapshot, err) in
-                 if let err = err {
-                     print("Error getting documents: \(err)")
-                 } else {
-                     do {
+        usersCollection.whereField("username", isEqualTo: userToShare)
+            .getDocuments() {(querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    do {
                         let myUsers: [UserData] = try querySnapshot!.decoded()
                         print(myUsers[0].sharedNotes)
                         var sharedNotes = myUsers[0].sharedNotes
@@ -192,7 +193,6 @@ public class FireBaseProxy {
                         print(myUsers[0].sharedNotes)
                         self.usersCollection.document(userToShare).updateData([
                             "sharedNotes": sharedNotes,
-//                            "sharedNotes"FieldValue.arrayUnion('greater_virginia')
                         ]) { err in
                             if let err = err {
                                 print("Error updating passcode: \(err)")
@@ -202,26 +202,37 @@ public class FireBaseProxy {
                                 completion(true)
                             }
                         }
-                            
-                         completion(true)
-                     } catch {
-                         print("decoded User error")
-                     }
-                 }
-         }
-     }
+                        
+                        completion(true)
+                    } catch {
+                        print("decoded User error")
+                    }
+                }
+        }
+    }
+    
+    
+    
+    func uploadImage(urlImgStr: URL, username: String,noteID: String ,imageName: String){
+        let storageRef = Storage.storage().reference()
+        let imageRef = storageRef.child("\(username)/\(noteID)/\(imageName)")
+        
+        let uploadTask = imageRef.putFile(from: urlImgStr, metadata: nil) { (metadata, error) in
+            guard metadata != nil else {
+                print("CANNOT UPLOAD IMAGE")
+                return
+            }
+            imageRef.downloadURL { (url, error) in
+                guard url != nil else {
+                    // Uh-oh, an error occurred!
+                    print("CANNOT DOWNLOAD IMAGE")
+                    return
+            }
+            }
+        }
+    }
     
 }
-
-
-
-
-    
-     
-
-
-
-
 // decodable 1 single document
 extension QueryDocumentSnapshot {
     func decoded<Type: Decodable>() throws -> Type {
@@ -243,4 +254,12 @@ extension QuerySnapshot {
     }
     
 }
+
+
+
+
+
+
+
+
 
