@@ -109,6 +109,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
                 
                 let bestStr = self.subStr1 + res.bestTranscription.formattedString +  " " + self.subStr2
             
+                print(bestStr)
                 if titleTextField.isFirstResponder {
                     titleTextField.text = bestStr
                 } else {

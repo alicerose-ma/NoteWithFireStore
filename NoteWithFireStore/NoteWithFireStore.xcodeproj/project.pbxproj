@@ -8,6 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		0339E4F901361D00A9E6841D /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F226B3D6A03FE98B4AE30E0 /* Pods_NoteWithFireStore_NoteWithFireStoreUITests.framework */; };
+		1803943E242B10E90047773F /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1803943C242B10E90047773F /* Interface.storyboard */; };
+		18039440242B10F50047773F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1803943F242B10F50047773F /* Assets.xcassets */; };
+		18039447242B10F50047773F /* WatchNoteWithFireStore Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 18039446242B10F50047773F /* WatchNoteWithFireStore Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		1803944C242B10F50047773F /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1803944B242B10F50047773F /* InterfaceController.swift */; };
+		1803944E242B10F50047773F /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1803944D242B10F50047773F /* ExtensionDelegate.swift */; };
+		18039450242B10F50047773F /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1803944F242B10F50047773F /* NotificationController.swift */; };
+		18039452242B10F80047773F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 18039451242B10F80047773F /* Assets.xcassets */; };
+		18039457242B10F80047773F /* WatchNoteWithFireStore.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 1803943A242B10E90047773F /* WatchNoteWithFireStore.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		180922862403993E0073E3F9 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180922852403993E0073E3F9 /* Alertable.swift */; };
 		18A25D432427001F0022061E /* ImageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18A25D422427001F0022061E /* ImageModel.swift */; };
 		18E1B2F02410F9F400E479C1 /* FireBaseProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */; };
@@ -42,6 +50,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		18039448242B10F50047773F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18FE543C2402D4B600B6307E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18039445242B10F50047773F;
+			remoteInfo = "WatchNoteWithFireStore Extension";
+		};
+		18039455242B10F80047773F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 18FE543C2402D4B600B6307E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 18039439242B10E90047773F;
+			remoteInfo = WatchNoteWithFireStore;
+		};
 		18FE545B2402D4BD00B6307E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 18FE543C2402D4B600B6307E /* Project object */;
@@ -58,7 +80,43 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		18039458242B10F80047773F /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				18039457242B10F80047773F /* WatchNoteWithFireStore.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1803945B242B10F80047773F /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				18039447242B10F50047773F /* WatchNoteWithFireStore Extension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		1803943A242B10E90047773F /* WatchNoteWithFireStore.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WatchNoteWithFireStore.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1803943D242B10E90047773F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
+		1803943F242B10F50047773F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		18039441242B10F50047773F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18039446242B10F50047773F /* WatchNoteWithFireStore Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WatchNoteWithFireStore Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1803944B242B10F50047773F /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
+		1803944D242B10F50047773F /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
+		1803944F242B10F50047773F /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
+		18039451242B10F80047773F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		18039453242B10F80047773F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		18039454242B10F80047773F /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		180922852403993E0073E3F9 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
 		18A25D422427001F0022061E /* ImageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageModel.swift; sourceTree = "<group>"; };
 		18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBaseProxy.swift; sourceTree = "<group>"; };
@@ -106,6 +164,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		18039443242B10F50047773F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		18FE54412402D4B700B6307E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -146,6 +211,29 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		1803943B242B10E90047773F /* WatchNoteWithFireStore */ = {
+			isa = PBXGroup;
+			children = (
+				1803943C242B10E90047773F /* Interface.storyboard */,
+				1803943F242B10F50047773F /* Assets.xcassets */,
+				18039441242B10F50047773F /* Info.plist */,
+			);
+			path = WatchNoteWithFireStore;
+			sourceTree = "<group>";
+		};
+		1803944A242B10F50047773F /* WatchNoteWithFireStore Extension */ = {
+			isa = PBXGroup;
+			children = (
+				1803944B242B10F50047773F /* InterfaceController.swift */,
+				1803944D242B10F50047773F /* ExtensionDelegate.swift */,
+				1803944F242B10F50047773F /* NotificationController.swift */,
+				18039451242B10F80047773F /* Assets.xcassets */,
+				18039453242B10F80047773F /* Info.plist */,
+				18039454242B10F80047773F /* PushNotificationPayload.apns */,
+			);
+			path = "WatchNoteWithFireStore Extension";
+			sourceTree = "<group>";
+		};
 		18092282240398F80073E3F9 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
@@ -160,6 +248,8 @@
 				18FE54462402D4B700B6307E /* NoteWithFireStore */,
 				18FE545D2402D4BD00B6307E /* NoteWithFireStoreTests */,
 				18FE54682402D4BD00B6307E /* NoteWithFireStoreUITests */,
+				1803943B242B10E90047773F /* WatchNoteWithFireStore */,
+				1803944A242B10F50047773F /* WatchNoteWithFireStore Extension */,
 				18FE54452402D4B700B6307E /* Products */,
 				16BE4437543592317B70B604 /* Pods */,
 				871201ED7889C24FC52FC9C1 /* Frameworks */,
@@ -172,6 +262,8 @@
 				18FE54442402D4B700B6307E /* NoteWithFireStore.app */,
 				18FE545A2402D4BD00B6307E /* NoteWithFireStoreTests.xctest */,
 				18FE54652402D4BD00B6307E /* NoteWithFireStoreUITests.xctest */,
+				1803943A242B10E90047773F /* WatchNoteWithFireStore.app */,
+				18039446242B10F50047773F /* WatchNoteWithFireStore Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -184,8 +276,8 @@
 				18FE547D2402DCDC00B6307E /* Model */,
 				18FE547E2402DD1B00B6307E /* View */,
 				18FE54472402D4B700B6307E /* AppDelegate.swift */,
-				18FE54492402D4B700B6307E /* SceneDelegate.swift */,
 				18FE544B2402D4B700B6307E /* ViewController.swift */,
+				18FE54492402D4B700B6307E /* SceneDelegate.swift */,
 				18FE544D2402D4B700B6307E /* Main.storyboard */,
 				18FE54502402D4BD00B6307E /* Assets.xcassets */,
 				18FE54522402D4BD00B6307E /* LaunchScreen.storyboard */,
@@ -266,6 +358,40 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		18039439242B10E90047773F /* WatchNoteWithFireStore */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1803945F242B10F80047773F /* Build configuration list for PBXNativeTarget "WatchNoteWithFireStore" */;
+			buildPhases = (
+				18039438242B10E90047773F /* Resources */,
+				1803945B242B10F80047773F /* Embed App Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				18039449242B10F50047773F /* PBXTargetDependency */,
+			);
+			name = WatchNoteWithFireStore;
+			productName = WatchNoteWithFireStore;
+			productReference = 1803943A242B10E90047773F /* WatchNoteWithFireStore.app */;
+			productType = "com.apple.product-type.application.watchapp2";
+		};
+		18039445242B10F50047773F /* WatchNoteWithFireStore Extension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1803945E242B10F80047773F /* Build configuration list for PBXNativeTarget "WatchNoteWithFireStore Extension" */;
+			buildPhases = (
+				18039442242B10F50047773F /* Sources */,
+				18039443242B10F50047773F /* Frameworks */,
+				18039444242B10F50047773F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "WatchNoteWithFireStore Extension";
+			productName = "WatchNoteWithFireStore Extension";
+			productReference = 18039446242B10F50047773F /* WatchNoteWithFireStore Extension.appex */;
+			productType = "com.apple.product-type.watchkit2-extension";
+		};
 		18FE54432402D4B700B6307E /* NoteWithFireStore */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 18FE546E2402D4BD00B6307E /* Build configuration list for PBXNativeTarget "NoteWithFireStore" */;
@@ -275,10 +401,12 @@
 				18FE54412402D4B700B6307E /* Frameworks */,
 				18FE54422402D4B700B6307E /* Resources */,
 				92B82068D650E5E99682E755 /* [CP] Embed Pods Frameworks */,
+				18039458242B10F80047773F /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				18039456242B10F80047773F /* PBXTargetDependency */,
 			);
 			name = NoteWithFireStore;
 			productName = NoteWithFireStore;
@@ -334,6 +462,12 @@
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "Ma Alice";
 				TargetAttributes = {
+					18039439242B10E90047773F = {
+						CreatedOnToolsVersion = 11.3;
+					};
+					18039445242B10F50047773F = {
+						CreatedOnToolsVersion = 11.3;
+					};
 					18FE54432402D4B700B6307E = {
 						CreatedOnToolsVersion = 11.3;
 					};
@@ -363,11 +497,30 @@
 				18FE54432402D4B700B6307E /* NoteWithFireStore */,
 				18FE54592402D4BD00B6307E /* NoteWithFireStoreTests */,
 				18FE54642402D4BD00B6307E /* NoteWithFireStoreUITests */,
+				18039439242B10E90047773F /* WatchNoteWithFireStore */,
+				18039445242B10F50047773F /* WatchNoteWithFireStore Extension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		18039438242B10E90047773F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18039440242B10F50047773F /* Assets.xcassets in Resources */,
+				1803943E242B10E90047773F /* Interface.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		18039444242B10F50047773F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18039452242B10F80047773F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		18FE54422402D4B700B6307E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -499,6 +652,16 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		18039442242B10F50047773F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18039450242B10F50047773F /* NotificationController.swift in Sources */,
+				1803944E242B10F50047773F /* ExtensionDelegate.swift in Sources */,
+				1803944C242B10F50047773F /* InterfaceController.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		18FE54402402D4B700B6307E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -548,6 +711,16 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		18039449242B10F50047773F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18039445242B10F50047773F /* WatchNoteWithFireStore Extension */;
+			targetProxy = 18039448242B10F50047773F /* PBXContainerItemProxy */;
+		};
+		18039456242B10F80047773F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 18039439242B10E90047773F /* WatchNoteWithFireStore */;
+			targetProxy = 18039455242B10F80047773F /* PBXContainerItemProxy */;
+		};
 		18FE545C2402D4BD00B6307E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 18FE54432402D4B700B6307E /* NoteWithFireStore */;
@@ -561,6 +734,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		1803943C242B10E90047773F /* Interface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1803943D242B10E90047773F /* Base */,
+			);
+			name = Interface.storyboard;
+			sourceTree = "<group>";
+		};
 		18FE544D2402D4B700B6307E /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -580,6 +761,86 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		18039459242B10F80047773F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A22AN46PKQ;
+				IBSC_MODULE = WatchNoteWithFireStore_Extension;
+				INFOPLIST_FILE = WatchNoteWithFireStore/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = RMIT.NoteWithFireStore.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Debug;
+		};
+		1803945A242B10F80047773F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A22AN46PKQ;
+				IBSC_MODULE = WatchNoteWithFireStore_Extension;
+				INFOPLIST_FILE = WatchNoteWithFireStore/Info.plist;
+				PRODUCT_BUNDLE_IDENTIFIER = RMIT.NoteWithFireStore.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Release;
+		};
+		1803945C242B10F80047773F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "WatchNoteWithFireStore Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = RMIT.NoteWithFireStore.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Debug;
+		};
+		1803945D242B10F80047773F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "WatchNoteWithFireStore Extension/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = RMIT.NoteWithFireStore.watchkitapp.watchkitextension;
+				PRODUCT_NAME = "${TARGET_NAME}";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 6.1;
+			};
+			name = Release;
+		};
 		18FE546C2402D4BD00B6307E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -821,6 +1082,24 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1803945E242B10F80047773F /* Build configuration list for PBXNativeTarget "WatchNoteWithFireStore Extension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1803945C242B10F80047773F /* Debug */,
+				1803945D242B10F80047773F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1803945F242B10F80047773F /* Build configuration list for PBXNativeTarget "WatchNoteWithFireStore" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18039459242B10F80047773F /* Debug */,
+				1803945A242B10F80047773F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		18FE543F2402D4B600B6307E /* Build configuration list for PBXProject "NoteWithFireStore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -314,25 +314,24 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="A2Y-TQ-eHq">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="s3q-6b-trQ">
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="NoteTableViewCell" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteTableViewCell" rowHeight="119" id="EvX-AP-EOi" customClass="NoteTableViewCell" customModule="NoteWithFireStore" customModuleProvider="target">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="NoteTableViewCell" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="NoteTableViewCell" rowHeight="119" id="2Bz-Bj-paJ" customClass="NoteTableViewCell" customModule="NoteWithFireStore" customModuleProvider="target">
                                         <rect key="frame" x="0.0" y="28" width="414" height="119"/>
                                         <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="EvX-AP-EOi" id="xeU-L9-llB">
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="2Bz-Bj-paJ" id="cxA-vh-6dj">
                                             <rect key="frame" x="0.0" y="0.0" width="414" height="119"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kz2-Nm-AjA">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZXj-V3-WP8">
                                                     <rect key="frame" x="44" y="38" width="346" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lsu-6m-GNS">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R5m-vW-zhg">
                                                     <rect key="frame" x="44" y="75" width="42" height="21"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -340,30 +339,36 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
-                                                <constraint firstItem="lsu-6m-GNS" firstAttribute="top" secondItem="kz2-Nm-AjA" secondAttribute="bottom" constant="16" id="2G1-DT-Wxd"/>
-                                                <constraint firstAttribute="trailing" secondItem="kz2-Nm-AjA" secondAttribute="trailing" constant="24" id="2KL-lI-KdB"/>
-                                                <constraint firstItem="kz2-Nm-AjA" firstAttribute="leading" secondItem="xeU-L9-llB" secondAttribute="leadingMargin" constant="24" id="EyT-ZU-QXL"/>
-                                                <constraint firstItem="kz2-Nm-AjA" firstAttribute="top" secondItem="xeU-L9-llB" secondAttribute="top" constant="38" id="Uzm-an-5QK"/>
-                                                <constraint firstItem="lsu-6m-GNS" firstAttribute="leading" secondItem="xeU-L9-llB" secondAttribute="leading" constant="44" id="ite-4r-4Fj"/>
-                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="lsu-6m-GNS" secondAttribute="trailing" constant="20" symbolic="YES" id="w7A-Wr-bDl"/>
+                                                <constraint firstItem="ZXj-V3-WP8" firstAttribute="top" secondItem="cxA-vh-6dj" secondAttribute="top" constant="38" id="144-PZ-BMn"/>
+                                                <constraint firstItem="ZXj-V3-WP8" firstAttribute="leading" secondItem="cxA-vh-6dj" secondAttribute="leadingMargin" constant="24" id="1f8-LJ-YuU"/>
+                                                <constraint firstAttribute="trailing" secondItem="ZXj-V3-WP8" secondAttribute="trailing" constant="24" id="KlJ-D9-0d7"/>
+                                                <constraint firstItem="R5m-vW-zhg" firstAttribute="leading" secondItem="cxA-vh-6dj" secondAttribute="leading" constant="44" id="YQS-fp-2QJ"/>
+                                                <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="R5m-vW-zhg" secondAttribute="trailing" constant="20" symbolic="YES" id="mZZ-be-QC8"/>
+                                                <constraint firstItem="R5m-vW-zhg" firstAttribute="top" secondItem="ZXj-V3-WP8" secondAttribute="bottom" constant="16" id="vmv-tB-nmA"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <connections>
-                                            <outlet property="desLabel" destination="lsu-6m-GNS" id="knQ-mm-are"/>
-                                            <outlet property="titleLabel" destination="kz2-Nm-AjA" id="J9Y-9D-ccU"/>
+                                            <outlet property="desLabel" destination="R5m-vW-zhg" id="m8i-Cf-yvZ"/>
+                                            <outlet property="titleLabel" destination="ZXj-V3-WP8" id="ByA-Rr-N2F"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <constraints>
+                            <constraint firstItem="s3q-6b-trQ" firstAttribute="top" secondItem="1As-xe-P8s" secondAttribute="top" id="Kei-BO-V37"/>
+                            <constraint firstItem="s3q-6b-trQ" firstAttribute="leading" secondItem="1As-xe-P8s" secondAttribute="leading" id="Tv6-vp-IVh"/>
+                            <constraint firstItem="1As-xe-P8s" firstAttribute="bottom" secondItem="s3q-6b-trQ" secondAttribute="bottom" id="qdd-Lw-iDR"/>
+                            <constraint firstItem="1As-xe-P8s" firstAttribute="trailing" secondItem="s3q-6b-trQ" secondAttribute="trailing" id="vY4-JM-oWC"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="1As-xe-P8s"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="4VM-8M-GBj"/>
                     <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="noteTableView" destination="A2Y-TQ-eHq" id="wqX-al-kd4"/>
+                        <outlet property="noteTableView" destination="s3q-6b-trQ" id="s5F-sP-G05"/>
                         <segue destination="uji-D5-ZTr" kind="show" identifier="EditNote" id="Yzk-k6-ajZ"/>
                         <segue destination="dXS-hR-ojP" kind="show" identifier="AddNewNote" id="1FF-pV-Ndn"/>
                         <segue destination="RMK-vI-sEY" kind="show" identifier="ShowLoginView" animates="NO" id="JkU-VO-kDN"/>
@@ -663,7 +668,7 @@
         <image name="logo" width="105" height="84"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="48G-La-mKq"/>
+        <segue reference="2ge-Lf-jyC"/>
         <segue reference="JkU-VO-kDN"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -167,16 +167,16 @@ public class FireBaseProxy {
     
     //SHARE
     //
-    //    public func updateSharedUserForSingleNote(documentId: String, userToShare: String, completion: @escaping (Bool) -> Void){
-    //        notesCollection.document(documentId).getDocument { (document, error) in
-    //        if let document = document, document.exists {
-    //            let dataDescription = document.d
-    //            print("Document data: \(dataDescription)")
-    //        } else {
-    //            print("Document does not exist")
-    //        }
-    //        }
-    //    }
+//        public func updateSharedUserForSingleNote(documentId: String, userToShare: String, completion: @escaping (Bool) -> Void){
+//            notesCollection.document(documentId).getDocument { (document, error) in
+//            if let document = document, document.exists {
+//                let dataDescription = document.data()
+//                print("Document data: \(dataDescription)")
+//            } else {
+//                print("Document does not exist")
+//            }
+//            }
+//        }
     
     public func share(userToShare: String, note: String ,completion: @escaping ((Bool) -> Void)) {
         usersCollection.whereField("username", isEqualTo: userToShare)
