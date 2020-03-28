@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SignUpViewController: UIViewController {
+class SignUpViewController: UIViewController, Alertable {
 
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -46,6 +46,7 @@ class SignUpViewController: UIViewController {
             let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", sharedNotes: [])
             SignUpViewModel.shared.addNewUser(username: usernameText, newUser: newUser, completion: { message in
                 self.errorLabel.text = message
+                self.showResultCreateUserAlert(title: "Create new user", message: "Success")
             })
             self.errorLabel.isHidden = false
         }

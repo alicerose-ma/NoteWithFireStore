@@ -21,7 +21,6 @@ class SetPasscodeViewController: UIViewController, Alertable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         //        load passcode
         SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
             if passcode != "" {
@@ -29,8 +28,6 @@ class SetPasscodeViewController: UIViewController, Alertable {
                 self.confirmPasscode.text = passcode
             }
         })
-        
-
     }
     
     override func viewWillAppear(_ animated: Bool) {

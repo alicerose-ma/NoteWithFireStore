@@ -12,7 +12,7 @@ public class NoteViewModel {
     static let shared =  NoteViewModel()
     private init() {}
     
-    let username = UserDefaults.standard.string(forKey: "username")
+    var username: String? = UserDefaults.standard.string(forKey: "username")
     
 //  get all notes based on username
     public func getNoteList(completion: @escaping ([NoteData]) -> Void) {
@@ -46,14 +46,5 @@ public class NoteViewModel {
     public func logOutUser() {
         UserDefaults.standard.removeObject(forKey: "username")
     }
-    
-    public func share(userToShare: String, noteToShare: Int) {
-        let noteName = username! + "note" + String(noteToShare)
-        FireBaseProxy.shared.share(userToShare: userToShare, note: noteName, completion: {
-            isShared in
-            print(isShared)
-        })
-    }
-
     
 }

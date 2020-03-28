@@ -279,9 +279,12 @@ PODS:
   - PromisesObjC (1.2.8)
 
 DEPENDENCIES:
+  - BoringSSL-GRPC
+  - BoringSSL-GRPC (= 0.0.3)
   - Firebase/Analytics
   - Firebase/Firestore
   - Firebase/Storage
+  - gRPC-Core (= 1.21.0)
 
 SPEC REPOS:
   trunk:
@@ -332,6 +335,6 @@ SPEC CHECKSUMS:
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
 
-PODFILE CHECKSUM: b999d207175ea1fa9358d461654c2bec0ea5c9ba
+PODFILE CHECKSUM: ba95337143d6465714d130c15d45450d6ccf499b
 
 COCOAPODS: 1.8.4

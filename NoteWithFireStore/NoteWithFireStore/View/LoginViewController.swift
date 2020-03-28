@@ -9,6 +9,8 @@
 import UIKit
 
 class LoginViewController: UIViewController {
+//    var isHidden = true
+//    var hiddenPwdIcon = UIButton(type: .custom)
     
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -17,7 +19,10 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        PasscodeViewModel.shared.setPasscodeIcon(name: "eye", textField: passwordTextField)
+        PasscodeViewModel.shared.hiddenPwdIcon.addTarget(self, action: #selector(self.showAndHidePasscodeAction), for: .touchUpInside)
+        passwordTextField.rightView = PasscodeViewModel.shared.hiddenPwdIcon
+        passwordTextField.rightViewMode = .always
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -25,7 +30,9 @@ class LoginViewController: UIViewController {
         usernameTextField.text = ""
         passwordTextField.text = ""
         loginStatus.isHidden = true
-                self.navigationController?.isNavigationBarHidden = true
+
+        self.navigationController?.isNavigationBarHidden = true
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     @IBAction func loginAction(_ sender: UIButton ) {
@@ -41,6 +48,13 @@ class LoginViewController: UIViewController {
                     self.loginStatus.text = "Success"
                     let defaults = UserDefaults.standard
                     defaults.set(usernameText, forKey: "username")
+                    let newUser =  UserDefaults.standard.string(forKey: "username") // change username
+                    NoteViewModel.shared.username = newUser
+                    NoteDetailViewModel.shared.username = newUser
+                    CreateNoteViewModel.shared.username = newUser
+                    SetPasscodeViewModel.shared.username = newUser
+                    SharedNoteViewModel.shared.username = newUser
+                    PasscodeViewModel.shared.isHidden = false
                     self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
                 } else {
                      self.loginStatus.text = "Failed"
@@ -53,8 +67,8 @@ class LoginViewController: UIViewController {
 //    transfer to main note list view by Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowNoteViewSegue" {
-            let nav = segue.destination as! UINavigationController
-            nav.modalPresentationStyle = .fullScreen
+//            let nav = segue.destination as! UINavigationController
+//            nav.modalPresentationStyle = .fullScreen
         }
     }
     
@@ -80,6 +94,13 @@ class LoginViewController: UIViewController {
     let customButton: (UIButton) -> Void = { (button) in
         button.layer.cornerRadius = 18
     }
+    
+    
+    
+    @objc func showAndHidePasscodeAction(_ sender: Any) {
+        PasscodeViewModel.shared.displayPasscode(textField: passwordTextField)
+    }
+       
 }
 
 

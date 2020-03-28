@@ -12,7 +12,7 @@ public class SetPasscodeViewModel {
     static let shared =  SetPasscodeViewModel()
     private init() {}
     
-    let username = UserDefaults.standard.string(forKey: "username")
+    var username: String? = UserDefaults.standard.string(forKey: "username")
     
     public func updateUserPasscode(passcode: String){
         FireBaseProxy.shared.updateUserPasscode(username: username!, passcode: passcode, completion: { _ in
