@@ -30,7 +30,9 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     var lockStatus: Bool = false
     var isRecord: Bool = false
     
-    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -273,7 +275,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     
     @objc func showAndHiddenPasscodeAction(_ sender: Any) {
-        PasscodeViewModel.shared.displayPasscode(textField: (alert.textFields?.first)!)
+//        PasscodeViewModel.shared.displayPasscode(textField: (alert.textFields?.first)!)
     }
     
     
@@ -287,7 +289,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
             
-            PasscodeViewModel.shared.setPasscodeIcon(name: "eye", textField: textField)
+//            PasscodeViewModel.shared.setPasscodeIcon(name: "eye", textField: textField)
             PasscodeViewModel.shared.hiddenPwdIcon.addTarget(self, action: #selector(self.showAndHiddenPasscodeAction), for: .touchUpInside)
             textField.rightView = PasscodeViewModel.shared.hiddenPwdIcon
             textField.rightViewMode = .always

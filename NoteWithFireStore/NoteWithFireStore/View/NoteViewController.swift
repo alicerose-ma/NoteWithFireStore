@@ -23,6 +23,10 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     let searchController = UISearchController(searchResultsController: nil)
     
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         noteTableView.dataSource = self
@@ -319,11 +323,11 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     //    MARK: - SHOW OR HIDE PASSCODE
     //toggle the eye icon to show or hide the passcode
     @objc func showAndHidePasscodeAction(_ sender: Any) {
-        PasscodeViewModel.shared.displayPasscode(textField: (alert.textFields?.first)!)
+//        PasscodeViewModel.shared.displayPasscode(textField: (alert.textFields?.first)!)
     }
     
     func setPasscodeIcon(name: String, textField: UITextField) {
-       PasscodeViewModel.shared.setPasscodeIcon(name: name, textField: textField)
+//       PasscodeViewModel.shared.setPasscodeIcon(name: name, textField: textField)
     }
     
     

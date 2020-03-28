@@ -13,6 +13,10 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     var allSharedNoteList = [NoteData]()
     @IBOutlet weak var sharedTableView: UITableView!
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         sharedTableView.delegate = self

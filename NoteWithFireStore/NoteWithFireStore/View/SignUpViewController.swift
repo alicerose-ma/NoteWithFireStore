@@ -8,7 +8,7 @@
 
 import UIKit
 
-class SignUpViewController: UIViewController, Alertable {
+class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
 
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -18,20 +18,29 @@ class SignUpViewController: UIViewController, Alertable {
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
 
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupDelegate()
+        customUI()
+        KeyboardHelper.shared.dismissKeyboard(viewController: self)
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        customUI()
-        usernameTextField.text = ""
-        passwordTextField.text = ""
-        confirmPassTextField.text = ""
-        errorLabel.isHidden = true
-        self.navigationController?.isNavigationBarHidden = false
+        setupUI()
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+           return true
+       }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 
 
+//    MARK: - SIGN UP
     @IBAction func signUpAction(_ sender: Any) {
         let usernameText = usernameTextField.text!
         let passwordText = passwordTextField.text!
@@ -40,86 +49,51 @@ class SignUpViewController: UIViewController, Alertable {
         let emailText = emailTextField.text!
 
 //        check if user input valid username & password
-        let validInput: Bool = validUsernameAndPassWord(username: usernameText, password: passwordText, confirmPass: confirmText, phone: phoneText, email: emailText)
+        let validInput: (isValid: Bool, errorMessage: String) = SignUpViewModel.shared.validUsernameAndPassWord(username: usernameText, password: passwordText, confirmPass: confirmText, phone: phoneText, email: emailText)
 
-        if validInput {
+        if validInput.isValid {
             let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", sharedNotes: [])
             SignUpViewModel.shared.addNewUser(username: usernameText, newUser: newUser, completion: { message in
                 self.errorLabel.text = message
                 self.showResultCreateUserAlert(title: "Create new user", message: "Success")
             })
-            self.errorLabel.isHidden = false
+        } else {
+            self.errorLabel.text = validInput.errorMessage
         }
+        self.errorLabel.isHidden = false
 }
-
-
-//    validation for input username & password
-    func validUsernameAndPassWord(username: String, password: String, confirmPass: String, phone: String, email: String) -> Bool{
-        var errorMessage = ""
-        var isValid = true
-        let usernameLength = username.count
-
-        if usernameLength < 3 {
-            errorMessage.append("\nUsername > 3 chars")
-        }
-
-        if password != confirmPass {
-            errorMessage.append("\npassword and confirm do not match")
-        }
-
-        if username.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\nusername can not empty")
-        }
-
-        if password.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\npassword can not empty")
-        }
-
-        if phone.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\nphone can not empty")
-        }
-
-        if email.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\nemail can not empty")
-        }
-
-
-        if errorMessage != "" {
-            print(errorMessage)
-            errorLabel.text = errorMessage
-            errorLabel.isHidden = false
-            isValid = false
-        }
-
-        return isValid
+    
+    
+//    MARK: - SET UP & CUSTOM UI
+    func setupUI() {
+        usernameTextField.text = ""
+        passwordTextField.text = ""
+        confirmPassTextField.text = ""
+        errorLabel.isHidden = true
+        self.navigationController?.isNavigationBarHidden = false
     }
-
+    
+//    set up delegate
+    func setupDelegate() {
+        usernameTextField.delegate = self
+        passwordTextField.delegate = self
+        confirmPassTextField.delegate = self
+        phoneTextField.delegate = self
+        emailTextField.delegate = self
+    }
+    
 //  custom UI
     func customUI(){
         let uiTextFieldList: [UITextField: String] = [usernameTextField : "Username" ,
                                                       passwordTextField : "Password",
                                                       confirmPassTextField: "Confirm password",
-                                                      phoneTextField: "Phone Number",
-                                                      emailTextField: "Email"
+                                                      phoneTextField: "Phone Number (Optional)",
+                                                      emailTextField: "Email (Optional)"
         ]
         for (textField, placeHolder) in uiTextFieldList {
-            customTextField(textField, placeHolder)
+            TextFieldAndButtonCustomUI.shared.customTextField(textField, placeHolder)
+            TextFieldAndButtonCustomUI.shared.customPaddingForTextField(textField)
         }
-
-        customButton(signUpButton)
+        TextFieldAndButtonCustomUI.shared.customButton(signUpButton)
     }
-
-    let customTextField: (UITextField, String) -> Void = { (textField, placeHolder) in
-        textField.attributedPlaceholder = NSAttributedString(string: "  \(placeHolder)",
-            attributes:[NSAttributedString.Key.foregroundColor: UIColor.white])
-        textField.layer.cornerRadius = 18
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.white.cgColor
-        textField.clipsToBounds = true
-    }
-
-    let customButton: (UIButton) -> Void = { (button) in
-        button.layer.cornerRadius = 18
-    }
-
 }

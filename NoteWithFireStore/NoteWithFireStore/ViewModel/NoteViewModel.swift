@@ -35,6 +35,7 @@ public class NoteViewModel {
         })
     }
     
+//    check if username exists => logined  else => change view
     public func didLogin() -> Bool {
         if username == nil {
             return false
@@ -43,6 +44,7 @@ public class NoteViewModel {
         }
     }
     
+//    logout and remove user default object
     public func logOutUser() {
         UserDefaults.standard.removeObject(forKey: "username")
     }

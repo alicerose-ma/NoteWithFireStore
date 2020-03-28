@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15702" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kFv-oF-tdb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kFv-oF-tdb">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15704"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16086"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -23,7 +23,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="Gtg-MV-TsC">
-                                                <rect key="frame" x="37.666666666666657" y="163.66666666666663" width="300" height="485"/>
+                                                <rect key="frame" x="37.666666666666657" y="148.66666666666663" width="300" height="515"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Sign Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5Mo-94-a3Z">
                                                         <rect key="frame" x="0.0" y="0.0" width="300" height="50"/>
@@ -35,60 +35,60 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Mhq-lB-JMI">
-                                                        <rect key="frame" x="0.0" y="65" width="300" height="30"/>
+                                                        <rect key="frame" x="0.0" y="65" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="Kr2-0a-OiS"/>
+                                                            <constraint firstAttribute="height" constant="35" id="Kr2-0a-OiS"/>
                                                         </constraints>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
                                                     </textField>
                                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="51G-gx-rdq">
-                                                        <rect key="frame" x="0.0" y="110.00000000000003" width="300" height="30"/>
+                                                        <rect key="frame" x="0.0" y="115.00000000000003" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="4Xo-ub-UmB"/>
+                                                            <constraint firstAttribute="height" constant="35" id="4Xo-ub-UmB"/>
                                                         </constraints>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                                     </textField>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Confirm Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Are-uZ-vVS">
-                                                        <rect key="frame" x="0.0" y="155.00000000000003" width="300" height="30"/>
+                                                        <rect key="frame" x="0.0" y="165.00000000000003" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="8HQ-jy-jDe"/>
+                                                            <constraint firstAttribute="height" constant="35" id="8HQ-jy-jDe"/>
                                                         </constraints>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                                     </textField>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="phone" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yYU-P4-eCo">
-                                                        <rect key="frame" x="0.0" y="200.00000000000003" width="300" height="30"/>
+                                                        <rect key="frame" x="0.0" y="215.00000000000003" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="ghr-oD-tin"/>
+                                                            <constraint firstAttribute="height" constant="35" id="ghr-oD-tin"/>
                                                         </constraints>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
                                                     </textField>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9m4-zd-2Gu">
-                                                        <rect key="frame" x="0.0" y="245" width="300" height="30"/>
+                                                        <rect key="frame" x="0.0" y="265" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="xMz-8f-WXV"/>
+                                                            <constraint firstAttribute="height" constant="35" id="xMz-8f-WXV"/>
                                                         </constraints>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
                                                     </textField>
                                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="clS-Iw-JiM">
-                                                        <rect key="frame" x="0.0" y="290" width="300" height="30"/>
+                                                        <rect key="frame" x="0.0" y="315" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.40000000000000002" green="0.98823529409999999" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="30" id="1GD-Up-cgG"/>
+                                                            <constraint firstAttribute="height" constant="35" id="1GD-Up-cgG"/>
                                                         </constraints>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Sign Up"/>
@@ -97,7 +97,7 @@
                                                         </connections>
                                                     </button>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="7" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="log-MT-jv4">
-                                                        <rect key="frame" x="0.0" y="335" width="300" height="150"/>
+                                                        <rect key="frame" x="0.0" y="365" width="300" height="150"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="150" id="qBY-C7-eZC"/>
                                                         </constraints>
@@ -145,8 +145,6 @@
                                     <constraint firstItem="KT4-4P-eMd" firstAttribute="height" secondItem="klW-nN-vps" secondAttribute="height" priority="250" id="nvs-cf-Zqh"/>
                                     <constraint firstItem="KT4-4P-eMd" firstAttribute="leading" secondItem="klW-nN-vps" secondAttribute="leading" id="sMp-qy-srh"/>
                                 </constraints>
-                                <viewLayoutGuide key="contentLayoutGuide" id="3KC-j5-E1K"/>
-                                <viewLayoutGuide key="frameLayoutGuide" id="Qsx-il-ubb"/>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -711,7 +709,7 @@
                                                         </connections>
                                                     </button>
                                                 </subviews>
-                                                <variation key="heightClass=compact-widthClass=regular" spacing="15">
+                                                <variation key="heightClass=compact-widthClass=regular">
                                                     <mask key="subviews">
                                                         <include reference="niz-iZ-3er"/>
                                                     </mask>
@@ -762,8 +760,6 @@
                                     <constraint firstItem="w67-nl-FB2" firstAttribute="height" secondItem="dD8-XK-S3z" secondAttribute="height" priority="250" id="njr-hB-u2u"/>
                                     <constraint firstItem="w67-nl-FB2" firstAttribute="width" secondItem="dD8-XK-S3z" secondAttribute="width" id="zTH-Bn-Ckc"/>
                                 </constraints>
-                                <viewLayoutGuide key="contentLayoutGuide" id="2Vc-IL-6Bn"/>
-                                <viewLayoutGuide key="frameLayoutGuide" id="W4o-D5-eV3"/>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -811,12 +807,12 @@
             <point key="canvasLocation" x="1964" y="-352"/>
         </scene>
     </scenes>
-    <resources>
-        <image name="lock.fill" catalog="system" width="64" height="64"/>
-        <image name="logo" width="105" height="84"/>
-    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="Nlr-xv-krF"/>
         <segue reference="48G-La-mKq"/>
     </inferredMetricsTieBreakers>
+    <resources>
+        <image name="lock.fill" catalog="system" width="128" height="128"/>
+        <image name="logo" width="105" height="84"/>
+    </resources>
 </document>

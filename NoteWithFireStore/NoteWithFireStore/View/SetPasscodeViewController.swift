@@ -18,6 +18,9 @@ class SetPasscodeViewController: UIViewController, Alertable {
     @IBOutlet weak var confirmPasscode: UITextField!
     var setPasscodeDelegate: SetPasscodeDelegate?
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

@@ -19,10 +19,39 @@ public class SignUpViewModel {
                 completion("username exists")
             } else {
                 FireBaseProxy.shared.addNewUser(username: username, newUser: newUser, completion: { message in
-                    print(message)
                     completion(message)
                 })
             }
         })
+    }
+    
+    
+    //    validation for input username & password
+    func validUsernameAndPassWord(username: String, password: String, confirmPass: String, phone: String, email: String) -> (Bool,String){
+        var errorMessage = ""
+        var isValid = true
+        let usernameLength = username.count
+
+        if usernameLength < 3 {
+            errorMessage.append("\nUsername > 3 chars")
+        }
+
+        if password != confirmPass {
+            errorMessage.append("\npassword and confirm do not match")
+        }
+
+        if username.trimmingCharacters(in: .whitespaces).isEmpty {
+            errorMessage.append("\nusername can not empty")
+        }
+
+        if password.trimmingCharacters(in: .whitespaces).isEmpty {
+            errorMessage.append("\npassword can not empty")
+        }
+
+        if errorMessage != "" {
+            isValid = false
+        }
+
+        return (isValid, errorMessage)
     }
 }

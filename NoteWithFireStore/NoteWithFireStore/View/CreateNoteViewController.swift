@@ -35,6 +35,10 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     var imageID: Int = -1
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         titleTextField.delegate = self
@@ -81,8 +85,8 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         let imagePosition = AttachmentViewModel.shared.newImagePosition
         let imageURL = AttachmentViewModel.shared.newImageURL
         
-        let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: CreateNoteViewModel.shared.username!, uniqueID: uniqueID)
-        let note = NoteData(username: CreateNoteViewModel.shared.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus, sharedUsers: [], imageIDMax: imageID, imagePosition: imagePosition, imageURL: imageURL )
+        let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: NoteViewModel.shared.username!, uniqueID: uniqueID)
+        let note = NoteData(username: NoteViewModel.shared.username!, id: uniqueID, title: title, des: description, isLocked: lockStatus, sharedUsers: [], imageIDMax: imageID, imagePosition: imagePosition, imageURL: imageURL )
         
         if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
             CreateNoteViewModel.shared.addNewNote(documentID: noteID, newNote: note)
@@ -232,7 +236,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     @objc func showAndHiddenPasscodeAction(_ sender: Any) {
-        PasscodeViewModel.shared.displayPasscode(textField: (alert.textFields?.first)!)
+//        PasscodeViewModel.shared.displayPasscode(textField: (alert.textFields?.first)!)
     }
     
     
@@ -248,7 +252,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
             
-            PasscodeViewModel.shared.setPasscodeIcon(name: "eye", textField: textField)
+//            PasscodeViewModel.shared.setPasscodeIcon(name: "eye", textField: textField)
             PasscodeViewModel.shared.hiddenPwdIcon.addTarget(self, action: #selector(self.showAndHiddenPasscodeAction), for: .touchUpInside)
             textField.rightView = PasscodeViewModel.shared.hiddenPwdIcon
             textField.rightViewMode = .always
@@ -406,13 +410,13 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         AttachmentViewModel.shared.stringImageURL = "\(photoURL)"
         
         let types = AttachmentViewModel.shared.stringImageURL.components(separatedBy: ".")
-        let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: CreateNoteViewModel.shared.username!, uniqueID: uniqueID)
+        let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: NoteViewModel.shared.username!, uniqueID: uniqueID)
         imageID += 1
         let imageName = noteID + String(imageID)
         let name = imageName + ".\(types[1])"
         
-        AttachmentViewModel.shared.imageLink = (username: CreateNoteViewModel.shared.username! , noteID: noteID, imageName: name)
-        FireBaseProxy.shared.uploadImage(urlImgStr: photoURL,username: CreateNoteViewModel.shared.username!, noteID: noteID, imageName: name)
+        AttachmentViewModel.shared.imageLink = (username: NoteViewModel.shared.username! , noteID: noteID, imageName: name)
+        FireBaseProxy.shared.uploadImage(urlImgStr: photoURL,username: NoteViewModel.shared.username!, noteID: noteID, imageName: name)
 
         if let possibleImage = info[.editedImage] as? UIImage {
             AttachmentViewModel.shared.pickedImage = possibleImage

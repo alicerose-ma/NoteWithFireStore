@@ -21,8 +21,9 @@ public class FireBaseProxy {
     private init() {}
     
     //  MARK: -  USERS AND NOTE REQUESTS
-    public func sendUserRequest(username: String, completion: @escaping (([UserData]) -> Void)) {
+    public func sendUserRequest(username: String, password: String ,completion: @escaping (([UserData]) -> Void)) {
         usersCollection.whereField("username", isEqualTo: username)
+        .whereField("password", isEqualTo: password)
             .getDocuments() {(querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
