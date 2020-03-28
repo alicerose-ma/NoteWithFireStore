@@ -188,30 +188,30 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.noteTableView.reloadData()
         })
         
-        var swipeActions = [deleteAction]
-        if !filteredNoteList[indexPath.row].isLocked {
-            // SHARE ACTION
-            let shareAction = UITableViewRowAction(style: .normal, title: "Share", handler: { (action, indexPath) in
-                NoteViewModel.shared.getNoteList(completion: { notes in
-                    self.filteredNoteList = notes
-                    DispatchQueue.main.async {
-                        self.noteTableView.reloadData()
-                    }
-                    
-                    // note shared to specific users
-                    let sharedUsersStr = self.filteredNoteList[indexPath.row].sharedUsers.joined(separator: ", ")
-                    self.showShareAlert(title: "Share Note", message: "Share to: \(sharedUsersStr)",  noteToShare: self.filteredNoteList[indexPath.row].id, completion: { message in
-                        self.showResultShareAlert(title: "Shared Note", message: message)
-                        
-                    })
-                })
-            })
-            
-            shareAction.backgroundColor = UIColor.blue
-            swipeActions.append(shareAction)
-        }
+//        var swipeActions = [deleteAction]
+//        if !filteredNoteList[indexPath.row].isLocked {
+//            // SHARE ACTION
+//            let shareAction = UITableViewRowAction(style: .normal, title: "Share", handler: { (action, indexPath) in
+//                NoteViewModel.shared.getNoteList(completion: { notes in
+//                    self.filteredNoteList = notes
+//                    DispatchQueue.main.async {
+//                        self.noteTableView.reloadData()
+//                    }
+//                    
+//                    // note shared to specific users
+//                    let sharedUsersStr = self.filteredNoteList[indexPath.row].sharedUsers.joined(separator: ", ")
+//                    self.showShareAlert(title: "Share Note", message: "Share to: \(sharedUsersStr)",  noteToShare: self.filteredNoteList[indexPath.row].id, completion: { message in
+//                        self.showResultShareAlert(title: "Shared Note", message: message)
+//                        
+//                    })
+//                })
+//            })
+//            
+//            shareAction.backgroundColor = UIColor.blue
+//            swipeActions.append(shareAction)
+//        }
         
-        return swipeActions
+        return [deleteAction]
         
     }
     

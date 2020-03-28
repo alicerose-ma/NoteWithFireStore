@@ -289,136 +289,141 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     
-//    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-//        var cursorPosition = 0
-//        if text.isBackspace {
-//            if let selectedRange = desTextView.selectedTextRange {
-//                cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start) - 1
-//                print("cursor REMOVE")
-//                print(cursorPosition)
-//            }
-//            if cursorPosition != -1 {
-//                var deleteImage = false
-//                let imagePositionArr = AttachmentViewModel.shared.newImagePosition
-//
-//                for (index, position) in imagePositionArr.enumerated() {
-//                    if cursorPosition < position  {
-//                        if let selectedRange = desTextView.selectedTextRange {
-//                            print("delete with selection")
-//                            guard let selectedText = desTextView.text(in: selectedRange) else { return false }
-//                            if !deleteImage {
-//                                if selectedText.count == 0 {
-//                                    AttachmentViewModel.shared.newImagePosition[index] = position - 1
-//                                } else {
-//                                    AttachmentViewModel.shared.newImagePosition[index] = position - selectedText.count
-//                                }
-//                            } else {
-//                                if selectedText.count == 0 {
-//                                    AttachmentViewModel.shared.newImagePosition[index - 1] = position - 1
-//                                } else {
-//                                    AttachmentViewModel.shared.newImagePosition[index - 1] = position - selectedText.count
-//                                }
-//                            }
-//                        }
-//                        //                        } else {
-//                        //                            print("delete 1")
-//                        //                            if !deleteImage {
-//                        //
-//                        //                            } else {
-//                        //
-//                        //                        }
-//                    } else if cursorPosition == position {
-//                        deleteImage = true
-//                        AttachmentViewModel.shared.newImagePosition.remove(at: index)
-//                        AttachmentViewModel.shared.newImageURL.remove(at: index)
-//                    }
-//                }
-//
-//                //                if let selectedRange = desTextView.selectedTextRange {
-//                //                    guard let selectedText = desTextView.text(in: selectedRange) else { return false }
-//                //                if !deleteImage {
-//                //                    AttachmentViewModel.shared.newImagePosition[index] = position - 1
-//                //                } else {
-//                //                    AttachmentViewModel.shared.newImagePosition[index-1] = position - 1
-//                //                }
-//                //
-//                //
-//            } else {
-//                cursorPosition = 0
-//            }
-//
-//        } else {
-//            if let selectedRange = desTextView.selectedTextRange {
-//                cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start) + 1
-//                print("cursor ADD")
-//                print(cursorPosition)
-//            }
-//            let imagePositionArr = AttachmentViewModel.shared.newImagePosition
-//            for (index, position) in imagePositionArr.enumerated() {
-//                if cursorPosition <= position + 1 {
-//                    if let selectedRange = desTextView.selectedTextRange {
-//                        guard let selectedText = desTextView.text(in: selectedRange) else { return false }
-//                        //                        REPLACE
-//                        //                        if text.count > 1 {
-//                        print("Add whole")
-//                        print("Count: \(text.count)")
-//                        print("Selected: \(selectedText.count )")
-//                        AttachmentViewModel.shared.newImagePosition[index] = position - selectedText.count + text.count
-//                        //                        } else {
-//                        //                            AttachmentViewModel.shared.newImagePosition[index] = position - selectedText.count + 1
-//                        //                        }
-//                        //                    } else {
-//                        ////                        COPY & PASTE + TYPE
-//                        //                        if text.count > 1 {
-//                        //                            print("Add 1")
-//                        //                            print("Count: \(text.count)")
-//                        //                            AttachmentViewModel.shared.newImagePosition[index] = position + text.count
-//                        //                        } else {
-//                        //                            AttachmentViewModel.shared.newImagePosition[index] = position + 1
-//                        //                        }
-//                    }
-//                }
-//            }
-//        }
-//        print("cursor Array NEW")
-//        print(AttachmentViewModel.shared.newImagePosition)
-//        return true
-//    }
-//
-//    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//        self.dismiss(animated: true, completion: nil)
-//
-//        if let imgUrl = info[UIImagePickerController.InfoKey.imageURL] as? URL{
-//            let imgName = imgUrl.lastPathComponent
-//            let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
-//            let localPath = documentDirectory?.appending(imgName)
-//
-//            let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-//            let data = image.pngData()! as NSData
-//            data.write(toFile: localPath!, atomically: true)
-//            let photoURL = URL.init(fileURLWithPath: localPath!)//NSURL(fileURLWithPath: localPath!)
-//            AttachmentViewModel.shared.stringImageURL = "\(photoURL)"
-//
-//            let types = AttachmentViewModel.shared.stringImageURL.components(separatedBy: ".")
-//            let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: CreateNoteViewModel.shared.username!, uniqueID: uniqueID)
-//            imageID += 1
-//            let imageName = noteID + String(imageID)
-//            let name = imageName + ".\(types[1])"
-//
-//            AttachmentViewModel.shared.imageLink = (username: CreateNoteViewModel.shared.username! , noteID: noteID, imageName: name)
-//            FireBaseProxy.shared.uploadImage(urlImgStr: photoURL,username: CreateNoteViewModel.shared.username!, noteID: noteID, imageName: name)
-//        }
-//
-//        if let possibleImage = info[.editedImage] as? UIImage {
-//            AttachmentViewModel.shared.pickedImage = possibleImage
-//        } else if let possibleImage = info[.originalImage] as? UIImage {
-//            AttachmentViewModel.shared.pickedImage = possibleImage
-//        } else {
-//            return
-//        }
-//        AttachmentViewModel.shared.addImage(desTextView: desTextView)
-//    }
-//
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        var cursorPosition = 0
+        if text.isBackspace {
+            if let selectedRange = desTextView.selectedTextRange {
+                cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start) - 1
+                print("cursor REMOVE")
+                print(cursorPosition)
+            }
+            if cursorPosition != -1 {
+                var deleteImage = false
+                let imagePositionArr = AttachmentViewModel.shared.newImagePosition
+
+                for (index, position) in imagePositionArr.enumerated() {
+                    if cursorPosition < position  {
+                        if let selectedRange = desTextView.selectedTextRange {
+                            print("delete with selection")
+                            guard let selectedText = desTextView.text(in: selectedRange) else { return false }
+                            if !deleteImage {
+                                if selectedText.count == 0 {
+                                    AttachmentViewModel.shared.newImagePosition[index] = position - 1
+                                } else {
+                                    AttachmentViewModel.shared.newImagePosition[index] = position - selectedText.count
+                                }
+                            } else {
+                                if selectedText.count == 0 {
+                                    AttachmentViewModel.shared.newImagePosition[index - 1] = position - 1
+                                } else {
+                                    AttachmentViewModel.shared.newImagePosition[index - 1] = position - selectedText.count
+                                }
+                            }
+                        }
+                        //                        } else {
+                        //                            print("delete 1")
+                        //                            if !deleteImage {
+                        //
+                        //                            } else {
+                        //
+                        //                        }
+                    } else if cursorPosition == position {
+                        deleteImage = true
+                        AttachmentViewModel.shared.newImagePosition.remove(at: index)
+                        AttachmentViewModel.shared.newImageURL.remove(at: index)
+                    }
+                }
+
+                //                if let selectedRange = desTextView.selectedTextRange {
+                //                    guard let selectedText = desTextView.text(in: selectedRange) else { return false }
+                //                if !deleteImage {
+                //                    AttachmentViewModel.shared.newImagePosition[index] = position - 1
+                //                } else {
+                //                    AttachmentViewModel.shared.newImagePosition[index-1] = position - 1
+                //                }
+                //
+                //
+            } else {
+                cursorPosition = 0
+            }
+
+        } else {
+            if let selectedRange = desTextView.selectedTextRange {
+                cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start) + 1
+                print("cursor ADD")
+                print(cursorPosition)
+            }
+            let imagePositionArr = AttachmentViewModel.shared.newImagePosition
+            for (index, position) in imagePositionArr.enumerated() {
+                if cursorPosition <= position + 1 {
+                    if let selectedRange = desTextView.selectedTextRange {
+                        guard let selectedText = desTextView.text(in: selectedRange) else { return false }
+                        //                        REPLACE
+                        //                        if text.count > 1 {
+                        print("Add whole")
+                        print("Count: \(text.count)")
+                        print("Selected: \(selectedText.count )")
+                        AttachmentViewModel.shared.newImagePosition[index] = position - selectedText.count + text.count
+                        //                        } else {
+                        //                            AttachmentViewModel.shared.newImagePosition[index] = position - selectedText.count + 1
+                        //                        }
+                        //                    } else {
+                        ////                        COPY & PASTE + TYPE
+                        //                        if text.count > 1 {
+                        //                            print("Add 1")
+                        //                            print("Count: \(text.count)")
+                        //                            AttachmentViewModel.shared.newImagePosition[index] = position + text.count
+                        //                        } else {
+                        //                            AttachmentViewModel.shared.newImagePosition[index] = position + 1
+                        //                        }
+                    }
+                }
+            }
+        }
+        print("cursor Array NEW")
+        print(AttachmentViewModel.shared.newImagePosition)
+        return true
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        self.dismiss(animated: true, completion: nil)
+
+        var imgUrl: URL
+        if #available(iOS 11.0, *) {
+            imgUrl = info[UIImagePickerController.InfoKey.imageURL] as! URL
+        } else {
+            imgUrl = info[UIImagePickerController.InfoKey.referenceURL] as! URL
+        }
+        
+        let imgName = imgUrl.lastPathComponent
+        let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
+        let localPath = documentDirectory?.appending(imgName)
+        
+        let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
+        let data = image.pngData()! as NSData
+        data.write(toFile: localPath!, atomically: true)
+        let photoURL = URL.init(fileURLWithPath: localPath!)//NSURL(fileURLWithPath: localPath!)
+        AttachmentViewModel.shared.stringImageURL = "\(photoURL)"
+        
+        let types = AttachmentViewModel.shared.stringImageURL.components(separatedBy: ".")
+        let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: CreateNoteViewModel.shared.username!, uniqueID: uniqueID)
+        imageID += 1
+        let imageName = noteID + String(imageID)
+        let name = imageName + ".\(types[1])"
+        
+        AttachmentViewModel.shared.imageLink = (username: CreateNoteViewModel.shared.username! , noteID: noteID, imageName: name)
+        FireBaseProxy.shared.uploadImage(urlImgStr: photoURL,username: CreateNoteViewModel.shared.username!, noteID: noteID, imageName: name)
+
+        if let possibleImage = info[.editedImage] as? UIImage {
+            AttachmentViewModel.shared.pickedImage = possibleImage
+        } else if let possibleImage = info[.originalImage] as? UIImage {
+            AttachmentViewModel.shared.pickedImage = possibleImage
+        } else {
+            return
+        }
+        AttachmentViewModel.shared.addImage(desTextView: desTextView)
+    }
+
     
     
     
