@@ -104,9 +104,10 @@ public class FireBaseProxy {
     }
     
     //  MARK: -  PASSCODE UPDATE
-    public func updateUserPasscode(username: String, passcode: String, completion: @escaping (Bool) -> Void){
+    public func updateUserPasscode(username: String, passcode: String, hint: String, completion: @escaping (Bool) -> Void){
         usersCollection.document(username).updateData([
             "passcode": passcode,
+            "hint": hint,
         ]) { err in
             if let err = err {
                 print("Error updating passcode: \(err)")
@@ -118,7 +119,7 @@ public class FireBaseProxy {
         }
     }
     
-    public func getUserPasscode(username: String, completion: @escaping (String) -> Void) {
+    public func getUserPasscode(username: String, completion: @escaping (String, String) -> Void) {
         usersCollection.whereField("username", isEqualTo: username)
             .getDocuments() { (querySnapshot, err) in
                 if let err = err {
@@ -127,7 +128,7 @@ public class FireBaseProxy {
                     do {
                         let myUsers: [UserData] = try querySnapshot!.decoded()
                         print(myUsers[0].passcode)
-                        completion(myUsers[0].passcode)
+                        completion(myUsers[0].passcode, myUsers[0].hint)
                     } catch {
                         print("decoded User error")
                     }

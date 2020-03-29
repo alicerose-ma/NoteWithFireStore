@@ -15,17 +15,9 @@ public struct UserData: Decodable {
     var phone: String
     var email: String
     var passcode: String
+    var hint: String
     var sharedNotes: [String]
 
-    
-    init(username: String, password: String, phone: String, email: String, passcode: String, sharedNotes: [String]) {
-        self.username = username
-        self.password = password
-        self.phone = phone
-        self.email = email
-        self.passcode = passcode
-        self.sharedNotes = sharedNotes
-    }
     
 //    dicitonary to add to fire store
     var dictionary: [String: Any] {
@@ -35,7 +27,8 @@ public struct UserData: Decodable {
             "phone": phone,
             "email": email,
             "passcode": passcode,
-            "sharedNotes": sharedNotes
+            "sharedNotes": sharedNotes,
+            "hint": hint,
         ]
     }
 }

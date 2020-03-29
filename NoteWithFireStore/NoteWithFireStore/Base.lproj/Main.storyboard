@@ -508,7 +508,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="0PP-j4-AzX">
-                                <rect key="frame" x="30" y="118" width="315" height="80"/>
+                                <rect key="frame" x="30" y="118" width="315" height="128"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2te-tH-3aS">
                                         <rect key="frame" x="0.0" y="0.0" width="315" height="32"/>
@@ -554,6 +554,28 @@
                                             <constraint firstItem="HCl-d4-pb6" firstAttribute="width" secondItem="tMc-Z0-mdW" secondAttribute="width" multiplier="0.7" id="fhe-a9-heX"/>
                                         </constraints>
                                     </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="X8J-3v-Vgz">
+                                        <rect key="frame" x="0.0" y="96" width="315" height="32"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Hint" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2T1-Vc-LLs">
+                                                <rect key="frame" x="0.0" y="0.0" width="94.666666666666671" height="32"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Recommended" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="AM9-c7-pQb">
+                                                <rect key="frame" x="94.666666666666671" y="0.0" width="220.33333333333331" height="32"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="32" id="ij0-VW-HYH"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                        <constraints>
+                                            <constraint firstItem="AM9-c7-pQb" firstAttribute="width" secondItem="X8J-3v-Vgz" secondAttribute="width" multiplier="0.7" id="mNe-c4-EC3"/>
+                                        </constraints>
+                                    </stackView>
                                 </subviews>
                             </stackView>
                         </subviews>
@@ -568,6 +590,7 @@
                     <navigationItem key="navigationItem" id="TRz-CZ-Ng7"/>
                     <connections>
                         <outlet property="confirmPasscode" destination="HCl-d4-pb6" id="IN8-EC-JLT"/>
+                        <outlet property="hintTextField" destination="AM9-c7-pQb" id="jhn-Ku-eX6"/>
                         <outlet property="passcodeTextField" destination="Hyu-SJ-QgD" id="sOY-Fn-X9b"/>
                     </connections>
                 </viewController>

@@ -20,18 +20,6 @@ public struct NoteData: Decodable {
     var imagePosition : [Int]
     var imageURL : [String]
     
-    init(username: String, id: Int,title: String, des: String, isLocked: Bool, sharedUsers: [String], imageIDMax: Int, imagePosition: [Int], imageURL: [String]) {
-        self.username = username
-        self.id = id
-        self.title = title
-        self.des = des
-        self.isLocked = isLocked
-        self.sharedUsers = sharedUsers
-        self.imageIDMax = imageIDMax
-        self.imagePosition = imagePosition
-        self.imageURL = imageURL
-    }
-    
 //    dictionary to add to fire store
     var dictionary: [String: Any] {
         return [

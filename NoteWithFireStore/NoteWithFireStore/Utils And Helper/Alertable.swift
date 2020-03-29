@@ -62,7 +62,6 @@ public extension Alertable where Self: UIViewController {
 //    show wrong passcode
     func showWrongPasscodeAlert(title: alertPasscodeTitle, message: PasscodeValidationError, preferredStyle: UIAlertController.Style = .alert, completion: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title.rawValue, message: message.rawValue, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: completion)
     }
     
@@ -148,9 +147,5 @@ public extension Alertable where Self: UIViewController {
         }))
             self.present(alert, animated: true, completion: completion)
         }
-    
-    
-//    MARK: - Enter Passcode ALert
-    
 }
 

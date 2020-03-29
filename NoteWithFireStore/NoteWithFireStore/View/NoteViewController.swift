@@ -10,7 +10,7 @@ import UIKit
 import Speech
 
 
-class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate {
+class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var noteTableView: UITableView!
     
@@ -24,11 +24,17 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         return true
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavUI()
         setupSearchController()
         VoiceViewModel.shared.voiceSetup()
+        KeyboardHelper.shared.dismissKeyboard(viewController: self)
     }
     
     
@@ -178,22 +184,29 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             executeDeleteNote(indexPath: indexPath) //execute delete
         } else {
             // note locked => enter passcode to delete
-            SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
-                self.enterPasscodeToDelete(passcode: passcode, indexPath: indexPath)
+            SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint)  in
+                NoteViewModel.shared.enterPasscodeCount = 0
+                self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
             })
         }
         self.noteTableView.reloadData()
     }
     
     // alert shows for user to enter passcode to delete
-    func enterPasscodeToDelete(passcode: String, indexPath: IndexPath) {
-        let alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+    func enterPasscodeToDelete(passcode: String, hint: String ,indexPath: IndexPath) {
+        var alert = UIAlertController()
+        if NoteViewModel.shared.enterPasscodeCount >= 2 {
+            alert = UIAlertController(title: "Enter Passcode", message: "Hint: \(hint)", preferredStyle: UIAlertController.Style.alert)
+        } else {
+            alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+        }
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addTextField(configurationHandler: { textField in
+            textField.delegate = self
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
-            PasscodeViewModel.shared.textField = textField
-            PasscodeViewModel.shared.setupPasswordIcon(color: .black)
+            ShowPasscodeViewModel.shared.textField = textField
+            ShowPasscodeViewModel.shared.setupPasswordIcon(color: .black)
         })
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
             if let password = alert.textFields?.first?.text {
@@ -201,7 +214,12 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                 if password == passcode {
                     self.executeDeleteNote(indexPath: indexPath) //execute delete
                 } else {
+                    NoteViewModel.shared.enterPasscodeCount += 1
                     self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
+                    self.dismiss(animated: true, completion: {
+                        self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
+                    })
+                    
                 }
             }})
         )

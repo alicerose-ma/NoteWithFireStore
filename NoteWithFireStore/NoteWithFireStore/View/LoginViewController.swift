@@ -20,8 +20,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         setupDelegate()
         customUI()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
-        PasscodeViewModel.shared.textField = passwordTextField
-        PasscodeViewModel.shared.setupPasswordIcon(color: .white)
+        ShowPasscodeViewModel.shared.textField = passwordTextField
+        ShowPasscodeViewModel.shared.setupPasswordIcon(color: .white)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +32,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         return true
     }
     
+//    hide keyboard when click return
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true

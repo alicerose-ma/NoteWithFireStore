@@ -53,7 +53,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         
         if validInput.isValid {
             waitAlert()
-            let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", sharedNotes: [])
+            let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", hint: "", sharedNotes: [])
             SignUpViewModel.shared.addNewUser(username: usernameText, newUser: newUser, completion: { (isSuccess,message) in
                 self.errorLabel.text = message
                 self.dismiss(animated: false, completion: nil)

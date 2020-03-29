@@ -13,6 +13,7 @@ public class NoteViewModel {
     private init() {}
     
     var username: String? = UserDefaults.standard.string(forKey: "username")
+    var enterPasscodeCount = 0;
     
 //  get all notes based on username
     public func getNoteList(completion: @escaping ([NoteData]) -> Void) {

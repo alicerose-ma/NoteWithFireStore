@@ -21,6 +21,5 @@ public class CreateNoteViewModel {
         return username + "note" + String(uniqueID)
     }
     
-    
 }
 

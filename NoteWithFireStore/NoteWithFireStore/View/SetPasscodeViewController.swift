@@ -12,32 +12,55 @@ protocol SetPasscodeDelegate {
     func addLockIconToNavBar()
 }
 
-class SetPasscodeViewController: UIViewController, Alertable {
+class SetPasscodeViewController: UIViewController, UITextFieldDelegate, Alertable {
     
     @IBOutlet weak var passcodeTextField: UITextField!
     @IBOutlet weak var confirmPasscode: UITextField!
+    @IBOutlet weak var hintTextField: UITextField!
     var setPasscodeDelegate: SetPasscodeDelegate?
     
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        load passcode
-        SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
-            if passcode != "" {
-                self.passcodeTextField.text = passcode
-                self.confirmPasscode.text = passcode
-            }
-        })
+        
+        setupNavBarAndDelegate()
+        KeyboardHelper.shared.dismissKeyboard(viewController: self)
+    }
+    
+    func setupNavBarAndDelegate(){
+        let setPasscodeBtn = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(setPasscode))
+        navigationItem.rightBarButtonItem = setPasscodeBtn
+        passcodeTextField.delegate = self
+        confirmPasscode.delegate = self
+        hintTextField.delegate = self
+        passcodeTextField.placeholder = "Passcode"
+        confirmPasscode.placeholder = "Confirm passcode"
+        hintTextField.placeholder = "Recommended"
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        let setPasscodeBtn = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(setPasscode))
-        navigationItem.rightBarButtonItem = setPasscodeBtn
+        loadCurrentPasscode()
+        SetPasscodeViewModel.shared.isDelegate = false
     }
     
+    //   load passcode
+    func loadCurrentPasscode() {
+        SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint) in
+            if passcode != "" {
+                self.passcodeTextField.text = passcode
+                self.confirmPasscode.text = passcode
+                self.hintTextField.text = hint
+            }
+        })
+    }
     
     //    update passcode to firestore
     @objc func setPasscode() {
@@ -54,7 +77,7 @@ class SetPasscodeViewController: UIViewController, Alertable {
                     } else {
                         self.showStoredPasscodeAlert(goBackPreviousView: true,title: .passcodeSetup, message: .updatePasscode)
                     }
-                    SetPasscodeViewModel.shared.updateUserPasscode(passcode: self.passcodeTextField.text!)
+                    SetPasscodeViewModel.shared.updateUserPasscode(passcode: self.passcodeTextField.text!, hint: self.hintTextField.text!)
                 })
             } else {
                 showStoredPasscodeAlert(goBackPreviousView: false,title: .passcodeSetup, message: .invalidConfirm)

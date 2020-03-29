@@ -109,7 +109,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         
         let sharedUsers = SharedNoteViewModel.shared.sharedUsers
         
-        let note = NoteData(username:NoteDetailViewModel.shared .username!, id: uniqueID, title: title, des: description, isLocked: lockStatus, sharedUsers: sharedUsers, imageIDMax: imageIDMax ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+        let note = NoteData(id: uniqueID, username:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
         
         if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
             NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
@@ -204,7 +204,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
 //  MARK: -  LOCK NOTE WITH PASSCODE
     @IBAction func enterPasscodeToUnlockBtn(_ sender: Any) {
-        SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
+        SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint)  in
             self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
         })
     }
@@ -229,7 +229,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
                 self.hasLock = true
-                SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
+                SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint)  in
                     if passcode == "" {
                         self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
                     } else {
@@ -239,10 +239,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             }))
         }
         
-        SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
+        SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint)  in
             if passcode != "" {
                 alert.addAction(UIAlertAction(title: "Edit Passcode", style: .default, handler: { (_) in
-                    SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
+                    SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint) in
                         self.enterPasscodeAlert(passcode: passcode, passcodeCase: .editPasscode)
                     })
                 }))
@@ -268,7 +268,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     //    note is unlocked
     @objc func lockOFF() {
-        SetPasscodeViewModel.shared.getUserPasscode(completion: { passcode in
+        SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode,hint)  in
             self.enterPasscodeAlert(passcode: passcode, passcodeCase: .unlockNote)
         })
     }
@@ -290,8 +290,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             textField.isSecureTextEntry = true
             
 //            PasscodeViewModel.shared.setPasscodeIcon(name: "eye", textField: textField)
-            PasscodeViewModel.shared.hiddenPwdIcon.addTarget(self, action: #selector(self.showAndHiddenPasscodeAction), for: .touchUpInside)
-            textField.rightView = PasscodeViewModel.shared.hiddenPwdIcon
+            ShowPasscodeViewModel.shared.hiddenPwdIcon.addTarget(self, action: #selector(self.showAndHiddenPasscodeAction), for: .touchUpInside)
+            textField.rightView = ShowPasscodeViewModel.shared.hiddenPwdIcon
             textField.rightViewMode = .always
         })
         
