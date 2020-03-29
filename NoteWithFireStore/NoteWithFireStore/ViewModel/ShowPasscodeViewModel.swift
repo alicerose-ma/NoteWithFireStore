@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-public class PasscodeViewModel {
-    static let shared =  PasscodeViewModel()
+public class ShowPasscodeViewModel {
+    static let shared =  ShowPasscodeViewModel()
     private init() {}
     
     var textField = UITextField()
@@ -35,6 +35,7 @@ public class PasscodeViewModel {
         textField.rightViewMode = .always
     }
     
+//    click show password icon to hide and show password
     @objc func showAndHidePasscodeAction(_ sender: Any) {
         if isHidden {
             textField.isSecureTextEntry = false

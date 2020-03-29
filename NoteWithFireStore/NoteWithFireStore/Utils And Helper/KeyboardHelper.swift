@@ -16,6 +16,5 @@ class KeyboardHelper {
     func dismissKeyboard(viewController: UIViewController) {
         let tap = UITapGestureRecognizer(target: viewController.view, action: #selector(UIView.endEditing(_:)))
         viewController.view.addGestureRecognizer(tap)
-        
     }
 }
