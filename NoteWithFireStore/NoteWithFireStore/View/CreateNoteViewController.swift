@@ -179,6 +179,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     func showAddOrRemoveLockOrEditPasscodeActionSheet(hasLock: Bool) {
         let alert = UIAlertController(title: "Lock Note", message: "Select Lock Options" , preferredStyle: .actionSheet)
         if hasLock {
+            self.hasLock = false
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
                 self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn,self.voiceBtn, self.imageBtn]
             }))
@@ -188,12 +189,12 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
                     if passcode == "" {
                         self.performSegue(withIdentifier: "ShowSetPassView", sender: self)
                     } else {
+                        self.hasLock = true
                         self.addLockIconToNavBar()
                     }
                 })
             }))
         }
-        self.hasLock = !self.hasLock
         
         //      edit passcode action
         SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint)  in
@@ -272,11 +273,11 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
                     }
                 } else {
                     NoteViewModel.shared.enterPasscodeCount += 1
+                    self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
                     self.dismiss(animated: true, completion: {
                         self.enterPasscodeAlert(passcode: passcode, hint: hint, passcodeCase: passcodeCase)
                     })
-                    self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
-                    
+                   
                 }
             }}))
         self.present(alert, animated: true, completion: nil)

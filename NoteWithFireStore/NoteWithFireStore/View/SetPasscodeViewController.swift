@@ -48,7 +48,6 @@ class SetPasscodeViewController: UIViewController, UITextFieldDelegate, Alertabl
     
     override func viewWillAppear(_ animated: Bool) {
         loadCurrentPasscode()
-        SetPasscodeViewModel.shared.isDelegate = false
     }
     
     //   load passcode
