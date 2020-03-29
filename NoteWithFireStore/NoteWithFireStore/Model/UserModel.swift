@@ -8,7 +8,7 @@
 
 import Foundation
 
-
+// user data model in fire store
 public struct UserData: Decodable {
     var username: String
     var password: String
@@ -27,6 +27,7 @@ public struct UserData: Decodable {
         self.sharedNotes = sharedNotes
     }
     
+//    dicitonary to add to fire store
     var dictionary: [String: Any] {
         return [
             "username": username,

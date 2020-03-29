@@ -37,7 +37,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         return true
     }
     
-//    MARK: - LOGIN
+    //    MARK: - LOGIN
     @IBAction func loginAction(_ sender: UIButton ) {
         let usernameText = usernameTextField.text!
         let passwordText = passwordTextField.text!
@@ -63,34 +63,35 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         self.view.endEditing(true)
     }
     
-//    MARK: - SEGUE
+    //    MARK: - SEGUE
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowNoteViewSegue" {
-//            let nav = segue.destination as! UINavigationController
-//            nav.modalPresentationStyle = .fullScreen
+            //            let nav = segue.destination as! UINavigationController
+            //            nav.modalPresentationStyle = .fullScreen
         }
     }
     
     
-//    MARK: - SET UP UI AND DELEGATE
-//    set up UI
+    //    MARK: - SET UP UI AND DELEGATE
+    //    set up UI
     func setupUI() {
         usernameTextField.text = ""
         passwordTextField.text = ""
         loginStatus.isHidden = true
+        passwordTextField.isSecureTextEntry = true
         self.navigationController?.isNavigationBarHidden = true
         self.tabBarController?.tabBar.isHidden = true
     }
     
-//    setup delegate
+    //    setup delegate
     func setupDelegate() {
         usernameTextField.delegate = self
         passwordTextField.delegate = self
     }
     
-
-//    MARK: - CUSTOM UI
-//    custom button & text field UI
+    
+    //    MARK: - CUSTOM UI
+    //    custom button & text field UI
     func customUI(){
         let uiTextFieldList: [UITextField: String] = [usernameTextField : "Username" ,
                                                       passwordTextField : "Password"]

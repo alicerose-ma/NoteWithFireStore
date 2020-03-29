@@ -23,8 +23,7 @@ public class LoginViewModel {
         })
     }
     
-    
-    //    MARK: - CHANGE USERNAME
+    //    update current username of app
     func updateCurrentUsername(newUsername: String) {
         let defaults = UserDefaults.standard
         defaults.set(newUsername, forKey: "username")

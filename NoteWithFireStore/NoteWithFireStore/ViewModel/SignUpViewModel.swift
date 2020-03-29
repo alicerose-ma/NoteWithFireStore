@@ -13,13 +13,13 @@ public class SignUpViewModel {
     private init() {}
     
     //    check if username does not in firebase yet => add new user
-    func addNewUser(username: String, newUser: UserData, completion: @escaping (String) -> Void){
+    func addNewUser(username: String, newUser: UserData, completion: @escaping (Bool, String) -> Void){
         FireBaseProxy.shared.isNewUsernameValid(username: username, completion: { isValid in
             if !isValid {
-                completion("username exists")
+                completion(false,"username exists")
             } else {
-                FireBaseProxy.shared.addNewUser(username: username, newUser: newUser, completion: { message in
-                    completion(message)
+                FireBaseProxy.shared.addNewUser(username: username, newUser: newUser, completion: { (isSuccess, message) in
+                    completion(isSuccess, message)
                 })
             }
         })
@@ -31,27 +31,27 @@ public class SignUpViewModel {
         var errorMessage = ""
         var isValid = true
         let usernameLength = username.count
-
+        
         if usernameLength < 3 {
             errorMessage.append("\nUsername > 3 chars")
         }
-
+        
         if password != confirmPass {
             errorMessage.append("\npassword and confirm do not match")
         }
-
+        
         if username.trimmingCharacters(in: .whitespaces).isEmpty {
             errorMessage.append("\nusername can not empty")
         }
-
+        
         if password.trimmingCharacters(in: .whitespaces).isEmpty {
             errorMessage.append("\npassword can not empty")
         }
-
+        
         if errorMessage != "" {
             isValid = false
         }
-
+        
         return (isValid, errorMessage)
     }
 }

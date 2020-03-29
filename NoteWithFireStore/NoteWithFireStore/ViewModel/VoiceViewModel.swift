@@ -21,11 +21,11 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     
     var subStr1 = ""
     var subStr2 = ""
-
     
     var alert = UIAlertController()
     
-    func voiceSetupWithoutRecordBtn() {
+//    provice authorize
+    func voiceSetup() {
         speechRecognizer?.delegate = self
         SFSpeechRecognizer.requestAuthorization {
             status in
@@ -55,6 +55,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         return input.rawValue
     }
     
+//    stop record
     func stopRecording() {
         audioEngine.stop()
         recognitionRequest?.endAudio()
@@ -62,6 +63,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     }
     
     
+//    prepare audio to start record
     func prepareAudioSession() {
         print("Recording started")
         
@@ -81,6 +83,8 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         }
     }
     
+    
+//    start record for note
     func startRecording(titleTextField: UITextField, desTextView: UITextView) {
         prepareAudioSession()
         
@@ -109,9 +113,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { res, err in
             var isLast = false
             if let res = res {
-                
                 let bestStr = self.subStr1 + res.bestTranscription.formattedString +  " " + self.subStr2
-            
                 print(bestStr)
                 if titleTextField.isFirstResponder {
                     titleTextField.text = bestStr
@@ -121,7 +123,6 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
                 
                 isLast = (res.isFinal)
             }
-            
             if err != nil || isLast {
                 self.audioEngine.stop()
                 inputNode.removeTap(onBus: 0)
@@ -134,6 +135,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     }
     
 
+//    record voice to text for textfield and textview
 //    audiEngine running => stop , else => start
     func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView) {
         if audioEngine.isRunning {
@@ -164,7 +166,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         }
     }
     
-    
+//    record keywords to search
     func startRecordingWithAlert() {
         prepareAudioSession()
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest() //read from buffer
@@ -187,7 +189,6 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         } catch {
             print("Can't start the engine")
         }
-        
         
         recognitionRequest.shouldReportPartialResults = true
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { res, err in

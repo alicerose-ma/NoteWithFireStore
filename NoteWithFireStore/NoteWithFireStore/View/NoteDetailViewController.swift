@@ -40,7 +40,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         titleTextField.delegate = self
         desTextView.delegate = self
         imagePicker.delegate = self
-        VoiceViewModel.shared.voiceSetupWithoutRecordBtn()
+        VoiceViewModel.shared.voiceSetup()
         NoteDetailViewModel.shared.getNoteByID(id: uniqueID, completion: { notes in
             for note in notes {
                 self.titleTextField.text = note.title
@@ -308,7 +308,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                     self.addLockIconToNavBar()
                 }
             }else {
-                self.showAlert(title: .passcodeValidation, message: .wrong)
+                self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
             }
             }}))
         self.present(alert, animated: true, completion: nil)

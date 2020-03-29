@@ -8,6 +8,7 @@
 
 import Foundation
 
+//note model in fire store
 public struct NoteData: Decodable {
     var id: Int
     var username: String
@@ -18,7 +19,6 @@ public struct NoteData: Decodable {
     var sharedUsers : [String]
     var imagePosition : [Int]
     var imageURL : [String]
-//    var createdTime: String
     
     init(username: String, id: Int,title: String, des: String, isLocked: Bool, sharedUsers: [String], imageIDMax: Int, imagePosition: [Int], imageURL: [String]) {
         self.username = username
@@ -30,10 +30,9 @@ public struct NoteData: Decodable {
         self.imageIDMax = imageIDMax
         self.imagePosition = imagePosition
         self.imageURL = imageURL
-//        self.createdTime = createdTime
     }
     
-    
+//    dictionary to add to fire store
     var dictionary: [String: Any] {
         return [
             "username" : username,
