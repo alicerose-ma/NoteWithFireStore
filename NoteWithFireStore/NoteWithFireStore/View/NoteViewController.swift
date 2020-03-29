@@ -10,134 +10,89 @@ import UIKit
 import Speech
 
 
-class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate {
+class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate, UITextFieldDelegate {
     
-    var alert = UIAlertController()
-    
-    let voiceViewModel = VoiceViewModel()
-    var isHidden = true
-    var hiddenPwdIcon = UIButton(type: .custom)
-    
-
-    
-    let searchController = UISearchController(searchResultsController: nil)
     @IBOutlet weak var noteTableView: UITableView!
     
-    var noteViewModel =  NoteViewModel()
-    var setPasscodeViewModel = SetPasscodeViewModel()
-    var selectedRow: Int = -1
-    
+    //  list of note getting from Firestore
     var allNoteList = [NoteData]()
     var filteredNoteList = [NoteData]()
+    var selectedRow: Int = -1 // current row selected in tableview
+    let searchController = UISearchController(searchResultsController: nil)
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
-    var pinList = [NoteData]()
-    var data = [[NoteData]]()
-    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        pinList.append(NoteData(username: "AA", id: 777, title: "AAA", des: "AAA", isLocked: false))
-        noteTableView.dataSource = self
-        noteTableView.delegate = self
-        self.title = "Notes"
         setupNavUI()
         setupSearchController()
-        voiceViewModel.voiceSetupWithoutRecordBtn()
+        VoiceViewModel.shared.voiceSetup()
+        KeyboardHelper.shared.dismissKeyboard(viewController: self)
     }
     
     
-//  CHECK USER LOGIN BEFORE
+    // MARK: - CHECK USER LOGIN BEFORE
     override func viewWillAppear(_ animated: Bool) {
-           super.viewWillAppear(animated)
-           didLogin()
-           searchController.searchBar.text = nil
-       }
-       
-       //    check if user login before
-       func didLogin() {
-           let didLogin = noteViewModel.didLogin()
-           if didLogin {
-               loadNoteList()
-           } else {
-               self.performSegue(withIdentifier: "ShowLoginView", sender: self)
-           }
-       }
-       
-       //    load note list of user
-       func loadNoteList() {
-           noteViewModel.getNoteList(completion: { notes in
-               self.allNoteList = notes
-               self.filteredNoteList = notes
-               DispatchQueue.main.async {
-                   self.noteTableView.reloadData()
-               }
-           })
-       }
+        super.viewWillAppear(animated)
+        didLogin()
+        searchController.searchBar.text = nil
+    }
     
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        if (pinList.count == 0) {
-            data = [filteredNoteList]
+    //    check if user login before
+    func didLogin() {
+        let didLogin = NoteViewModel.shared.didLogin()
+        if didLogin {
+            loadNoteList()
         } else {
-            data = [pinList,filteredNoteList]
+            UIView.setAnimationsEnabled(false)
+            self.performSegue(withIdentifier: "ShowLoginViewFromYourNote", sender: self)
         }
-        return data.count
+    }
+    
+    //    load note list of user
+    func loadNoteList() {
+        NoteViewModel.shared.getNoteList(completion: { notes in
+            self.allNoteList = notes
+            self.filteredNoteList = notes
+            DispatchQueue.main.async {
+                self.noteTableView.reloadData()
+            }
+        })
+    }
+    
+    
+    //    MARK: - TABLEVIEW DISPLAY NOTE
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if (pinList.count == 0) {
-            data = [filteredNoteList]
-        } else {
-            data = [pinList,filteredNoteList]
-        }
-        return data[section].count
+        return filteredNoteList.count
     }
-    
-    
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let headerTitles = ["Notes"]
-        if section < headerTitles.count {
-            return headerTitles[section]
-        }
-        
-        return nil
-    }
-    
-    
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell =  noteTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
-        //        if (filteredNoteList[indexPath.row].isLocked == false) {
-        //            cell.titleLabel.text = filteredNoteList[indexPath.row].title
-        //            cell.desLabel.text = filteredNoteList[indexPath.row].des
-        //        } else {
-        //            cell.titleLabel.text = filteredNoteList[indexPath.row].title
-        //            cell.desLabel.text = "locked"
-        //        }
-        //        return cell
         
-        if (pinList.count == 0) {
-            data = [filteredNoteList]
+        if !filteredNoteList[indexPath.row].isLocked {
+            cell.titleLabel.text = filteredNoteList[indexPath.row].title
+            cell.desLabel.text = filteredNoteList[indexPath.row].des
         } else {
-            data = [pinList,filteredNoteList]
-        }
-        
-        if (data[indexPath.section][indexPath.row].isLocked == false) {
-            cell.titleLabel.text = data[indexPath.section][indexPath.row].title
-            cell.desLabel.text = data[indexPath.section][indexPath.row].des
-        } else {
-            cell.titleLabel.text = data[indexPath.section][indexPath.row].title
+            cell.titleLabel.text = filteredNoteList[indexPath.row].title
             cell.desLabel.text = "locked"
         }
         return cell
     }
     
     
-    
-//    SEARCH FEATURE
+    //  MARK: - SEARCH FEATURE
+    //   called when search bar is reponsder or user makes change inside search bar
     func updateSearchResults(for searchController: UISearchController) {
         if !searchController.isActive {
             filteredNoteList = allNoteList
@@ -145,7 +100,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         } else {
             let searchBar = searchController.searchBar
             let selectedScope = searchBar.scopeButtonTitles![searchBar.selectedScopeButtonIndex]
-            applySearch(searchText: searchController.searchBar.text!,scope: selectedScope)
+            applySearch(searchText: searchBar.text!,scope: selectedScope)
         }
     }
     
@@ -168,173 +123,148 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                 filteredNoteList = allNoteList
                 print("default")
             }
-            
-            print(filteredNoteList)
         } else {
             // Filter the results based on the selected filer and search text
             filteredNoteList = allNoteList.filter { note in
                 switch scope {
                 case "All":
-                    return (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
+                    return (note.isLocked == true && note.title.lowercased().contains(searchText.lowercased())) ||
+                        (note.isLocked == false && (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased())))
                 case "Lock":
                     return note.isLocked == true && (note.title.lowercased().contains(searchText.lowercased()))
                 case "Unlock":
                     return note.isLocked == false && (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
                 default:
-                    print("default")
-                    return (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased()))
-                    
+                    return (note.isLocked == true && note.title.lowercased().contains(searchText.lowercased())) ||
+                        (note.isLocked == false && (note.title.lowercased().contains(searchText.lowercased()) || note.des.lowercased().contains(searchText.lowercased())))
                 }
             }
         }
         self.noteTableView.reloadData()
     }
     
-    
-//    SEARCH WITH VOICE
+    //    change scope recognition
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         applySearch(searchText: searchController.searchBar.text!,scope: searchBar.scopeButtonTitles![selectedScope])
     }
     
+    
+    //    Search with voice
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         showAlertWithInputStringForSearch(title: "Search", searchController: searchController)
     }
     
-
-// SWIPE TO DELETE & SHARE
     
+    //    MARK: - SWIPE TO DELETE FOR IOS 10 and IOS 13
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
     
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        // DELETE ACTION
+        let deleteAction =  UITableViewRowAction(style: .destructive, title: "Delete", handler: {(action, indexPath)  in
+            self.deleteAction(indexPath: indexPath)
+        })
+        return [deleteAction]
+    }
     
+    @available(iOS 11.0, *)
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        
+        // DELETE ACTION
         let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: {(contextualAction, view, boolValue) in
-            
-            //            check lock status to delete, no lock => delete, locked => input pass to delete
-            if (self.filteredNoteList[indexPath.row].isLocked == false) {
-                //                    delete on firebase
-                self.noteViewModel.deleteNote(uniqueID: self.filteredNoteList[indexPath.row].id, completion: { message in
-                    print(message)
-                })
-                
-                // delete noteList UI
-                for note in self.allNoteList {
-                    if note.id == self.filteredNoteList[indexPath.row].id {
-                        self.allNoteList.removeAll{$0.id == note.id}
-                    }
-                }
-                // delete filter UI
-                self.filteredNoteList.remove(at: indexPath.row)
-                self.noteTableView.deleteRows(at: [indexPath], with: .fade)
-            } else {
-                self.setPasscodeViewModel.getUserPasscode(completion: { passcode in
-                    self.enterPasscodeToDelete(passcode: passcode, indexPath: indexPath)
-                })
-            }
-            self.noteTableView.reloadData()
-            
+            self.deleteAction(indexPath: indexPath)
         })
-        
-        
-        let shareAction = UIContextualAction(style: .normal, title: "Share", handler: {(contextualAction, view, boolValue) in
-            self.showShareAlert(title: "Share Note", message: "Share to: ",  noteToShare: self.filteredNoteList[indexPath.row].id)
-        })
-        
-        let swipeActions = UISwipeActionsConfiguration(actions: [deleteAction, shareAction])
-        return swipeActions
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
     
-    
-//    SHOW OR HIDE PASSCODE
-    @objc func showAndHidePasscodeAction(_ sender: Any) {
-        if isHidden {
-            alert.textFields?.first?.isSecureTextEntry = false
-            isHidden = false
-            setPasscodeIcon(name: "eye.slash", textField: (alert.textFields?.first)!)
+    //    delete action for swipe left
+    func deleteAction(indexPath: IndexPath){
+        // check lock status to delete, no lock => delete, locked => input pass to delete
+        if !self.filteredNoteList[indexPath.row].isLocked {
+            executeDeleteNote(indexPath: indexPath) //execute delete
         } else {
-            alert.textFields?.first?.isSecureTextEntry = true
-            isHidden = true
-            setPasscodeIcon(name: "eye", textField: (alert.textFields?.first)!)
+            // note locked => enter passcode to delete
+            SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint)  in
+                NoteViewModel.shared.enterPasscodeCount = 0
+                self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
+            })
         }
-        
+        self.noteTableView.reloadData()
     }
     
-    func setPasscodeIcon(name: String, textField: UITextField) {
-        self.hiddenPwdIcon.setImage(UIImage(systemName: name), for: .normal)
-        self.hiddenPwdIcon.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
-        self.hiddenPwdIcon.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
-    }
-    
-    
-    func enterPasscodeToDelete(passcode: String, indexPath: IndexPath) {
-        alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
-        
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { action in
-        }))
-        
+    // alert shows for user to enter passcode to delete
+    func enterPasscodeToDelete(passcode: String, hint: String ,indexPath: IndexPath) {
+        var alert = UIAlertController()
+        if NoteViewModel.shared.enterPasscodeCount >= 2 {
+            alert = UIAlertController(title: "Enter Passcode", message: "Hint: \(hint)", preferredStyle: UIAlertController.Style.alert)
+        } else {
+            alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+        }
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addTextField(configurationHandler: { textField in
+            textField.delegate = self
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
-            
-            self.setPasscodeIcon(name: "eye", textField: textField)
-            self.hiddenPwdIcon.addTarget(self, action: #selector(self.showAndHidePasscodeAction), for: .touchUpInside)
-            textField.rightView = self.hiddenPwdIcon
-            textField.rightViewMode = .always
-            
+            ShowPasscodeViewModel.shared.textField = textField
+            ShowPasscodeViewModel.shared.setupPasswordIcon(color: .black)
         })
-        
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
-            if let password = self.alert.textFields?.first?.text {
+            if let password = alert.textFields?.first?.text {
                 print("Your password: \(password)")
                 if password == passcode {
-                    self.noteViewModel.deleteNote(uniqueID: self.filteredNoteList[indexPath.row].id, completion: { message in
-                        print(message)
-                    })
-                    for note in self.allNoteList {
-                        if note.id == self.filteredNoteList[indexPath.row].id {
-                            self.allNoteList.removeAll{$0.id == note.id}
-                        }
-                    }
-                    self.filteredNoteList.remove(at: indexPath.row)
-                    self.noteTableView.deleteRows(at: [indexPath], with: .fade)
+                    self.executeDeleteNote(indexPath: indexPath) //execute delete
                 } else {
-                    print("incorrect passcode")
-                    self.showAlert(title: .passcodeValidation, message: .wrong)
+                    NoteViewModel.shared.enterPasscodeCount += 1
+                    self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
+                    self.dismiss(animated: true, completion: {
+                        self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
+                    })
+                    
                 }
             }})
         )
         self.present(alert, animated: true, completion: nil)
     }
     
+    //  actual processes to delete note
+    func executeDeleteNote(indexPath: IndexPath){
+        //  delete on firebase
+        NoteViewModel.shared.deleteNote(uniqueID: self.filteredNoteList[indexPath.row].id, completion: { message in
+            print(message)
+        })
+        // delete note name in shared note list of some user that have access to this note
+        SharedNoteViewModel.shared.deleteNoteInSharedUsers(uniqueID: self.filteredNoteList[indexPath.row].id)
+        
+        // delete noteList UI
+        for note in self.allNoteList {
+            if note.id == self.filteredNoteList[indexPath.row].id {
+                self.allNoteList.removeAll{$0.id == note.id}
+            }
+        }
+        
+        // delete filtered list UI
+        self.filteredNoteList.remove(at: indexPath.row)
+        self.noteTableView.deleteRows(at: [indexPath], with: .fade)
+    }
     
     
-//    PERFORM SEGUES
+    //    MARK: - PERFORM SEGUES
     @objc func addNote() {
         self.performSegue(withIdentifier: "AddNewNote", sender: self)
     }
     
     @objc func exit() {
-        noteViewModel.logOutUser()
-        self.performSegue(withIdentifier: "ShowLoginView", sender: self)
+        exitAlert(identifier: "ShowLoginViewFromYourNote")
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         performSegue(withIdentifier: "EditNote", sender: self)
     }
     
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
-    }
-    
-    
-    //    transfer to other views by identifier
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "AddNewNote" {
             let destinationVC  = segue.destination as! CreateNoteViewController
-            destinationVC.uniqueID = noteViewModel.createNewUniqueNoteID(noteList: allNoteList)
+            destinationVC.uniqueID = NoteViewModel.shared.createNewUniqueNoteID(noteList: allNoteList)
         }
         
         if segue.identifier == "EditNote" {
@@ -344,25 +274,26 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             destinationVC.uniqueID = uniqueID
             let lockStatus = filteredNoteList[selectedRow].isLocked
             destinationVC.lockStatus = lockStatus
-            //            }
         }
         
-        if segue.identifier == "ShowLoginView" {
+        if segue.identifier == "ShowLoginViewFromYourNote" {
             _ = segue.destination as! LoginViewController
         }
     }
     
     
-    
-//  SET UP UI NAV & SEARCH CONTROLLER
+    //    MARK: - SET UP UI NAV & SEARCH CONTROLLER
     func setupNavUI() {
+        self.title = "Notes"
+        noteTableView.dataSource = self
+        noteTableView.delegate = self
+        
         let addBtn = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addNote))
         self.navigationItem.rightBarButtonItem = addBtn
         
         let exitBtn = UIBarButtonItem(title: "Log out", style: .done, target: self, action: #selector(exit))
         self.navigationItem.leftBarButtonItem = exitBtn
     }
-    
     
     func setupSearchController(){
         searchController.searchResultsUpdater = self
@@ -372,17 +303,19 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         searchController.searchBar.sizeToFit()
         searchController.searchBar.scopeButtonTitles = ["All", "Lock", "Unlock"]
-        
         searchController.searchBar.delegate = self
         searchController.searchBar.placeholder = "Enter Keywords to search"
+        searchController.hidesNavigationBarDuringPresentation = false
         
         searchController.searchBar.showsBookmarkButton = true
-        searchController.searchBar.setImage(UIImage(systemName: "mic.fill"), for: .bookmark, state: .normal)
+        if #available(iOS 13.0, *) {
+            searchController.searchBar.setImage(UIImage(systemName: "mic.fill"), for: .bookmark, state: .normal)
+        } else {
+            searchController.searchBar.setImage(UIImage(named: "searchVoice"), for: .bookmark, state: .normal)
+            
+        }
         // to hide it when the view is first presented.
         //        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
     }
-    
-    
-    
-    
 }
+

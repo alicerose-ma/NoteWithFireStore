@@ -8,8 +8,11 @@
 
 import Foundation
 
-class NoteDetailViewModel {
-    let username = UserDefaults.standard.string(forKey: "username")
+public class NoteDetailViewModel {
+    static let shared =  NoteDetailViewModel()
+    private init() {}
+    
+    var username: String? = NoteViewModel.shared.username
     
 //    edit note base on document ID
     public func editNote(uniqueID: Int, newNote: NoteData) {

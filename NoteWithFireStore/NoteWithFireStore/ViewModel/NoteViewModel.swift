@@ -8,8 +8,12 @@
 
 import Foundation
 
-class NoteViewModel {
-    let username = UserDefaults.standard.string(forKey: "username")
+public class NoteViewModel {
+    static let shared =  NoteViewModel()
+    private init() {}
+    
+    var username: String? = UserDefaults.standard.string(forKey: "username")
+    var enterPasscodeCount = 0;
     
 //  get all notes based on username
     public func getNoteList(completion: @escaping ([NoteData]) -> Void) {
@@ -32,6 +36,7 @@ class NoteViewModel {
         })
     }
     
+//    check if username exists => logined  else => change view
     public func didLogin() -> Bool {
         if username == nil {
             return false
@@ -40,17 +45,9 @@ class NoteViewModel {
         }
     }
     
+//    logout and remove user default object
     public func logOutUser() {
         UserDefaults.standard.removeObject(forKey: "username")
     }
-    
-    public func share(userToShare: String, noteToShare: Int) {
-        let noteName = username! + "note" + String(noteToShare)
-        FireBaseProxy.shared.share(userToShare: userToShare, note: noteName, completion: {
-            isShared in
-            print(isShared)
-        })
-    }
-
     
 }

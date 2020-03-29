@@ -8,8 +8,8 @@
 
 import UIKit
 
-class SignUpViewController: UIViewController {
-
+class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
+    
     @IBOutlet weak var usernameTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPassTextField: UITextField!
@@ -17,110 +17,87 @@ class SignUpViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
-
-    var signUpViewModel = SignUpViewModel()
-
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
+        setupDelegate()
         customUI()
-        usernameTextField.text = ""
-        passwordTextField.text = ""
-        confirmPassTextField.text = ""
-        errorLabel.isHidden = true
-        self.navigationController?.isNavigationBarHidden = false
+        KeyboardHelper.shared.dismissKeyboard(viewController: self)
     }
-
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setupUI()
+    }
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    
+    //    MARK: - SIGN UP
     @IBAction func signUpAction(_ sender: Any) {
         let usernameText = usernameTextField.text!
         let passwordText = passwordTextField.text!
         let confirmText = confirmPassTextField.text!
         let phoneText = phoneTextField.text!
         let emailText = emailTextField.text!
-
-//        check if user input valid username & password
-        let validInput: Bool = validUsernameAndPassWord(username: usernameText, password: passwordText, confirmPass: confirmText, phone: phoneText, email: emailText)
-
-        if validInput {
-            let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", sharedNotes: [])
-            signUpViewModel.addNewUser(username: usernameText, newUser: newUser, completion: { message in
+        
+        //        check if user input valid username & password
+        let validInput: (isValid: Bool, errorMessage: String) = SignUpViewModel.shared.validUsernameAndPassWord(username: usernameText, password: passwordText, confirmPass: confirmText, phone: phoneText, email: emailText)
+        
+        if validInput.isValid {
+            waitAlert()
+            let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", hint: "", sharedNotes: [])
+            SignUpViewModel.shared.addNewUser(username: usernameText, newUser: newUser, completion: { (isSuccess,message) in
                 self.errorLabel.text = message
+                self.dismiss(animated: false, completion: nil)
+                if isSuccess {
+                    self.showResultCreateUserAlert(title: "Create new user", message: "Success")
+                }
             })
-            self.errorLabel.isHidden = false
+        } else {
+            self.errorLabel.text = validInput.errorMessage
         }
-}
-
-
-//    validation for input username & password
-    func validUsernameAndPassWord(username: String, password: String, confirmPass: String, phone: String, email: String) -> Bool{
-        var errorMessage = ""
-        var isValid = true
-        let usernameLength = username.count
-
-        if usernameLength < 3 {
-            errorMessage.append("\nUsername > 3 chars")
-        }
-
-        if password != confirmPass {
-            errorMessage.append("\npassword and confirm do not match")
-        }
-
-        if username.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\nusername can not empty")
-        }
-
-        if password.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\npassword can not empty")
-        }
-
-        if phone.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\nphone can not empty")
-        }
-
-        if email.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\nemail can not empty")
-        }
-
-
-        if errorMessage != "" {
-            print(errorMessage)
-            errorLabel.text = errorMessage
-            errorLabel.isHidden = false
-            isValid = false
-        }
-
-        return isValid
+        self.errorLabel.isHidden = false
     }
-
-//  custom UI
+    
+    
+    //    MARK: - SET UP & CUSTOM UI
+    func setupUI() {
+        usernameTextField.text = ""
+        passwordTextField.text = ""
+        confirmPassTextField.text = ""
+        errorLabel.isHidden = true
+        self.navigationController?.isNavigationBarHidden = false
+    }
+    
+    //    set up delegate
+    func setupDelegate() {
+        usernameTextField.delegate = self
+        passwordTextField.delegate = self
+        confirmPassTextField.delegate = self
+        phoneTextField.delegate = self
+        emailTextField.delegate = self
+    }
+    
+    //  custom UI
     func customUI(){
         let uiTextFieldList: [UITextField: String] = [usernameTextField : "Username" ,
                                                       passwordTextField : "Password",
                                                       confirmPassTextField: "Confirm password",
-                                                      phoneTextField: "Phone Number",
-                                                      emailTextField: "Email"
+                                                      phoneTextField: "Phone Number (Optional)",
+                                                      emailTextField: "Email (Optional)"
         ]
         for (textField, placeHolder) in uiTextFieldList {
-            customTextField(textField, placeHolder)
+            TextFieldAndButtonCustomUI.shared.customTextField(textField, placeHolder)
+            TextFieldAndButtonCustomUI.shared.customPaddingForTextField(textField)
         }
-
-        customButton(signUpButton)
+        TextFieldAndButtonCustomUI.shared.customButton(signUpButton)
     }
-
-    let customTextField: (UITextField, String) -> Void = { (textField, placeHolder) in
-        textField.attributedPlaceholder = NSAttributedString(string: "  \(placeHolder)",
-            attributes:[NSAttributedString.Key.foregroundColor: UIColor.white])
-        textField.layer.cornerRadius = 18
-        textField.layer.borderWidth = 1
-        textField.layer.borderColor = UIColor.white.cgColor
-        textField.clipsToBounds = true
-    }
-
-    let customButton: (UIButton) -> Void = { (button) in
-        button.layer.cornerRadius = 18
-    }
-
 }

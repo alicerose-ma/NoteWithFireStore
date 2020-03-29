@@ -12,13 +12,18 @@ import Firebase
 public class FireBaseProxy {
     let usersCollection = Firestore.firestore().collection("Users")
     let notesCollection = Firestore.firestore().collection("Notes")
+    let imagesCollection = Firestore.firestore().collection("Images")
+    var noteList: [NoteData] = []
+    var maxNoteList: Int = 0
     static let shared = FireBaseProxy()
+    
     
     private init() {}
     
-    
-    public func sendUserRequest(username: String, completion: @escaping (([UserData]) -> Void)) {
+    //  MARK: -  USERS AND NOTE REQUESTS
+    public func sendUserRequest(username: String, password: String ,completion: @escaping (([UserData]) -> Void)) {
         usersCollection.whereField("username", isEqualTo: username)
+            .whereField("password", isEqualTo: password)
             .getDocuments() {(querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
@@ -36,7 +41,7 @@ public class FireBaseProxy {
     
     
     public func sendNoteRequest(username: String, completion: @escaping (([NoteData]) -> Void)) {
-            notesCollection.whereField("username", isEqualTo: username)
+        notesCollection.whereField("username", isEqualTo: username)
             .getDocuments() {(querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
@@ -51,7 +56,7 @@ public class FireBaseProxy {
         }
     }
     
-//    NOTES
+    //  MARK: -  NOTES
     public func addNewNote(documentID: String,newNote: NoteData) {
         notesCollection.document(documentID).setData(newNote.dictionary) { err in
             if let err = err {
@@ -91,49 +96,48 @@ public class FireBaseProxy {
     public func deleteNote(documentID: String, completion: @escaping (Bool) -> Void) {
         notesCollection.document(documentID).delete() { err in
             if let err = err {
-               print("Error removing document: \(err)")
+                print("Error removing document: \(err)")
             } else {
-               print("Document successfully removed!")
+                print("Document successfully removed!")
             }
         }
     }
     
+    //  MARK: -  PASSCODE UPDATE
+    public func updateUserPasscode(username: String, passcode: String, hint: String, completion: @escaping (Bool) -> Void){
+        usersCollection.document(username).updateData([
+            "passcode": passcode,
+            "hint": hint,
+        ]) { err in
+            if let err = err {
+                print("Error updating passcode: \(err)")
+                completion(false)
+            } else {
+                print("Passcode successfully updated")
+                completion(true)
+            }
+        }
+    }
     
-//    PASSCODE UPDATE
-     public func updateUserPasscode(username: String, passcode: String, completion: @escaping (Bool) -> Void){
-         usersCollection.document(username).updateData([
-             "passcode": passcode,
-         ]) { err in
-             if let err = err {
-                 print("Error updating passcode: \(err)")
-                 completion(false)
-             } else {
-                 print("Passcode successfully updated")
-                 completion(true)
-             }
-         }
-     }
-     
-        public func getUserPasscode(username: String, completion: @escaping (String) -> Void) {
-          usersCollection.whereField("username", isEqualTo: username)
-              .getDocuments() { (querySnapshot, err) in
-                  if let err = err {
-                      print("Error getting documents: \(err)")
-                  } else {
-                     do {
-                         let myUsers: [UserData] = try querySnapshot!.decoded()
+    public func getUserPasscode(username: String, completion: @escaping (String, String) -> Void) {
+        usersCollection.whereField("username", isEqualTo: username)
+            .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    do {
+                        let myUsers: [UserData] = try querySnapshot!.decoded()
                         print(myUsers[0].passcode)
-                        completion(myUsers[0].passcode)
-                     } catch {
-                         print("decoded User error")
-                     }
-                  }
-          }
-      }
-
+                        completion(myUsers[0].passcode, myUsers[0].hint)
+                    } catch {
+                        print("decoded User error")
+                    }
+                }
+        }
+    }
     
     
-//    USERS
+    //  MARK: - USERS
     public func isNewUsernameValid(username: String, completion: @escaping (Bool) -> Void) {
         usersCollection.whereField("username", isEqualTo: username)
             .getDocuments() { (querySnapshot, err) in
@@ -149,8 +153,9 @@ public class FireBaseProxy {
         }
     }
     
-    public func addNewUser(username: String, newUser: UserData, completion: @escaping (String) -> Void) {
+    public func addNewUser(username: String, newUser: UserData, completion: @escaping (Bool, String) -> Void) {
         var addUserMessage = ""
+        var isSuccess = false
         usersCollection.document(username).setData(newUser.dictionary) { err in
             if let err = err {
                 print("Error adding user: \(err)")
@@ -158,70 +163,183 @@ public class FireBaseProxy {
             } else {
                 print("User successfully added!")
                 addUserMessage = "User successfully added!"
+                isSuccess = true
             }
-            
-            completion(addUserMessage)
+            completion(isSuccess,addUserMessage)
         }
     }
     
-    //SHARE
-//
-//    public func updateSharedUserForSingleNote(documentId: String, userToShare: String, completion: @escaping (Bool) -> Void){
-//        notesCollection.document(documentId).getDocument { (document, error) in
-//        if let document = document, document.exists {
-//            let dataDescription = document.d
-//            print("Document data: \(dataDescription)")
-//        } else {
-//            print("Document does not exist")
-//        }
-//        }
-//    }
-    
-    public func share(userToShare: String, note: String ,completion: @escaping ((Bool) -> Void)) {
-         usersCollection.whereField("username", isEqualTo: userToShare)
-             .getDocuments() {(querySnapshot, err) in
-                 if let err = err {
-                     print("Error getting documents: \(err)")
-                 } else {
-                     do {
+    //  MARK: - SHARE
+    public func getSharedNote(username: String,  completion: @escaping (([NoteData]) -> Void)) {
+        var sharedNotes: [String] = []
+        usersCollection.whereField("username", isEqualTo: username)
+            .getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    do {
                         let myUsers: [UserData] = try querySnapshot!.decoded()
-                        print(myUsers[0].sharedNotes)
-                        var sharedNotes = myUsers[0].sharedNotes
-                        sharedNotes.append(note)
+                        sharedNotes = myUsers[0].sharedNotes
+                        let oldMaxNoteList = self.maxNoteList
+                        self.maxNoteList = myUsers[0].sharedNotes.count
                         
-                        print(myUsers[0].sharedNotes)
-                        self.usersCollection.document(userToShare).updateData([
+                        //                        if oldMaxNoteList != self.maxNoteList {
+                        //
+                        //                        }
+                        for note in sharedNotes{
+                            let userAndId = note.components(separatedBy: "note")
+                            let id = Int(userAndId[1])
+                            self.getNoteByID(username: userAndId[0], id: id!, completion: { note in
+                                self.noteList.append(note[0])
+                            })
+                        }
+                        print("AAA")
+                        print(self.noteList)
+                        completion(self.noteList)
+                    } catch {
+                        print("decoded User error")
+                    }
+                }
+        }
+        
+        //        getNoteByID(username: username, id: id, completion: { notes in
+        //                sharedUsers = notes[0].sharedUsers
+        //                if !sharedUsers.contains(userToShare) {
+        //                    sharedUsers.append(userToShare)
+        //                }
+        //                print("shared USER = \(sharedUsers)")
+        //                let documentId = username + "note" + String(id)
+        //                self.notesCollection.document(documentId).updateData([
+        //                    "sharedUsers": sharedUsers
+        //                ]) { err in
+        //                    if let err = err {
+        //                        print("Error updating shared user: \(err)")
+        //                    } else {
+        //                        print("Shared user successfully updated")
+        //                    }
+        //                }
+        //            })
+    }
+    
+    
+    
+    
+    
+    public func updateSharedUserForSingleNote(username: String, id: Int, userToShare: String) {
+        var sharedUsers: [String] = []
+        
+        usersCollection.document(userToShare).getDocument { (document, error) in
+            if let document = document, document.exists {
+                
+                self.getNoteByID(username: username, id: id, completion: { notes in
+                    sharedUsers = notes[0].sharedUsers
+                    if !sharedUsers.contains(userToShare) {
+                        sharedUsers.append(userToShare)
+                    }
+                    print("shared USER = \(sharedUsers)")
+                    let documentId = username + "note" + String(id)
+                    self.notesCollection.document(documentId).updateData([
+                        "sharedUsers": sharedUsers
+                    ]) { err in
+                        if let err = err {
+                            print("Error updating shared user: \(err)")
+                        } else {
+                            print("Shared user successfully updated")
+                        }
+                    }
+                })
+            }
+        }
+    }
+    
+    
+    public func deleteNoteInSharedUsers(noteName: String) {
+        usersCollection.whereField("sharedNotes", arrayContains: noteName).getDocuments() {(querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                do {
+                    let myUsers: [UserData] = try querySnapshot!.decoded()
+                    for user in myUsers {
+                        print("username = \(user.username) delete \(user.sharedNotes)")
+                        
+                        var sharedNotes = user.sharedNotes
+                        sharedNotes.removeAll{$0.contains(noteName)}
+                        
+                        print("shared Notes = \(sharedNotes)")
+                        self.usersCollection.document(user.username).updateData([
                             "sharedNotes": sharedNotes,
-//                            "sharedNotes"FieldValue.arrayUnion('greater_virginia')
                         ]) { err in
                             if let err = err {
-                                print("Error updating passcode: \(err)")
-                                completion(false)
+                                print("Error updating shared Notes: \(err)")
                             } else {
-                                print("Passcode successfully updated")
-                                completion(true)
+                                print("Shared note successfully updated")
                             }
                         }
-                            
-                         completion(true)
-                     } catch {
-                         print("decoded User error")
-                     }
-                 }
-         }
-     }
+                    }
+                } catch {
+                    print("decoded User error")
+                }
+            }
+        }
+    }
+    
+    
+    public func shareNoteToUser(userToShare: String, noteName: String ,completion: @escaping (Bool) -> Void) {
+        usersCollection.whereField("username", isEqualTo: userToShare)
+            .getDocuments() {(querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    do {
+                        let myUsers: [UserData] = try querySnapshot!.decoded()
+                        if myUsers.count == 1 {
+                            var sharedNotes = myUsers[0].sharedNotes
+                            if !sharedNotes.contains(noteName) {
+                                sharedNotes.append(noteName)
+                            }
+                            self.usersCollection.document(userToShare).updateData([
+                                "sharedNotes": sharedNotes,
+                            ]) { err in
+                                if let err = err {
+                                    print("Error updating shared Notes: \(err)")
+                                } else {
+                                    print("Shared note successfully updated")
+                                }
+                            }
+                            completion(true)
+                        } else {
+                            completion(false)
+                        }
+                    } catch {
+                        print("decoded User error")
+                    }
+                }
+        }
+    }
+    
+    
+    
+    func uploadImage(urlImgStr: URL, username: String,noteID: String ,imageName: String){
+        let storageRef = Storage.storage().reference()
+        let imageRef = storageRef.child("\(username)/\(noteID)/\(imageName)")
+        
+        let uploadTask = imageRef.putFile(from: urlImgStr, metadata: nil) { (metadata, error) in
+            guard metadata != nil else {
+                print("CANNOT UPLOAD IMAGE")
+                return
+            }
+            imageRef.downloadURL { (url, error) in
+                guard url != nil else {
+                    // Uh-oh, an error occurred!
+                    print("CANNOT DOWNLOAD IMAGE")
+                    return
+                }
+            }
+        }
+    }
     
 }
-
-
-
-
-    
-     
-
-
-
-
 // decodable 1 single document
 extension QueryDocumentSnapshot {
     func decoded<Type: Decodable>() throws -> Type {
@@ -243,4 +361,12 @@ extension QuerySnapshot {
     }
     
 }
+
+
+
+
+
+
+
+
 

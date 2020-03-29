@@ -10,7 +10,10 @@ import Foundation
 import UIKit
 import Speech
 
-class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
+public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
+    static let shared =  VoiceViewModel()
+    private override init() {}
+    
     let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer(locale: Locale.init(identifier:"en-us"))
     var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     var recognitionTask: SFSpeechRecognitionTask?
@@ -18,11 +21,11 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     
     var subStr1 = ""
     var subStr2 = ""
-
     
     var alert = UIAlertController()
     
-    func voiceSetupWithoutRecordBtn() {
+//    provice authorize
+    func voiceSetup() {
         speechRecognizer?.delegate = self
         SFSpeechRecognizer.requestAuthorization {
             status in
@@ -40,7 +43,10 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
             case .restricted:
                 buttonState = false
                 print("Speech recognition not supported on this device")
+            @unknown default:
+                fatalError()
             }
+            
         }
     }
     
@@ -49,6 +55,7 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         return input.rawValue
     }
     
+//    stop record
     func stopRecording() {
         audioEngine.stop()
         recognitionRequest?.endAudio()
@@ -56,6 +63,7 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     }
     
     
+//    prepare audio to start record
     func prepareAudioSession() {
         print("Recording started")
         
@@ -75,6 +83,8 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         }
     }
     
+    
+//    start record for note
     func startRecording(titleTextField: UITextField, desTextView: UITextView) {
         prepareAudioSession()
         
@@ -103,9 +113,8 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { res, err in
             var isLast = false
             if let res = res {
-                
                 let bestStr = self.subStr1 + res.bestTranscription.formattedString +  " " + self.subStr2
-            
+                print(bestStr)
                 if titleTextField.isFirstResponder {
                     titleTextField.text = bestStr
                 } else {
@@ -114,7 +123,6 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
                 
                 isLast = (res.isFinal)
             }
-            
             if err != nil || isLast {
                 self.audioEngine.stop()
                 inputNode.removeTap(onBus: 0)
@@ -127,6 +135,7 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     }
     
 
+//    record voice to text for textfield and textview
 //    audiEngine running => stop , else => start
     func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView) {
         if audioEngine.isRunning {
@@ -157,11 +166,9 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         }
     }
     
-    
+//    record keywords to search
     func startRecordingWithAlert() {
         prepareAudioSession()
-        
-        
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest() //read from buffer
         let inputNode = audioEngine.inputNode
 
@@ -182,7 +189,6 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
         } catch {
             print("Can't start the engine")
         }
-        
         
         recognitionRequest.shouldReportPartialResults = true
         recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { res, err in
@@ -205,49 +211,5 @@ class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     }
     
     
-    func startRecordingForPasscode(textField: UITextField) {
-           prepareAudioSession()
-           
-           recognitionRequest = SFSpeechAudioBufferRecognitionRequest() //read from buffer
-           let inputNode = audioEngine.inputNode
-           
-           guard let recognitionRequest = recognitionRequest else {
-               fatalError("Could not create request instance")
-           }
-           
-           // Configure the microphone input.
-           let format = inputNode.outputFormat(forBus: 0)
-           inputNode.installTap(onBus: 0, bufferSize: 1024, format: format) {
-               buffer, _ in
-               self.recognitionRequest?.append(buffer)
-           }
-           audioEngine.prepare()
-           
-           do {
-               try audioEngine.start()
-           } catch {
-               print("Can't start the engine")
-           }
-           
-           recognitionRequest.shouldReportPartialResults = true
-           recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { res, err in
-               var isLast = false
-               if let res = res {
-                   let bestStr =  res.bestTranscription.formattedString
-                   textField.text = bestStr
-                   isLast = (res.isFinal)
-               }
-               
-               if err != nil || isLast {
-                   self.audioEngine.stop()
-                   inputNode.removeTap(onBus: 0)
-                   
-                   self.recognitionRequest = nil
-                   self.recognitionTask = nil
-                   
-                   print("Recording stopped")
-               }
-           }
-       }
-
+   
 }
