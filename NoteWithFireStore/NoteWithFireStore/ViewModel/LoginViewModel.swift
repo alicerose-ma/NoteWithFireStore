@@ -29,6 +29,9 @@ public class LoginViewModel {
         defaults.set(newUsername, forKey: "username")
         let newUser =  UserDefaults.standard.string(forKey: "username") // change username
         NoteViewModel.shared.username = newUser
+        NoteDetailViewModel.shared.username = newUser
+        SetPasscodeViewModel.shared.username = newUser
+        SharedNoteViewModel.shared.username = newUser
     }
 }
 

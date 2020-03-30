@@ -21,6 +21,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     var unlockStatusBtn = UIBarButtonItem()
     var voiceBtn = UIBarButtonItem()
     var imageBtn = UIBarButtonItem()
+    var userShareBtn = UIBarButtonItem()
     
     var hasLock: Bool = false
     var lockStatus: Bool = false
@@ -99,11 +100,13 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             unlockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock.open"), style: .plain, target: self, action: #selector(self.lockON))
             voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
             imageBtn = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(self.addImage))
+            userShareBtn = UIBarButtonItem(image: UIImage(systemName: "person.badge.plus.fill"), style: .plain, target: self, action: #selector(self.shareNote))
         } else {
             lockStatusBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "lock", action:  #selector(self.lockOFF)))
             unlockStatusBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "lockOpen", action:  #selector(self.lockON)))
             voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "mic", action:  #selector(self.voice)))
             imageBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "photo", action:  #selector(self.addImage)))
+            userShareBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "userPlus", action:  #selector(self.addImage)))
         }
         
     }
@@ -118,7 +121,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             navigationItem.rightBarButtonItems?.first?.isEnabled = false
         } else {
             lockView.isHidden = true
-            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn]
+            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
         }
         voiceBtn.isEnabled = false
         imageBtn.isEnabled = false
@@ -154,16 +157,18 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         if isRecord {
             imageBtn.isEnabled = true
             insertLockForNoteBtn.isEnabled = true
+            userShareBtn.isEnabled = true
             changeNavButtonItemForIOS12AndIOS13(name: "mic")
             
         } else {
             imageBtn.isEnabled = false
             insertLockForNoteBtn.isEnabled = false
+            userShareBtn.isEnabled = false
             if #available(iOS 13.0, *) {
                 voiceBtn.image = UIImage(systemName: "mic.slash")
             } else {
                 voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "micSlash", action:  #selector(self.voice)))
-                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn]
+                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
             }
         }
         isRecord = !isRecord
@@ -197,7 +202,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             if hasLock {
                 navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,unlockStatusBtn]
             } else {
-                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn]
+                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
             }
         }
         
@@ -212,9 +217,9 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     func showAddOrRemoveLockOrEditPasscodeActionSheet(hasLock: Bool) {
         let alert = UIAlertController(title: "Lock Note", message: "Select Lock Options" , preferredStyle: .actionSheet)
         if hasLock {
-            self.hasLock = false
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
-                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn,self.voiceBtn, self.imageBtn]
+                 self.hasLock = false
+                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn,self.voiceBtn, self.imageBtn, self.userShareBtn]
             }))
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
@@ -234,6 +239,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             if passcode != "" {
                 alert.addAction(UIAlertAction(title: "Edit Passcode", style: .default, handler: { (_) in
                     SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint) in
+                        NoteViewModel.shared.enterPasscodeCount = 0
                         self.enterPasscodeAlert(passcode: passcode, hint: hint, passcodeCase: .editPasscode)
                     })
                 }))
@@ -329,6 +335,11 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,unlockStatusBtn]
     }
     
+    
+//    MARK: SHARE NOTE SETTING
+    @objc func shareNote() {
+          
+    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowSetPassViewFromEdit" {

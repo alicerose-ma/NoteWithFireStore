@@ -179,8 +179,8 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     func showAddOrRemoveLockOrEditPasscodeActionSheet(hasLock: Bool) {
         let alert = UIAlertController(title: "Lock Note", message: "Select Lock Options" , preferredStyle: .actionSheet)
         if hasLock {
-            self.hasLock = false
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
+                self.hasLock = false
                 self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn,self.voiceBtn, self.imageBtn]
             }))
         } else {
@@ -201,6 +201,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
             if passcode != "" {
                 alert.addAction(UIAlertAction(title: "Edit Passcode", style: .default, handler: { (_) in
                     SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint) in
+                        NoteViewModel.shared.enterPasscodeCount = 0
                         self.enterPasscodeAlert(passcode: passcode, hint: hint, passcodeCase: .editPasscode)
                     })
                 }))
@@ -248,7 +249,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     //  MARK: - ENTER PASSCODE TO EDIT PASSCODE AND UNLOCK
     func enterPasscodeAlert(passcode: String, hint: String , passcodeCase: InputPasscodeCase) {
         var alert = UIAlertController()
-        if NoteViewModel.shared.enterPasscodeCount >= 2 {
+        if NoteViewModel.shared.enterPasscodeCount >= 3 {
             alert = UIAlertController(title: "Enter Passcode", message: "Hint: \(hint)", preferredStyle: UIAlertController.Style.alert)
         } else {
             alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)

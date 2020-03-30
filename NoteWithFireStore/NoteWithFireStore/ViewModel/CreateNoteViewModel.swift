@@ -13,6 +13,7 @@ public class CreateNoteViewModel {
     static let shared =  CreateNoteViewModel()
     private init() {}
     
+    
     public func addNewNote(documentID: String, newNote: NoteData) {
         FireBaseProxy.shared.addNewNote(documentID: documentID, newNote: newNote)
     }
