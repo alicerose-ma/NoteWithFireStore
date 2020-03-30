@@ -13,6 +13,7 @@
 		18BC8EB1242F7EBC00FB842F /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC8EB0242F7EBC00FB842F /* KeyboardHelper.swift */; };
 		18BC8EB5242FC29000FB842F /* TextFieldAndBtnCustomUIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC8EB4242FC29000FB842F /* TextFieldAndBtnCustomUIHelper.swift */; };
 		18BC8EB7243054BB00FB842F /* UIImageIO12And13Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC8EB6243054BA00FB842F /* UIImageIO12And13Helper.swift */; };
+		18BC8EB92431A62200FB842F /* ShareSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC8EB82431A62200FB842F /* ShareSettingViewController.swift */; };
 		18C4F031242E0BE9003D9C66 /* ShowPasscodeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18C4F030242E0BE9003D9C66 /* ShowPasscodeViewModel.swift */; };
 		18E1B2F02410F9F400E479C1 /* FireBaseProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */; };
 		18E2E0792420D5E60072CCD3 /* AttachmentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18E2E0782420D5E60072CCD3 /* AttachmentViewModel.swift */; };
@@ -84,6 +85,7 @@
 		18BC8EB0242F7EBC00FB842F /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
 		18BC8EB4242FC29000FB842F /* TextFieldAndBtnCustomUIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldAndBtnCustomUIHelper.swift; sourceTree = "<group>"; };
 		18BC8EB6243054BA00FB842F /* UIImageIO12And13Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageIO12And13Helper.swift; sourceTree = "<group>"; };
+		18BC8EB82431A62200FB842F /* ShareSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSettingViewController.swift; sourceTree = "<group>"; };
 		18C4F030242E0BE9003D9C66 /* ShowPasscodeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPasscodeViewModel.swift; sourceTree = "<group>"; };
 		18E1B2EF2410F9F400E479C1 /* FireBaseProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FireBaseProxy.swift; sourceTree = "<group>"; };
 		18E2E0782420D5E60072CCD3 /* AttachmentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AttachmentViewModel.swift; sourceTree = "<group>"; };
@@ -299,6 +301,7 @@
 				18FE549B2402DEA600B6307E /* CreateNoteViewController.swift */,
 				18FE549D2402DEB400B6307E /* SetPasscodeViewController.swift */,
 				18039462242B66C60047773F /* SharedNoteViewController.swift */,
+				18BC8EB82431A62200FB842F /* ShareSettingViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -565,6 +568,7 @@
 				18BC8EB1242F7EBC00FB842F /* KeyboardHelper.swift in Sources */,
 				18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */,
 				18FE54982402DE7E00B6307E /* NoteTableViewCell.swift in Sources */,
+				18BC8EB92431A62200FB842F /* ShareSettingViewController.swift in Sources */,
 				18FE54862402DDAA00B6307E /* LoginViewModel.swift in Sources */,
 				180922862403993E0073E3F9 /* Alertable.swift in Sources */,
 				18FE54922402DE3D00B6307E /* LoginViewController.swift in Sources */,

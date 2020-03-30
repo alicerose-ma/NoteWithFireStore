@@ -195,7 +195,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     // alert shows for user to enter passcode to delete
     func enterPasscodeToDelete(passcode: String, hint: String ,indexPath: IndexPath) {
         var alert = UIAlertController()
-        if NoteViewModel.shared.enterPasscodeCount >= 2 {
+        if NoteViewModel.shared.enterPasscodeCount >= 3 {
             alert = UIAlertController(title: "Enter Passcode", message: "Hint: \(hint)", preferredStyle: UIAlertController.Style.alert)
         } else {
             alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)

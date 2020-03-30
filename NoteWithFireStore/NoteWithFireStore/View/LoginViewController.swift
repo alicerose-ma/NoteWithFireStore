@@ -52,8 +52,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
                 if success {
                     self.loginStatus.text = "Successed"
                     LoginViewModel.shared.updateCurrentUsername(newUsername: self.usernameTextField.text!)
-                    self.dismiss(animated: false, completion: nil)
-                    self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
+                    self.dismiss(animated: false, completion: {
+                        self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
+                    })
                 } else {
                     self.dismiss(animated: false, completion: nil)
                     self.loginStatus.text = "Failed"
