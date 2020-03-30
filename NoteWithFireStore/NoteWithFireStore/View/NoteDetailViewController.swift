@@ -338,13 +338,16 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
 //    MARK: SHARE NOTE SETTING
     @objc func shareNote() {
-          
+          self.performSegue(withIdentifier: "ShowShareSetting", sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowSetPassViewFromEdit" {
             let destinationVC  = segue.destination as! SetPasscodeViewController
             destinationVC.setPasscodeDelegate = self
+        }
+        if segue.identifier == "ShowShareSetting" {
+            let destinationVC  = segue.destination as! ShareSettingViewController
         }
     }
     

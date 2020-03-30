@@ -604,7 +604,6 @@
                     <connections>
                         <outlet property="shareModeTableView" destination="wGo-dp-G5p" id="u7N-HE-h0k"/>
                         <outlet property="sharedUserTableView" destination="tkb-R6-03b" id="Xa5-By-ZcL"/>
-                        <outlet property="userTableView" destination="tkb-R6-03b" id="ym1-8Y-cpP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="atQ-6O-rnB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
