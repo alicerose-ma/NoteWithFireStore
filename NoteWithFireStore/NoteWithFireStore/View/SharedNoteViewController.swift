@@ -21,7 +21,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         sharedTableView.delegate = self
         sharedTableView.dataSource = self
-        self.title = "Notes"
+        self.title = "Shared Notes"
         setupNavUI()
 
         print(SharedNoteViewModel.shared.sharedNotes)

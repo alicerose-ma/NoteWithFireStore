@@ -33,7 +33,15 @@ public class SignUpViewModel {
         let usernameLength = username.count
         
         if usernameLength < 3 {
-            errorMessage.append("\nUsername > 3 chars")
+            errorMessage.append("\nusername needs > 3 chars")
+        }
+        
+        if username.contains(" ") {
+            errorMessage.append("\nusername can't contain space")
+        }
+        
+        if usernameLength == 50 {
+            errorMessage.append("\nusername can not > 50 chars")
         }
         
         if password != confirmPass {
@@ -48,10 +56,22 @@ public class SignUpViewModel {
             errorMessage.append("\npassword can not empty")
         }
         
+        if !isValidEmail(email: email) && !email.isEmpty {
+            errorMessage.append("\ninvalid email")
+        }
+        
         if errorMessage != "" {
             isValid = false
         }
         
         return (isValid, errorMessage)
+    }
+    
+    
+    func isValidEmail(email: String) -> Bool {
+        let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
+
+        let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
+        return emailPred.evaluate(with: email)
     }
 }

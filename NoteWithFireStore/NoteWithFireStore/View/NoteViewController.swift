@@ -10,7 +10,7 @@ import UIKit
 import Speech
 
 
-class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchBarDelegate, SFSpeechRecognizerDelegate, UITextFieldDelegate {
+class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchControllerDelegate ,UISearchBarDelegate, SFSpeechRecognizerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var noteTableView: UITableView!
     
@@ -43,6 +43,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         super.viewWillAppear(animated)
         didLogin()
         searchController.searchBar.text = nil
+        self.tabBarController?.tabBar.isHidden = false
     }
     
     //    check if user login before
@@ -284,7 +285,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     //    MARK: - SET UP UI NAV & SEARCH CONTROLLER
     func setupNavUI() {
-        self.title = "Notes"
+        self.title = "My Notes"
         noteTableView.dataSource = self
         noteTableView.delegate = self
         
@@ -293,29 +294,45 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         let exitBtn = UIBarButtonItem(title: "Log out", style: .done, target: self, action: #selector(exit))
         self.navigationItem.leftBarButtonItem = exitBtn
+        
+        tabBarItem.title = "My Notes"
     }
     
     func setupSearchController(){
+        self.navigationController!.navigationBar.barTintColor = .blue
+        searchController.delegate = self
         searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        
         searchController.obscuresBackgroundDuringPresentation = false
         definesPresentationContext = true
-        noteTableView.tableHeaderView = searchController.searchBar
-        
-        searchController.searchBar.sizeToFit()
+
         searchController.searchBar.scopeButtonTitles = ["All", "Lock", "Unlock"]
-        searchController.searchBar.delegate = self
+//        change color of scope bar
+        searchController.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: UIControl.State.normal)
+        searchController.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: UIControl.State.selected)
+
         searchController.searchBar.placeholder = "Enter Keywords to search"
-        searchController.hidesNavigationBarDuringPresentation = false
-        
+        searchController.hidesNavigationBarDuringPresentation = true
         searchController.searchBar.showsBookmarkButton = true
+        searchController.searchBar.sizeToFit()
+        
+        
         if #available(iOS 13.0, *) {
+            self.navigationItem.searchController = searchController
+            self.navigationItem.hidesSearchBarWhenScrolling = false
+            searchController.searchBar.searchTextField.textColor = .white
             searchController.searchBar.setImage(UIImage(systemName: "mic.fill"), for: .bookmark, state: .normal)
         } else {
+            noteTableView.tableHeaderView = searchController.searchBar
+            let textFieldInsideSearchBar = searchController.searchBar.value(forKey: "searchField") as? UITextField
+            textFieldInsideSearchBar?.textColor = .white
             searchController.searchBar.setImage(UIImage(named: "searchVoice"), for: .bookmark, state: .normal)
             
         }
         // to hide it when the view is first presented.
         //        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
     }
+    
 }
 

@@ -20,6 +20,7 @@ public class ShowPasscodeViewModel {
     //    MARK: - PASSWORD ICON SHOW
     //    setup password show or hide
     func setupPasswordIcon(color: UIColor) {
+//        textField.becomeFirstResponder()
         isHidden = false
         if #available(iOS 13.0, *) {
             hiddenPwdIcon.setImage(UIImage(systemName: "eye")!.withRenderingMode(.alwaysTemplate), for: .normal)
@@ -37,6 +38,7 @@ public class ShowPasscodeViewModel {
     
 //    click show password icon to hide and show password
     @objc func showAndHidePasscodeAction(_ sender: Any) {
+        textField.becomeFirstResponder()
         if isHidden {
             textField.isSecureTextEntry = false
             if #available(iOS 13.0, *) {

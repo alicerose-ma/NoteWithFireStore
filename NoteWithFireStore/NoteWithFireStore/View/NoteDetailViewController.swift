@@ -86,6 +86,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         })
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        titleTextField.becomeFirstResponder()
+    }
+    
     //    MARK: - setup UI
     func setupDelegate(){
         titleTextField.delegate = self
@@ -94,14 +98,15 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     }
     
     func setUpNavBarItem() {
-        insertLockForNoteBtn = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(addOrRemoveLock))
         if #available(iOS 13.0, *) {
+            insertLockForNoteBtn = UIBarButtonItem(image: UIImage(systemName: "lock.shield"), style: .plain, target: self, action: #selector(self.addOrRemoveLock))
             lockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock"), style: .plain, target: self, action: #selector(self.lockOFF))
             unlockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock.open"), style: .plain, target: self, action: #selector(self.lockON))
             voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
             imageBtn = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(self.addImage))
             userShareBtn = UIBarButtonItem(image: UIImage(systemName: "person.badge.plus.fill"), style: .plain, target: self, action: #selector(self.shareNote))
         } else {
+            insertLockForNoteBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "security", action:  #selector(self.addOrRemoveLock)))
             lockStatusBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "lock", action:  #selector(self.lockOFF)))
             unlockStatusBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "lockOpen", action:  #selector(self.lockON)))
             voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "mic", action:  #selector(self.voice)))
@@ -125,6 +130,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         }
         voiceBtn.isEnabled = false
         imageBtn.isEnabled = false
+        self.tabBarController?.tabBar.isHidden = true
     }
     
 
@@ -140,14 +146,20 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         
         let sharedUsers = SharedNoteViewModel.shared.sharedUsers
         
-        let note = NoteData(id: uniqueID, username:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+        var note = NoteData(id: uniqueID, username:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
         
         if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
             NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
         } else if title.isEmpty && !desTextView.attributedText.string.isEmpty {
+            note.title = "Undefined title"
             NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
         } else if !title.isEmpty && desTextView.attributedText.string.isEmpty {
+            note.des = "No description"
             NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
+        } else {
+            NoteViewModel.shared.deleteNote(uniqueID: uniqueID, completion: { isDeleted in
+                print(isDeleted)
+            })
         }
     }
     

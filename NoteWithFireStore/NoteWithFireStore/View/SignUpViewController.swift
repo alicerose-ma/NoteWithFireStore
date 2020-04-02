@@ -39,6 +39,13 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         return true
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        return updatedText.count <= 50
+    }
+    
     
     //    MARK: - SIGN UP
     @IBAction func signUpAction(_ sender: Any) {
@@ -64,6 +71,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         } else {
             self.errorLabel.text = validInput.errorMessage
         }
+        self.view.endEditing(true)
         self.errorLabel.isHidden = false
     }
     
@@ -73,6 +81,9 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         usernameTextField.text = ""
         passwordTextField.text = ""
         confirmPassTextField.text = ""
+//        phoneTextField.text = ""
+//        emailTextField.text = ""
+        phoneTextField.keyboardType = .asciiCapableNumberPad
         errorLabel.isHidden = true
         self.navigationController?.isNavigationBarHidden = false
     }
