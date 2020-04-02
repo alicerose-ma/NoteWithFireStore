@@ -38,6 +38,9 @@ class SetPasscodeViewController: UIViewController, UITextFieldDelegate, Alertabl
     func setupNavBarAndDelegate(){
         let setPasscodeBtn = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(setPasscode))
         navigationItem.rightBarButtonItem = setPasscodeBtn
+        
+        passcodeTextField.isSecureTextEntry = true
+        confirmPasscode.isSecureTextEntry = true
         passcodeTextField.delegate = self
         confirmPasscode.delegate = self
         hintTextField.delegate = self

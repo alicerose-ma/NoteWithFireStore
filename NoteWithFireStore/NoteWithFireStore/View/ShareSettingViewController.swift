@@ -13,6 +13,9 @@ class ShareSettingViewController: UIViewController {
     @IBOutlet weak var sharedUserTableView: UITableView!
     @IBOutlet weak var shareModeTableView: UITableView!
     
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()

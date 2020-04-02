@@ -15,6 +15,8 @@ class NoteTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
+        desLabel.font = UIFont.italicSystemFont(ofSize: 14.0)
         // Initialization code
     }
 

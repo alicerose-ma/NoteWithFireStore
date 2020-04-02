@@ -89,6 +89,7 @@ public extension Alertable where Self: UIViewController {
         VoiceViewModel.shared.alert.addAction(UIAlertAction(title: "OK",style: UIAlertAction.Style.default, handler: {(_: UIAlertAction!) in
             VoiceViewModel.shared.stopRecording()
             searchController.searchBar.text = VoiceViewModel.shared.alert.message
+            searchController.isActive = true
         }))
         self.present(VoiceViewModel.shared.alert, animated: true)
     }

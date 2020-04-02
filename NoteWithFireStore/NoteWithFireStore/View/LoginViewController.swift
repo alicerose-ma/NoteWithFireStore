@@ -38,6 +38,13 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         return true
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        return updatedText.count <= 50
+    }
+    
     //    MARK: - LOGIN
     @IBAction func loginAction(_ sender: UIButton ) {
         let usernameText = usernameTextField.text!
