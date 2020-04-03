@@ -11,10 +11,10 @@ import Foundation
 import UIKit
 
 
-//validate passcode to lock
-public enum PasscodeValidationError: String {
-    case wrong = "Wrong Passcode"
-}
+////validate passcode to lock
+//public enum PasscodeValidationError: String {
+//    case wrong = "Wrong Passcode"
+//}
 
 //set up passcode
 public enum PasscodeMessage: String {
@@ -36,8 +36,7 @@ public extension Alertable where Self: UIViewController {
     
 //    MARK: - LOGIN AND EXIT ALERT
 //    wait for login
-    func waitAlert(){
-        let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+    func waitAlert(alert: UIAlertController) {
         let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
         loadingIndicator.hidesWhenStopped = true
         loadingIndicator.style = UIActivityIndicatorView.Style.gray
@@ -60,8 +59,9 @@ public extension Alertable where Self: UIViewController {
     
 //    MARK: - PASSCODE ALERT
 //    show wrong passcode
-    func showWrongPasscodeAlert(title: alertPasscodeTitle, message: PasscodeValidationError, preferredStyle: UIAlertController.Style = .alert, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title.rawValue, message: message.rawValue, preferredStyle: .alert)
+    func showErrorWithoutAction(title: String, message: String, preferredStyle: UIAlertController.Style = .alert, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
         self.present(alert, animated: true, completion: completion)
     }
     

@@ -12,7 +12,11 @@ import Speech
 
 class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchControllerDelegate ,UISearchBarDelegate, SFSpeechRecognizerDelegate, UITextFieldDelegate {
     
+    @IBOutlet weak var emptyNoteView: UIView!
     @IBOutlet weak var noteTableView: UITableView!
+    let refreshControl = UIRefreshControl()
+    
+//    var alert = UIAlertController()
     
     //  list of note getting from Firestore
     var allNoteList = [NoteData]()
@@ -41,9 +45,13 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - CHECK USER LOGIN BEFORE
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        didLogin()
         searchController.searchBar.text = nil
+        self.emptyNoteView.isHidden = true
         self.tabBarController?.tabBar.isHidden = false
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        didLogin()
     }
     
     //    check if user login before
@@ -60,12 +68,18 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     //    load note list of user
     func loadNoteList() {
         NoteViewModel.shared.getNoteList(completion: { notes in
-            self.allNoteList = notes
-            self.filteredNoteList = notes
-            DispatchQueue.main.async {
-                self.noteTableView.reloadData()
+            if notes.count == 0 {
+                self.emptyNoteView.isHidden = false
+            } else {
+                self.emptyNoteView.isHidden = true
+                self.allNoteList = notes
+                self.filteredNoteList = notes
+                DispatchQueue.main.async {
+                    self.noteTableView.reloadData()
+                }
             }
         })
+            
     }
     
     
@@ -196,11 +210,18 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     // alert shows for user to enter passcode to delete
     func enterPasscodeToDelete(passcode: String, hint: String ,indexPath: IndexPath) {
         var alert = UIAlertController()
-        if NoteViewModel.shared.enterPasscodeCount >= 3 {
-            alert = UIAlertController(title: "Enter Passcode", message: "Hint: \(hint)", preferredStyle: UIAlertController.Style.alert)
-        } else {
-            alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+        var message = ""
+        switch NoteViewModel.shared.enterPasscodeCount {
+            case let x where x == 0:
+                message = ""
+            case let x where x >= 1 && x < 3:
+                message = "Wrong passcode, try again"
+            case let x where x >= 3:
+                message = "Wrong passcode, try again \nHint: \n\(hint)"
+            default:
+                print("this is impossible")
         }
+        alert = UIAlertController(title: "Enter Passcode", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addTextField(configurationHandler: { textField in
             textField.delegate = self
@@ -216,11 +237,14 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.executeDeleteNote(indexPath: indexPath) //execute delete
                 } else {
                     NoteViewModel.shared.enterPasscodeCount += 1
-                    self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
+//                    self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
+//                    DispatchQueue.main.async{
+//                          self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
+//                    }
+                     
                     self.dismiss(animated: true, completion: {
-                        self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
+                      self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
                     })
-                    
                 }
             }})
         )
@@ -246,6 +270,11 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         // delete filtered list UI
         self.filteredNoteList.remove(at: indexPath.row)
         self.noteTableView.deleteRows(at: [indexPath], with: .fade)
+        
+        // no note => show empty view
+        if self.allNoteList.count == 0 {
+            self.emptyNoteView.isHidden = false
+        }
     }
     
     
@@ -256,6 +285,11 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     @objc func exit() {
         exitAlert(identifier: "ShowLoginViewFromYourNote")
+    }
+    
+    @objc func refreshTableView(_ sender: Any) {
+        loadNoteList()
+        self.refreshControl.endRefreshing()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -296,7 +330,18 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationItem.leftBarButtonItem = exitBtn
         
         tabBarItem.title = "My Notes"
+        
+        if #available(iOS 10.0, *) {
+            noteTableView.refreshControl = refreshControl
+        } else {
+            noteTableView.addSubview(refreshControl)
+        }
+        
+        refreshControl.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
     }
+    
+    
     
     func setupSearchController(){
         self.navigationController!.navigationBar.barTintColor = .blue

@@ -35,18 +35,15 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
          textField.resignFirstResponder()
          return true
      }
-    
-    func textViewDidEndEditing(_ textView: UITextView) {
-        textView.resignFirstResponder()
-        self.view.endEditing(true)
-    }
-    
+        
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavBarUI()
         setupDelegate()
         VoiceViewModel.shared.voiceSetup()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
+        registerForKeyboardNotifications()
+        setupTextViewWithDoneBtn()
         
         NoteDetailViewModel.shared.getNoteByID(id: uniqueID, completion: { notes in
             for note in notes {
@@ -137,6 +134,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         VoiceViewModel.shared.stopRecording()
+        deregisterFromKeyboardNotifications()
         let title = titleTextField.text!
         let description = desTextView.text!
         
@@ -235,14 +233,18 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             }))
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
-                SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint) in
-                    if passcode == "" {
-                        self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
-                    } else {
-                        self.hasLock = true
-                        self.addLockIconToNavBar()
-                    }
-                })
+                if self.titleTextField.text!.isEmpty && self.desTextView.text!.isEmpty {
+                   self.showErrorWithoutAction(title: "Add lock failed", message: "Title and description can not both empty")
+                } else {
+                    SetPasscodeViewModel.shared.getUserPasscode(completion: { (passcode, hint) in
+                        if passcode == "" {
+                            self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
+                        } else {
+                            self.hasLock = true
+                            self.addLockIconToNavBar()
+                        }
+                    })
+                }
             }))
         }
         
@@ -263,9 +265,13 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     //    MARK: - NOTE IS LOCKED
     @objc func lockON(){
-        VoiceViewModel.shared.stopRecording()
-        lockStatus = true
-        setupUILockON()
+        if self.titleTextField.text!.isEmpty && self.desTextView.text!.isEmpty {
+            self.showErrorWithoutAction(title: "Add lock failed", message: "Title and description can not both empty")
+        } else {
+            VoiceViewModel.shared.stopRecording()
+            lockStatus = true
+            setupUILockON()
+        }
     }
     
     func setupUILockON() {
@@ -299,11 +305,18 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     //  MARK: - ENTER PASSCODE TO EDIT PASSCODE AND UNLOCK
     func enterPasscodeAlert(passcode: String, hint: String , passcodeCase: InputPasscodeCase) {
         var alert = UIAlertController()
-        if NoteViewModel.shared.enterPasscodeCount >= 2 {
-            alert = UIAlertController(title: "Enter Passcode", message: "Hint: \(hint)", preferredStyle: UIAlertController.Style.alert)
-        } else {
-            alert = UIAlertController(title: "Enter Passcode", message: nil, preferredStyle: UIAlertController.Style.alert)
+        var message = ""
+        switch NoteViewModel.shared.enterPasscodeCount {
+            case let x where x == 0:
+                message = ""
+            case let x where x >= 1 && x < 3:
+                message = "Wrong passcode, try again"
+            case let x where x >= 3:
+                message = "Wrong passcode, try again \nHint: \n\(hint)"
+            default:
+                print("this is impossible")
         }
+        alert = UIAlertController(title: "Enter Passcode", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "Enter Passcode"
@@ -324,7 +337,6 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                     }
                 } else {
                     NoteViewModel.shared.enterPasscodeCount += 1
-                    self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
                     self.dismiss(animated: true, completion: {
                         self.enterPasscodeAlert(passcode: passcode, hint: hint, passcodeCase: passcodeCase)
                     })
@@ -346,6 +358,61 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         hasLock = true
         navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,unlockStatusBtn]
     }
+    
+    
+    //MARK: - AUTO KEYBOARD FOR TEXTVIEW
+       func registerForKeyboardNotifications(){
+           //Adding notifies on keyboard appearing
+           NotificationCenter.default.addObserver(self, selector: #selector(keyboardWasShown(notification:)), name:  UIApplication.keyboardWillShowNotification, object: nil)
+           NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillBeHidden(notification:)), name:  UIApplication.keyboardWillHideNotification, object: nil)
+       }
+       
+       func deregisterFromKeyboardNotifications(){
+           //Removing notifies on keyboard appearing
+           NotificationCenter.default.removeObserver(self, name: UIApplication.keyboardWillShowNotification, object: nil)
+           NotificationCenter.default.removeObserver(self, name: UIApplication.keyboardWillHideNotification, object: nil)
+       }
+       
+       @objc func keyboardWasShown(notification: NSNotification){
+           //Need to calculate keyboard exact size due to Apple suggestions
+           let info = notification.userInfo!
+           let keyboardSize = (info[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue.size
+           let contentInsets : UIEdgeInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: keyboardSize!.height + 20, right: 0.0)
+           
+           desTextView.scrollIndicatorInsets = contentInsets
+           desTextView.contentInset = contentInsets
+           
+           var aRect : CGRect = self.view.frame
+           aRect.size.height -= keyboardSize!.height
+           if let activeField = self.desTextView {
+               if (!aRect.contains(activeField.frame.origin)){
+                   desTextView.scrollRectToVisible(activeField.frame, animated: true)
+               }
+           }
+       }
+       
+       @objc func keyboardWillBeHidden(notification: NSNotification){
+           //Once keyboard disappears, restore original positions
+           desTextView.contentInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
+           desTextView.scrollIndicatorInsets = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
+           self.view.endEditing(true)
+       }
+       
+       
+       
+       //      set up textview with done button to dimiss the keyboard
+       func setupTextViewWithDoneBtn() {
+           let toolBar = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: view.frame.size.width, height: 30)))
+           let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+           let barButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneBtnAction))
+           barButton.tintColor = .blue
+           toolBar.setItems([flexible, barButton], animated: false)
+           desTextView.inputAccessoryView = toolBar
+       }
+       
+       @objc func doneBtnAction() {
+           self.view.endEditing(true)
+       }
     
     
 //    MARK: SHARE NOTE SETTING

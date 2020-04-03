@@ -59,11 +59,12 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         let validInput: (isValid: Bool, errorMessage: String) = SignUpViewModel.shared.validUsernameAndPassWord(username: usernameText, password: passwordText, confirmPass: confirmText, phone: phoneText, email: emailText)
         
         if validInput.isValid {
-            waitAlert()
+            let alert = UIAlertController(title: "Creating..", message: nil, preferredStyle: .alert)
+            waitAlert(alert: alert)
             let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", hint: "", sharedNotes: [])
             SignUpViewModel.shared.addNewUser(username: usernameText, newUser: newUser, completion: { (isSuccess,message) in
                 self.errorLabel.text = message
-                self.dismiss(animated: false, completion: nil)
+                alert.dismiss(animated: false, completion: nil)
                 if isSuccess {
                     self.showResultCreateUserAlert(title: "Create new user", message: "Success")
                 }
@@ -81,8 +82,8 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         usernameTextField.text = ""
         passwordTextField.text = ""
         confirmPassTextField.text = ""
-//        phoneTextField.text = ""
-//        emailTextField.text = ""
+        phoneTextField.text = ""
+        emailTextField.text = ""
         phoneTextField.keyboardType = .asciiCapableNumberPad
         errorLabel.isHidden = true
         self.navigationController?.isNavigationBarHidden = false
