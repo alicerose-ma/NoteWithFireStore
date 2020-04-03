@@ -53,17 +53,18 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         if(usernameText.isEmpty == true || passwordText.isEmpty == true) {
             self.loginStatus.text = "Enter username & password"
         } else {
-            waitAlert()
+            let alert = UIAlertController(title: "Verifying..", message: nil, preferredStyle: .alert)
+            waitAlert(alert: alert)
             LoginViewModel.shared.checkLogin(username: usernameText, password: passwordText, completion: { success in
                 print(success)
                 if success {
                     self.loginStatus.text = "Successed"
                     LoginViewModel.shared.updateCurrentUsername(newUsername: self.usernameTextField.text!)
-                    self.dismiss(animated: false, completion: {
+                    alert.dismiss(animated: false, completion: {
                         self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
                     })
                 } else {
-                    self.dismiss(animated: false, completion: nil)
+                    alert.dismiss(animated: false, completion: nil)
                     self.loginStatus.text = "Failed"
                 }
             })
@@ -75,8 +76,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     //    MARK: - SEGUE
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowNoteViewSegue" {
-            //            let nav = segue.destination as! UINavigationController
-            //            nav.modalPresentationStyle = .fullScreen
+//        let nav = segue.destination as! UINavigationController
+//        nav.modalPresentationStyle = .fullScreen
         }
     }
     

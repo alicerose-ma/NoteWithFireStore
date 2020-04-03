@@ -28,9 +28,9 @@ public class ShowPasscodeViewModel {
             hiddenPwdIcon.setImage(UIImage(named: "eye")!.withRenderingMode(.alwaysTemplate), for: .normal)
         }
         hiddenPwdIcon.tintColor = color
-        hiddenPwdIcon.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
+        hiddenPwdIcon.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
         hiddenPwdIcon.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
-        
+        hiddenPwdIcon.contentEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0);
         hiddenPwdIcon.addTarget(self, action: #selector(showAndHidePasscodeAction), for: .touchUpInside)
         textField.rightView = hiddenPwdIcon
         textField.rightViewMode = .always
@@ -55,7 +55,8 @@ public class ShowPasscodeViewModel {
             }
         }
         
-        hiddenPwdIcon.imageEdgeInsets = UIEdgeInsets(top: 0, left: -16, bottom: 0, right: 0)
+        hiddenPwdIcon.imageEdgeInsets = UIEdgeInsets(top: 0, left: -10, bottom: 0, right: 0)
+        hiddenPwdIcon.contentEdgeInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0);
         hiddenPwdIcon.frame = CGRect(x: CGFloat(textField.frame.size.width - 25), y: CGFloat(5), width: CGFloat(25), height: CGFloat(25))
         isHidden = !isHidden
     }

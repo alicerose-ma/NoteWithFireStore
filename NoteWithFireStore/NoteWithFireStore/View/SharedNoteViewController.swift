@@ -33,14 +33,14 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
 
 //           check if user login before
-       func didLogin() {
-        let didLogin = NoteViewModel.shared.didLogin()
-           if didLogin {
-               loadNoteList()
-           } else {
-               self.performSegue(withIdentifier: "ShowLoginViewFromSharedNote", sender: self)
-           }
-       }
+//       func didLogin() {
+//        let didLogin = NoteViewModel.shared.didLogin()
+//           if didLogin {
+//               loadNoteList()
+//           } else {
+//               self.performSegue(withIdentifier: "ShowLoginViewFromSharedNote", sender: self)
+//           }
+//       }
 
        //    load note list of user
        func loadNoteList() {
