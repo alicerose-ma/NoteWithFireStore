@@ -242,7 +242,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
 //                          self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
 //                    }
                      
-                    self.dismiss(animated: true, completion: {
+                    self.dismiss(animated: false, completion: {
                       self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
                     })
                 }

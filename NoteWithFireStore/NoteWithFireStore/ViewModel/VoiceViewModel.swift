@@ -119,6 +119,11 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
                     titleTextField.text = bestStr
                 } else {
                     desTextView.text = bestStr
+                    
+                    if let selectedRange = desTextView.selectedTextRange {
+                        let cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start)
+                        print("current = \(cursorPosition)")
+                    }
                 }
                 
                 isLast = (res.isFinal)

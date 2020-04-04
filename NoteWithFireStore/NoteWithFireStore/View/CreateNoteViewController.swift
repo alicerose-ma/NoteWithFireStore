@@ -530,5 +530,3 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
 
 
 
-
-
