@@ -39,6 +39,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         setupSearchController()
         VoiceViewModel.shared.voiceSetup()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
+
     }
     
     
@@ -51,31 +52,29 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        didLogin()
+        loadNoteList()
     }
     
-    //    check if user login before
-    func didLogin() {
-        let didLogin = NoteViewModel.shared.didLogin()
-        if didLogin {
-            loadNoteList()
-        } else {
-            UIView.setAnimationsEnabled(false)
-            self.performSegue(withIdentifier: "ShowLoginViewFromYourNote", sender: self)
-        }
-    }
     
     //    load note list of user
     func loadNoteList() {
-        NoteViewModel.shared.getNoteList(completion: { notes in
+        let alert = UIAlertController(title: "Loading" , message: nil, preferredStyle: .alert)
+        waitAlert(alert: alert)
+        NoteViewModel.shared.getNoteList(email: NoteViewModel.shared.username!, completion: { notes in
             if notes.count == 0 {
-                self.emptyNoteView.isHidden = false
+                DispatchQueue.main.async {
+                    alert.dismiss(animated: false, completion: {
+                        self.emptyNoteView.isHidden = false
+                    })
+                }
             } else {
-                self.emptyNoteView.isHidden = true
                 self.allNoteList = notes
                 self.filteredNoteList = notes
                 DispatchQueue.main.async {
-                    self.noteTableView.reloadData()
+                    alert.dismiss(animated: false, completion: {
+                        self.emptyNoteView.isHidden = true
+                        self.noteTableView.reloadData()
+                    })
                 }
             }
         })
@@ -237,11 +236,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.executeDeleteNote(indexPath: indexPath) //execute delete
                 } else {
                     NoteViewModel.shared.enterPasscodeCount += 1
-//                    self.showWrongPasscodeAlert(title: .passcodeValidation, message: .wrong)
-//                    DispatchQueue.main.async{
-//                          self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
-//                    }
-                     
+                          self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
                     self.dismiss(animated: false, completion: {
                       self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
                     })
@@ -254,7 +249,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     //  actual processes to delete note
     func executeDeleteNote(indexPath: IndexPath){
         //  delete on firebase
-        NoteViewModel.shared.deleteNote(uniqueID: self.filteredNoteList[indexPath.row].id, completion: { message in
+        NoteViewModel.shared.deleteNote(email: NoteViewModel.shared.username!, uniqueID: self.filteredNoteList[indexPath.row].id, completion: { message in
             print(message)
         })
         // delete note name in shared note list of some user that have access to this note
@@ -301,7 +296,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             let destinationVC  = segue.destination as! CreateNoteViewController
             destinationVC.uniqueID = NoteViewModel.shared.createNewUniqueNoteID(noteList: allNoteList)
         }
-        
+
         if segue.identifier == "EditNote" {
             let destinationVC  = segue.destination as! NoteDetailViewController
             selectedRow = noteTableView.indexPathForSelectedRow!.row
@@ -312,7 +307,8 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
         
         if segue.identifier == "ShowLoginViewFromYourNote" {
-            _ = segue.destination as! LoginViewController
+            let nav = segue.destination as! UINavigationController
+            nav.modalPresentationStyle = .fullScreen
         }
     }
     
@@ -330,6 +326,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.navigationItem.leftBarButtonItem = exitBtn
         
         tabBarItem.title = "My Notes"
+        self.tabBarController?.navigationController?.navigationBar.isHidden = true
         
         if #available(iOS 10.0, *) {
             noteTableView.refreshControl = refreshControl

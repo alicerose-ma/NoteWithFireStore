@@ -10,10 +10,10 @@ import Foundation
 
 // user data model in fire store
 public struct UserData: Decodable {
-    var username: String
+    var email: String
     var password: String
     var phone: String
-    var email: String
+    var displayName: String
     var passcode: String
     var hint: String
     var sharedNotes: [String]
@@ -22,10 +22,10 @@ public struct UserData: Decodable {
 //    dicitonary to add to fire store
     var dictionary: [String: Any] {
         return [
-            "username": username,
+            "email": email,
             "password": password,
             "phone": phone,
-            "email": email,
+            "displayName": email,
             "passcode": passcode,
             "sharedNotes": sharedNotes,
             "hint": hint,

@@ -13,42 +13,47 @@ public class SignUpViewModel {
     private init() {}
     
     //    check if username does not in firebase yet => add new user
-    func addNewUser(username: String, newUser: UserData, completion: @escaping (Bool, String) -> Void){
-        FireBaseProxy.shared.isNewUsernameValid(username: username, completion: { isValid in
-            if !isValid {
-                completion(false,"username exists")
-            } else {
-                FireBaseProxy.shared.addNewUser(username: username, newUser: newUser, completion: { (isSuccess, message) in
-                    completion(isSuccess, message)
-                })
-            }
+    func addNewUserToDatabase(email: String, newUser: UserData, completion: @escaping (Bool, String) -> Void){
+        FireBaseProxy.shared.addNewUserToDatabase(email: email, newUser: newUser, completion: { (isSuccess, message) in
+            completion(isSuccess, message)
         })
     }
     
+    func signUpUser(email: String, password: String, displayName: String, completion: @escaping (Bool) -> Void) {
+        FireBaseProxy.shared.signup(email: email, password: password, displayName: displayName, completion: { isSignUp in
+            if isSignUp {
+                completion(true)
+            } else {
+                completion(false)
+            }
+        })
+    }
+   
     
     //    validation for input username & password
-    func validUsernameAndPassWord(username: String, password: String, confirmPass: String, phone: String, email: String) -> (Bool,String){
+    func validUsernameAndPassWord(email: String, password: String, confirmPass: String, displayName: String, phone: String) -> (Bool,String){
         var errorMessage = ""
         var isValid = true
-        let usernameLength = username.count
+        let emailLength = email.count
+        let passwordLength = password.count
         
-        if usernameLength < 3 {
-            errorMessage.append("\nusername needs > 3 chars")
+        if !isValidEmail(email: email) {
+            errorMessage.append("\ninvalid email")
         }
         
-        if username.contains(" ") {
-            errorMessage.append("\nusername can't contain space")
+        if emailLength == 50 {
+            errorMessage.append("\nemail can not > 50 chars")
         }
         
-        if usernameLength == 50 {
-            errorMessage.append("\nusername can not > 50 chars")
+        if passwordLength < 6 {
+            errorMessage.append("\npassword needs at least 6 chars")
         }
         
         if password != confirmPass {
             errorMessage.append("\npassword and confirm do not match")
         }
         
-        if username.trimmingCharacters(in: .whitespaces).isEmpty {
+        if email.trimmingCharacters(in: .whitespaces).isEmpty {
             errorMessage.append("\nusername can not empty")
         }
         
@@ -56,8 +61,8 @@ public class SignUpViewModel {
             errorMessage.append("\npassword can not empty")
         }
         
-        if !isValidEmail(email: email) && !email.isEmpty {
-            errorMessage.append("\ninvalid email")
+        if displayName.trimmingCharacters(in: .whitespaces).isEmpty {
+            errorMessage.append("\nyour name can not empty")
         }
         
         if errorMessage != "" {

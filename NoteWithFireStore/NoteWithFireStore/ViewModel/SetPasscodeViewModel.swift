@@ -16,12 +16,12 @@ public class SetPasscodeViewModel {
     
 //    get and update passcode 
     public func updateUserPasscode(passcode: String, hint: String){
-        FireBaseProxy.shared.updateUserPasscode(username: username!, passcode: passcode, hint: hint, completion: { _ in
+        FireBaseProxy.shared.updateUserPasscode(email: username!, passcode: passcode, hint: hint, completion: { _ in
         })
     }
     
     public func getUserPasscode(completion: @escaping (String, String) -> Void){
-        FireBaseProxy.shared.getUserPasscode(username: username!, completion: { passcode,hint  in
+        FireBaseProxy.shared.getUserPasscode(email: username!, completion: { passcode,hint  in
             completion(passcode, hint)
         })
     }
@@ -29,7 +29,7 @@ public class SetPasscodeViewModel {
     
     //    validate passcode
     public func isPasscodeEmpty(completion: @escaping (Bool) -> Void){
-        FireBaseProxy.shared.getUserPasscode(username: username!, completion: { (passcode, hint)  in
+        FireBaseProxy.shared.getUserPasscode(email: username!, completion: { (passcode, hint)  in
             if passcode == "" {
                 completion(true)
             } else {

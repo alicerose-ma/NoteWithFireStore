@@ -114,15 +114,22 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
             var isLast = false
             if let res = res {
                 let bestStr = self.subStr1 + res.bestTranscription.formattedString +  " " + self.subStr2
+                let voiceText = self.subStr1 + res.bestTranscription.formattedString
                 print(bestStr)
                 if titleTextField.isFirstResponder {
                     titleTextField.text = bestStr
+                    
+                    let positionOriginal = titleTextField.beginningOfDocument
+                    let cursorLocation = titleTextField.position(from: positionOriginal, offset: (voiceText.count))
+                    if let cursorLocation = cursorLocation {
+                        titleTextField.selectedTextRange = titleTextField.textRange(from: cursorLocation, to: cursorLocation)
+                    }
                 } else {
                     desTextView.text = bestStr
-                    
-                    if let selectedRange = desTextView.selectedTextRange {
-                        let cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start)
-                        print("current = \(cursorPosition)")
+                    let positionOriginal = desTextView.beginningOfDocument
+                    let cursorLocation = desTextView.position(from: positionOriginal, offset: (voiceText.count))
+                    if let cursorLocation = cursorLocation {
+                        desTextView.selectedTextRange = desTextView.textRange(from: cursorLocation, to: cursorLocation)
                     }
                 }
                 

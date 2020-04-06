@@ -144,7 +144,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         
         let sharedUsers = SharedNoteViewModel.shared.sharedUsers
         
-        var note = NoteData(id: uniqueID, username:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+        var note = NoteData(id: uniqueID, email:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
         
         if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
             NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
@@ -155,7 +155,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             note.des = "No description"
             NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
         } else {
-            NoteViewModel.shared.deleteNote(uniqueID: uniqueID, completion: { isDeleted in
+            NoteViewModel.shared.deleteNote(email: NoteViewModel.shared.username!, uniqueID: uniqueID, completion: { isDeleted in
                 print(isDeleted)
             })
         }
@@ -337,9 +337,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                     }
                 } else {
                     NoteViewModel.shared.enterPasscodeCount += 1
-                    self.dismiss(animated: true, completion: {
-                        self.enterPasscodeAlert(passcode: passcode, hint: hint, passcodeCase: passcodeCase)
-                    })
+                    self.enterPasscodeAlert(passcode: passcode, hint: hint, passcodeCase: passcodeCase)
+//                    self.dismiss(animated: true, completion: {
+//                        
+//                    })
                    
                 }
             }}))

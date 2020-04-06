@@ -28,7 +28,7 @@ public class SharedNoteViewModel {
     }
     
     func updateUserForNote(username: String, id: Int, userToShare: String) {
-        FireBaseProxy.shared.updateSharedUserForSingleNote(username: username, id: id, userToShare: userToShare)
+        FireBaseProxy.shared.updateSharedUserForSingleNote(email: username, id: id, userToShare: userToShare)
     }
     
     func deleteNoteInSharedUsers(uniqueID: Int) {
@@ -38,7 +38,7 @@ public class SharedNoteViewModel {
     
     
     func getSharedNote(username: String, completion: @escaping ([NoteData]) -> Void){
-        FireBaseProxy.shared.getSharedNote(username: username, completion: { notes in
+        FireBaseProxy.shared.getSharedNote(email: username, completion: { notes in
             completion(notes)
         })
     }

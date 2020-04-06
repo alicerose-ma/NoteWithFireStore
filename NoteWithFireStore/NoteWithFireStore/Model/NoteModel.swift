@@ -11,7 +11,7 @@ import Foundation
 //note model in fire store
 public struct NoteData: Decodable {
     var id: Int
-    var username: String
+    var email: String
     var title: String
     var des: String
     var isLocked: Bool
@@ -23,7 +23,7 @@ public struct NoteData: Decodable {
 //    dictionary to add to fire store
     var dictionary: [String: Any] {
         return [
-            "username" : username,
+            "email" : email,
             "id" : id,
             "title": title,
             "des": des,

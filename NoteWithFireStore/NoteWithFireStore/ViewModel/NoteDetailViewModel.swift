@@ -21,7 +21,7 @@ public class NoteDetailViewModel {
     }
     
     public func getNoteByID(id: Int, completion: @escaping (([NoteData]) -> Void)) {
-        FireBaseProxy.shared.getNoteByID(username: username!, id: id, completion: { notes in
+        FireBaseProxy.shared.getNoteByID(email: username!, id: id, completion: { notes in
             completion(notes)
         })
     }    

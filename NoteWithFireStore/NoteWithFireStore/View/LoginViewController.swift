@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     
-    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var loginStatus: UILabel!
@@ -22,50 +23,38 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
         ShowPasscodeViewModel.shared.textField = passwordTextField
         ShowPasscodeViewModel.shared.setupPasswordIcon(color: .white)
+        didLogin()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         setupUI()
     }
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
-//    hide keyboard when click return
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        let currentText = textField.text ?? ""
-        guard let stringRange = Range(range, in: currentText) else { return false }
-        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
-        return updatedText.count <= 50
-    }
-    
     //    MARK: - LOGIN
     @IBAction func loginAction(_ sender: UIButton ) {
-        let usernameText = usernameTextField.text!
+        let emailText = emailTextField.text!
         let passwordText = passwordTextField.text!
         
-        if(usernameText.isEmpty == true || passwordText.isEmpty == true) {
+        if(emailText.isEmpty == true || passwordText.isEmpty == true) {
             self.loginStatus.text = "Enter username & password"
         } else {
-            let alert = UIAlertController(title: "Verifying..", message: nil, preferredStyle: .alert)
+            let alert = UIAlertController(title: "Verifying" , message: nil, preferredStyle: .alert)
             waitAlert(alert: alert)
-            LoginViewModel.shared.checkLogin(username: usernameText, password: passwordText, completion: { success in
-                print(success)
-                if success {
-                    self.loginStatus.text = "Successed"
-                    LoginViewModel.shared.updateCurrentUsername(newUsername: self.usernameTextField.text!)
-                    alert.dismiss(animated: false, completion: {
-                        self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
-                    })
+            LoginViewModel.shared.login(email: emailText, password: passwordText, completion: { isLogin in
+                if isLogin{
+                    LoginViewModel.shared.updateCurrentUsername(newUsername: emailText)
+                    DispatchQueue.main.async {
+                        alert.dismiss(animated: false, completion: {
+                            self.loginStatus.text = "Successed"
+                            self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
+                        })
+                    }
                 } else {
-                    alert.dismiss(animated: false, completion: nil)
-                    self.loginStatus.text = "Failed"
+                    DispatchQueue.main.async {
+                        alert.dismiss(animated: false, completion: {
+                            self.loginStatus.text = "Failed"
+                        })
+                    }
                 }
             })
         }
@@ -73,19 +62,49 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         self.view.endEditing(true)
     }
     
+    func didLogin(){
+        FireBaseProxy.shared.didLogin(completion: { (didLogin, email) in
+            if didLogin {
+                LoginViewModel.shared.updateCurrentUsername(newUsername: email)
+                UIView.setAnimationsEnabled(false)
+                self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
+            }
+        })
+    }
     //    MARK: - SEGUE
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "ShowNoteViewSegue" {
-//        let nav = segue.destination as! UINavigationController
-//        nav.modalPresentationStyle = .fullScreen
         }
+    }
+}
+
+
+extension LoginViewController {
+    //    MARK: - KEYBOARD AND STATUS BAR
+    //    hide status bar
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    //    hide keyboard when click return
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    //    limit input textfield chars
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let currentText = textField.text ?? ""
+        guard let stringRange = Range(range, in: currentText) else { return false }
+        let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
+        return updatedText.count <= 50
     }
     
     
     //    MARK: - SET UP UI AND DELEGATE
     //    set up UI
     func setupUI() {
-        usernameTextField.text = ""
+        emailTextField.text = ""
         passwordTextField.text = ""
         loginStatus.isHidden = true
         passwordTextField.isSecureTextEntry = true
@@ -95,15 +114,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     
     //    setup delegate
     func setupDelegate() {
-        usernameTextField.delegate = self
+        emailTextField.delegate = self
         passwordTextField.delegate = self
     }
-    
     
     //    MARK: - CUSTOM UI
     //    custom button & text field UI
     func customUI(){
-        let uiTextFieldList: [UITextField: String] = [usernameTextField : "Username" ,
+        let uiTextFieldList: [UITextField: String] = [emailTextField : "Email" ,
                                                       passwordTextField : "Password"]
         for (textField, placeHolder) in uiTextFieldList {
             TextFieldAndButtonCustomUI.shared.customTextField(textField, placeHolder)
@@ -115,6 +133,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
 
 
 
+
+//        let nav = segue.destination as! UINavigationController
+//        nav.modalPresentationStyle = .fullScreen
 
 
 

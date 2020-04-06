@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 import Firebase
 
 public class FireBaseProxy {
@@ -15,33 +16,82 @@ public class FireBaseProxy {
     let imagesCollection = Firestore.firestore().collection("Images")
     var noteList: [NoteData] = []
     var maxNoteList: Int = 0
+    var alert =  UIAlertController()
+    var loadingIndicator = UIActivityIndicatorView()
+    
     static let shared = FireBaseProxy()
-    
-    
     private init() {}
     
-    //  MARK: -  USERS AND NOTE REQUESTS
-    public func sendUserRequest(username: String, password: String ,completion: @escaping (([UserData]) -> Void)) {
-        usersCollection.whereField("username", isEqualTo: username)
-            .whereField("password", isEqualTo: password)
-            .getDocuments() {(querySnapshot, err) in
-                if let err = err {
-                    print("Error getting documents: \(err)")
-                } else {
-                    do {
-                        let myUsers: [UserData] = try querySnapshot!.decoded()
-                        print(myUsers)
-                        completion(myUsers)
-                    } catch {
-                        print("decoded User error")
-                    }
-                }
+    //  MARK: - USERS
+    //    sign up to auth
+    func signup(email: String, password: String, displayName: String, completion: @escaping (Bool) -> Void) {
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            if error == nil {
+                print("sign up success")
+                completion(true)
+            } else {
+                print("create new user err \(String(describing: error))")
+                completion(false)
+            }
         }
     }
     
+    //    create database account
+    public func addNewUserToDatabase(email: String, newUser: UserData, completion: @escaping (Bool, String) -> Void) {
+        var addUserMessage = ""
+        var isSuccess = false
+        usersCollection.document(email).setData(newUser.dictionary) { err in
+            if let err = err {
+                print("Error adding user: \(err)")
+                addUserMessage = "New user created failed"
+            } else {
+                print("User successfully added!")
+                addUserMessage = "New user created successed"
+                isSuccess = true
+            }
+            completion(isSuccess,addUserMessage)
+        }
+    }
     
-    public func sendNoteRequest(username: String, completion: @escaping (([NoteData]) -> Void)) {
-        notesCollection.whereField("username", isEqualTo: username)
+    //    login with email
+    func login(email: String, password: String, completion: @escaping (Bool) -> Void){
+        Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+            if error != nil {
+                print("login in err")
+                completion(false)
+            } else {
+                print("login done")
+                completion(true)
+            }
+        }
+    }
+    
+    //    check if user did login before
+    func didLogin(completion: @escaping (Bool, String) -> Void) {
+        if Auth.auth().currentUser != nil {
+            let email = Auth.auth().currentUser?.email!
+            completion(true, email!)
+        } else {
+            print("No user login")
+            completion(false, "")
+        }
+    }
+    
+    //    exit and sign out auth
+    func exit() {
+        let firebaseAuth = Auth.auth()
+        do {
+            try firebaseAuth.signOut()
+        } catch let signOutError as NSError {
+            print ("Error signing out: %@", signOutError)
+        }
+        
+    }
+    
+    
+    //  MARK: - NOTE REQUESTS
+    func getNoteList(email: String, completion: @escaping (([NoteData]) -> Void)) {
+        notesCollection.whereField("email", isEqualTo: email)
             .getDocuments() {(querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
@@ -56,19 +106,8 @@ public class FireBaseProxy {
         }
     }
     
-    //  MARK: -  NOTES
-    public func addNewNote(documentID: String,newNote: NoteData) {
-        notesCollection.document(documentID).setData(newNote.dictionary) { err in
-            if let err = err {
-                print("Error adding note: \(err)")
-            } else {
-                print("Note successfully added!")
-            }
-        }
-    }
-    
-    public func getNoteByID(username: String, id: Int, completion: @escaping (([NoteData]) -> Void)) {
-        notesCollection.whereField("username", isEqualTo: username)
+    public func getNoteByID(email: String, id: Int, completion: @escaping (([NoteData]) -> Void)) {
+        notesCollection.whereField("email", isEqualTo: email)
             .whereField("id", isEqualTo: id).getDocuments() {(querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
@@ -80,6 +119,17 @@ public class FireBaseProxy {
                         print("decoded User error")
                     }
                 }
+        }
+    }
+    
+    
+    public func addNewNote(documentID: String,newNote: NoteData) {
+        notesCollection.document(documentID).setData(newNote.dictionary) { err in
+            if let err = err {
+                print("Error adding note: \(err)")
+            } else {
+                print("Note successfully added!")
+            }
         }
     }
     
@@ -104,8 +154,8 @@ public class FireBaseProxy {
     }
     
     //  MARK: -  PASSCODE UPDATE
-    public func updateUserPasscode(username: String, passcode: String, hint: String, completion: @escaping (Bool) -> Void){
-        usersCollection.document(username).updateData([
+    public func updateUserPasscode(email: String, passcode: String, hint: String, completion: @escaping (Bool) -> Void){
+        usersCollection.document(email).updateData([
             "passcode": passcode,
             "hint": hint,
         ]) { err in
@@ -119,8 +169,8 @@ public class FireBaseProxy {
         }
     }
     
-    public func getUserPasscode(username: String, completion: @escaping (String, String) -> Void) {
-        usersCollection.whereField("username", isEqualTo: username)
+    public func getUserPasscode(email: String, completion: @escaping (String, String) -> Void) {
+        usersCollection.whereField("email", isEqualTo: email)
             .getDocuments() { (querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
@@ -137,42 +187,10 @@ public class FireBaseProxy {
     }
     
     
-    //  MARK: - USERS
-    public func isNewUsernameValid(username: String, completion: @escaping (Bool) -> Void) {
-        usersCollection.whereField("username", isEqualTo: username)
-            .getDocuments() { (querySnapshot, err) in
-                if let err = err {
-                    print("Error getting documents: \(err)")
-                } else {
-                    if querySnapshot!.documents.count == 0 {
-                        completion(true)
-                    } else {
-                        completion(false)
-                    }
-                }
-        }
-    }
-    
-    public func addNewUser(username: String, newUser: UserData, completion: @escaping (Bool, String) -> Void) {
-        var addUserMessage = ""
-        var isSuccess = false
-        usersCollection.document(username).setData(newUser.dictionary) { err in
-            if let err = err {
-                print("Error adding user: \(err)")
-                addUserMessage = "Error adding user: \(err)"
-            } else {
-                print("User successfully added!")
-                addUserMessage = "User successfully added!"
-                isSuccess = true
-            }
-            completion(isSuccess,addUserMessage)
-        }
-    }
-    
     //  MARK: - SHARE
-    public func getSharedNote(username: String,  completion: @escaping (([NoteData]) -> Void)) {
+    public func getSharedNote(email: String,  completion: @escaping (([NoteData]) -> Void)) {
         var sharedNotes: [String] = []
-        usersCollection.whereField("username", isEqualTo: username)
+        usersCollection.whereField("email", isEqualTo: email)
             .getDocuments() { (querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
@@ -189,7 +207,7 @@ public class FireBaseProxy {
                         for note in sharedNotes{
                             let userAndId = note.components(separatedBy: "note")
                             let id = Int(userAndId[1])
-                            self.getNoteByID(username: userAndId[0], id: id!, completion: { note in
+                            self.getNoteByID(email: userAndId[0], id: id!, completion: { note in
                                 self.noteList.append(note[0])
                             })
                         }
@@ -201,43 +219,21 @@ public class FireBaseProxy {
                     }
                 }
         }
-        
-        //        getNoteByID(username: username, id: id, completion: { notes in
-        //                sharedUsers = notes[0].sharedUsers
-        //                if !sharedUsers.contains(userToShare) {
-        //                    sharedUsers.append(userToShare)
-        //                }
-        //                print("shared USER = \(sharedUsers)")
-        //                let documentId = username + "note" + String(id)
-        //                self.notesCollection.document(documentId).updateData([
-        //                    "sharedUsers": sharedUsers
-        //                ]) { err in
-        //                    if let err = err {
-        //                        print("Error updating shared user: \(err)")
-        //                    } else {
-        //                        print("Shared user successfully updated")
-        //                    }
-        //                }
-        //            })
     }
     
-    
-    
-    
-    
-    public func updateSharedUserForSingleNote(username: String, id: Int, userToShare: String) {
+    public func updateSharedUserForSingleNote(email: String, id: Int, userToShare: String) {
         var sharedUsers: [String] = []
         
         usersCollection.document(userToShare).getDocument { (document, error) in
             if let document = document, document.exists {
                 
-                self.getNoteByID(username: username, id: id, completion: { notes in
+                self.getNoteByID(email: email, id: id, completion: { notes in
                     sharedUsers = notes[0].sharedUsers
                     if !sharedUsers.contains(userToShare) {
                         sharedUsers.append(userToShare)
                     }
                     print("shared USER = \(sharedUsers)")
-                    let documentId = username + "note" + String(id)
+                    let documentId = email + "note" + String(id)
                     self.notesCollection.document(documentId).updateData([
                         "sharedUsers": sharedUsers
                     ]) { err in
@@ -261,13 +257,13 @@ public class FireBaseProxy {
                 do {
                     let myUsers: [UserData] = try querySnapshot!.decoded()
                     for user in myUsers {
-                        print("username = \(user.username) delete \(user.sharedNotes)")
+                        print("username = \(user.email) delete \(user.sharedNotes)")
                         
                         var sharedNotes = user.sharedNotes
                         sharedNotes.removeAll{$0.contains(noteName)}
                         
                         print("shared Notes = \(sharedNotes)")
-                        self.usersCollection.document(user.username).updateData([
+                        self.usersCollection.document(user.email).updateData([
                             "sharedNotes": sharedNotes,
                         ]) { err in
                             if let err = err {
@@ -339,6 +335,9 @@ public class FireBaseProxy {
         }
     }
     
+    
+    
+    
 }
 // decodable 1 single document
 extension QueryDocumentSnapshot {
@@ -359,14 +358,4 @@ extension QuerySnapshot {
         
         return objects
     }
-    
 }
-
-
-
-
-
-
-
-
-

@@ -45,13 +45,13 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
        //    load note list of user
        func loadNoteList() {
 
-        SharedNoteViewModel.shared.getSharedNote(username: SharedNoteViewModel.shared.username!, completion: { notes in
-            print(notes)
-            self.allSharedNoteList = notes
-            DispatchQueue.main.async {
-                self.sharedTableView.reloadData()
-            }
-        })
+//        SharedNoteViewModel.shared.getSharedNote(username: SharedNoteViewModel.shared.username!, completion: { notes in
+//            print(notes)
+//            self.allSharedNoteList = notes
+//            DispatchQueue.main.async {
+//                self.sharedTableView.reloadData()
+//            }
+//        })
        }
 
 
@@ -87,6 +87,8 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     func setupNavUI() {
         let exitBtn = UIBarButtonItem(title: "Log out", style: .done, target: self, action: #selector(exit))
         self.navigationItem.leftBarButtonItem = exitBtn
+        
+        self.tabBarController?.navigationController?.navigationBar.isHidden = true
     }
 
     @objc func exit() {
@@ -94,16 +96,16 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
             alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
             alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: { action in
             NoteViewModel.shared.logOutUser()
-            self.performSegue(withIdentifier: "ShowLoginViewFromSharedNote", sender: self)
+//            self.performSegue(withIdentifier: "ShowLoginViewFromSharedNote", sender: self)
         }))
         self.present(alert, animated: true)
     }
 
     // MARK: - Navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowLoginViewFromSharedNote" {
-                   _ = segue.destination as! LoginViewController
-        }
-    }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "ShowLoginViewFromSharedNote" {
+//                   _ = segue.destination as! LoginViewController
+//        }
+//    }
 
 }

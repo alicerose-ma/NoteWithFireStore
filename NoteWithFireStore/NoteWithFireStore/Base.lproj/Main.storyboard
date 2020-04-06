@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="kFv-oF-tdb">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="uSk-o9-8yv">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
@@ -64,21 +64,21 @@
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits" secureTextEntry="YES"/>
                                                     </textField>
-                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="phone" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yYU-P4-eCo">
+                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9m4-zd-2Gu">
                                                         <rect key="frame" x="0.0" y="215" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="35" id="ghr-oD-tin"/>
+                                                            <constraint firstAttribute="height" constant="35" id="xMz-8f-WXV"/>
                                                         </constraints>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                                         <textInputTraits key="textInputTraits"/>
                                                     </textField>
-                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9m4-zd-2Gu">
+                                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" verticalHuggingPriority="249" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="phone" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="yYU-P4-eCo">
                                                         <rect key="frame" x="0.0" y="265" width="300" height="35"/>
                                                         <color key="backgroundColor" red="0.84705882349999995" green="0.84705882349999995" blue="0.84705882349999995" alpha="0.10000000000000001" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                         <constraints>
-                                                            <constraint firstAttribute="height" constant="35" id="xMz-8f-WXV"/>
+                                                            <constraint firstAttribute="height" constant="35" id="ghr-oD-tin"/>
                                                         </constraints>
                                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -93,7 +93,7 @@
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="Sign Up"/>
                                                         <connections>
-                                                            <action selector="signUpAction:" destination="LD8-9j-yHo" eventType="touchUpInside" id="hUl-DZ-EY7"/>
+                                                            <action selector="signUpAction:" destination="LD8-9j-yHo" eventType="touchUpInside" id="dJh-eR-2GF"/>
                                                         </connections>
                                                     </button>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="7" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="log-MT-jv4">
@@ -177,12 +177,12 @@
                     <navigationItem key="navigationItem" id="tsc-t4-iAR"/>
                     <connections>
                         <outlet property="confirmPassTextField" destination="Are-uZ-vVS" id="d9V-na-PkL"/>
-                        <outlet property="emailTextField" destination="9m4-zd-2Gu" id="6Vr-2H-2qP"/>
+                        <outlet property="displayNameTextField" destination="9m4-zd-2Gu" id="6Vr-2H-2qP"/>
+                        <outlet property="emailTextField" destination="Mhq-lB-JMI" id="C4X-e7-lXA"/>
                         <outlet property="errorLabel" destination="log-MT-jv4" id="9SG-3l-HgG"/>
                         <outlet property="passwordTextField" destination="51G-gx-rdq" id="Xur-4H-G0h"/>
                         <outlet property="phoneTextField" destination="yYU-P4-eCo" id="AEy-D8-UuU"/>
                         <outlet property="signUpButton" destination="clS-Iw-JiM" id="KTR-iS-TgX"/>
-                        <outlet property="usernameTextField" destination="Mhq-lB-JMI" id="C4X-e7-lXA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iAq-uQ-3xA" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -314,12 +314,12 @@
                         <outlet property="noteTableView" destination="cw5-Bv-SOm" id="lK1-st-bxu"/>
                         <segue destination="uji-D5-ZTr" kind="show" identifier="EditNote" id="fdb-Ih-j3w"/>
                         <segue destination="dXS-hR-ojP" kind="show" identifier="AddNewNote" id="kaa-iW-qqB"/>
-                        <segue destination="a4x-Lk-9sg" kind="show" identifier="ShowLoginViewFromYourNote" id="1eq-20-PgQ"/>
+                        <segue destination="uSk-o9-8yv" kind="show" identifier="ShowLoginViewFromYourNote" id="Cew-Vg-S5A"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hcR-6Z-Cfh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5978.5714285714284" y="95.200000000000003"/>
+            <point key="canvasLocation" x="7863.1999999999998" y="94.581280788177338"/>
         </scene>
         <!--Shared Note View Controller-->
         <scene sceneID="Dgi-Dh-Nxu">
@@ -382,17 +382,16 @@
                     <navigationItem key="navigationItem" id="gdO-uF-EUN"/>
                     <connections>
                         <outlet property="sharedTableView" destination="ueL-3A-2x7" id="DrW-oR-eQx"/>
-                        <segue destination="a4x-Lk-9sg" kind="show" identifier="ShowLoginViewFromSharedNote" id="Nlr-xv-krF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Aeg-89-nZB" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5980" y="-729"/>
+            <point key="canvasLocation" x="6922.3999999999996" y="-729.31034482758628"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="cP5-Ts-Ren">
             <objects>
-                <tabBarController id="kFv-oF-tdb" sceneMemberID="viewController">
+                <tabBarController storyboardIdentifier="NoteView" id="kFv-oF-tdb" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="Pnk-XT-des"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="gxl-do-Foa">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
@@ -400,13 +399,13 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
-                        <segue destination="HP8-X1-kGN" kind="relationship" relationship="viewControllers" id="itx-cb-7bW"/>
-                        <segue destination="Fq6-gp-6zm" kind="relationship" relationship="viewControllers" id="Uv8-8M-Zcg"/>
+                        <segue destination="ZQL-en-csB" kind="relationship" relationship="viewControllers" id="d8n-7b-9Tf"/>
+                        <segue destination="Fq6-gp-6zm" kind="relationship" relationship="viewControllers" id="LKE-3e-jiD"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SHB-YX-2j6" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4068" y="-352"/>
+            <point key="canvasLocation" x="5010.3999999999996" y="-352.46305418719214"/>
         </scene>
         <!--Note Detail View Controller-->
         <scene sceneID="8K8-H2-Nge">
@@ -807,26 +806,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5nB-y3-01X" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5103" y="-729"/>
-        </scene>
-        <!--My Notes-->
-        <scene sceneID="4N5-v2-oOm">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="HP8-X1-kGN" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="My Notes" image="doc.fill" catalog="system" id="9BY-NX-WcT"/>
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="UKa-i6-QrT">
-                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="p21-s3-dt9" kind="relationship" relationship="rootViewController" id="Unq-J6-0oJ"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="p3P-n3-jrU" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="5103" y="96"/>
+            <point key="canvasLocation" x="6044" y="-729.31034482758628"/>
         </scene>
         <!--Login View Controller-->
         <scene sceneID="mtJ-8t-vo3">
@@ -920,7 +900,7 @@
                                                             <color key="titleColor" red="0.40000000000000002" green="0.98823529409999999" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
                                                         </state>
                                                         <connections>
-                                                            <segue destination="LD8-9j-yHo" kind="show" id="5sp-c4-RzV"/>
+                                                            <segue destination="LD8-9j-yHo" kind="show" id="HhT-3W-WVq"/>
                                                         </connections>
                                                     </button>
                                                 </subviews>
@@ -1017,39 +997,58 @@
                     </view>
                     <navigationItem key="navigationItem" id="hfO-58-aBN"/>
                     <connections>
+                        <outlet property="emailTextField" destination="oms-xk-hrm" id="7if-0M-S5y"/>
                         <outlet property="loginButton" destination="awB-Zc-0i4" id="nXZ-4R-b6x"/>
                         <outlet property="loginStatus" destination="t6j-KM-Wc2" id="3fl-bb-Wg2"/>
                         <outlet property="passwordTextField" destination="EGf-vj-ebf" id="r52-51-Goh"/>
-                        <outlet property="usernameTextField" destination="oms-xk-hrm" id="7if-0M-S5y"/>
-                        <segue destination="kFv-oF-tdb" kind="presentation" identifier="ShowNoteViewSegue" modalPresentationStyle="fullScreen" id="Eug-5l-uSy"/>
+                        <segue destination="kFv-oF-tdb" kind="show" identifier="ShowNoteViewSegue" animates="NO" id="8bW-6o-LUJ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="reO-8l-3ae" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3135" y="-352"/>
+            <point key="canvasLocation" x="4076" y="-352.46305418719214"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="LoS-Ga-lDc">
+        <scene sceneID="RZz-AN-oKM">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="SAS-zQ-2nH" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="uSk-o9-8yv" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="AvN-cY-e31">
+                    <navigationItem key="navigationItem" id="xjm-nz-xfE"/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="ROz-IE-dQZ">
                         <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="a4x-Lk-9sg" kind="relationship" relationship="rootViewController" id="Vva-dy-Snk"/>
+                        <segue destination="a4x-Lk-9sg" kind="relationship" relationship="rootViewController" id="X0B-ys-qaQ"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Mwx-NI-kgJ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eeZ-Y3-Fqf" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1964" y="-352"/>
+            <point key="canvasLocation" x="3133.5999999999999" y="-352.46305418719214"/>
+        </scene>
+        <!--My Notes-->
+        <scene sceneID="1nT-tb-KyB">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ZQL-en-csB" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="My Notes" image="doc.fill" catalog="system" id="SlT-cU-5Ft"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Eh6-nK-Ygo">
+                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="p21-s3-dt9" kind="relationship" relationship="rootViewController" id="BPd-Lm-8AN"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L0H-w1-2TO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="6920.8000000000002" y="94.581280788177338"/>
         </scene>
     </scenes>
     <inferredMetricsTieBreakers>
-        <segue reference="Nlr-xv-krF"/>
-        <segue reference="2ge-Lf-jyC"/>
+        <segue reference="48G-La-mKq"/>
     </inferredMetricsTieBreakers>
     <resources>
         <image name="doc.fill" catalog="system" width="115" height="128"/>

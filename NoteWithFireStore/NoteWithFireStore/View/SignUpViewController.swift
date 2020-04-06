@@ -10,11 +10,11 @@ import UIKit
 
 class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
     
-    @IBOutlet weak var usernameTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var confirmPassTextField: UITextField!
     @IBOutlet weak var phoneTextField: UITextField!
-    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var displayNameTextField: UITextField!
     @IBOutlet weak var signUpButton: UIButton!
     @IBOutlet weak var errorLabel: UILabel!
     
@@ -27,9 +27,68 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         setupUI()
     }
     
+    
+    //    MARK: - SIGN UP
+    @IBAction func signUpAction(_ sender: Any) {
+        let emailText = emailTextField.text!
+        let passwordText = passwordTextField.text!
+        let confirmText = confirmPassTextField.text!
+        let displayNameText = displayNameTextField.text!
+        let phoneText = phoneTextField.text!
+        
+        //check if user input valid username & password
+        let validInput: (isValid: Bool, errorMessage: String) = SignUpViewModel.shared.validUsernameAndPassWord(email: emailText,password: passwordText, confirmPass: confirmText, displayName: displayNameText, phone: phoneText)
+        
+        if validInput.isValid {
+            createNewAuthAndDatabaseAccount(emailText: emailText, passwordText: passwordText, displayNameText: displayNameText, phoneText: phoneText)
+        } else {
+            self.errorLabel.text = validInput.errorMessage
+        }
+        self.view.endEditing(true)
+        self.errorLabel.isHidden = false
+    }
+    
+//  craete new auth account and firestore account
+    func createNewAuthAndDatabaseAccount(emailText: String, passwordText: String, displayNameText: String, phoneText: String) {
+        let alert = UIAlertController(title: "Creating" , message: nil, preferredStyle: .alert)
+        waitAlert(alert: alert)
+        SignUpViewModel.shared.signUpUser(email: emailText, password: passwordText, displayName: displayNameText, completion: { isSignUp  in
+            if isSignUp {
+                //  sign up succes  => create user in database
+                let newUser = UserData(email: emailText, password: passwordText, phone: phoneText, displayName: displayNameText, passcode: "", hint: "", sharedNotes: [])
+                SignUpViewModel.shared.addNewUserToDatabase(email: emailText, newUser: newUser, completion: { (isSuccess,message) in
+                    DispatchQueue.main.async {
+                        self.errorLabel.text = message
+                        if isSuccess {
+                            DispatchQueue.main.async() {
+                                alert.dismiss(animated: false, completion: {
+                                    self.showResultCreateUserAlert(title: "Create new user", message: "Success")
+                                })
+                            }
+                        } else {
+                            alert.dismiss(animated: false, completion: nil)
+                        }
+                    }
+                })
+            } else {
+                DispatchQueue.main.async {
+                    alert.dismiss(animated: false, completion: {
+                        self.errorLabel.text = "An account with this email exists"
+                    })
+                }
+            }
+        })
+    }
+    
+}
+
+
+extension SignUpViewController{
+
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -46,65 +105,35 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         return updatedText.count <= 50
     }
     
-    
-    //    MARK: - SIGN UP
-    @IBAction func signUpAction(_ sender: Any) {
-        let usernameText = usernameTextField.text!
-        let passwordText = passwordTextField.text!
-        let confirmText = confirmPassTextField.text!
-        let phoneText = phoneTextField.text!
-        let emailText = emailTextField.text!
-        
-        //        check if user input valid username & password
-        let validInput: (isValid: Bool, errorMessage: String) = SignUpViewModel.shared.validUsernameAndPassWord(username: usernameText, password: passwordText, confirmPass: confirmText, phone: phoneText, email: emailText)
-        
-        if validInput.isValid {
-            let alert = UIAlertController(title: "Creating..", message: nil, preferredStyle: .alert)
-            waitAlert(alert: alert)
-            let newUser = UserData(username: usernameText, password: passwordText, phone: phoneText, email: emailText, passcode: "", hint: "", sharedNotes: [])
-            SignUpViewModel.shared.addNewUser(username: usernameText, newUser: newUser, completion: { (isSuccess,message) in
-                self.errorLabel.text = message
-                alert.dismiss(animated: false, completion: nil)
-                if isSuccess {
-                    self.showResultCreateUserAlert(title: "Create new user", message: "Success")
-                }
-            })
-        } else {
-            self.errorLabel.text = validInput.errorMessage
-        }
-        self.view.endEditing(true)
-        self.errorLabel.isHidden = false
-    }
-    
-    
     //    MARK: - SET UP & CUSTOM UI
     func setupUI() {
-        usernameTextField.text = ""
+        emailTextField.text = ""
         passwordTextField.text = ""
         confirmPassTextField.text = ""
+        displayNameTextField.text = ""
         phoneTextField.text = ""
-        emailTextField.text = ""
-        phoneTextField.keyboardType = .asciiCapableNumberPad
         errorLabel.isHidden = true
         self.navigationController?.isNavigationBarHidden = false
+
     }
     
     //    set up delegate
     func setupDelegate() {
-        usernameTextField.delegate = self
+        emailTextField.delegate = self
         passwordTextField.delegate = self
         confirmPassTextField.delegate = self
+        displayNameTextField.delegate = self
         phoneTextField.delegate = self
-        emailTextField.delegate = self
+        phoneTextField.keyboardType = .asciiCapableNumberPad
     }
     
     //  custom UI
     func customUI(){
-        let uiTextFieldList: [UITextField: String] = [usernameTextField : "Username" ,
+        let uiTextFieldList: [UITextField: String] = [emailTextField : "Email" ,
                                                       passwordTextField : "Password",
                                                       confirmPassTextField: "Confirm password",
-                                                      phoneTextField: "Phone Number (Optional)",
-                                                      emailTextField: "Email (Optional)"
+                                                      displayNameTextField: "Your Name",
+                                                      phoneTextField: "Phone Number (Optional)"
         ]
         for (textField, placeHolder) in uiTextFieldList {
             TextFieldAndButtonCustomUI.shared.customTextField(textField, placeHolder)
@@ -113,3 +142,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         TextFieldAndButtonCustomUI.shared.customButton(signUpButton)
     }
 }
+
+
+
