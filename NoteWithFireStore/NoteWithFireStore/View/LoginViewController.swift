@@ -44,14 +44,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
                 if isLogin{
                     LoginViewModel.shared.updateCurrentUsername(newUsername: emailText)
                     DispatchQueue.main.async {
-                        alert.dismiss(animated: false, completion: {
+                        self.dismiss(animated: false, completion: {
                             self.loginStatus.text = "Successed"
                             self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
                         })
                     }
                 } else {
                     DispatchQueue.main.async {
-                        alert.dismiss(animated: false, completion: {
+                        self.dismiss(animated: false, completion: {
                             self.loginStatus.text = "Failed"
                         })
                     }

@@ -12,7 +12,7 @@ public class SetPasscodeViewModel {
     static let shared =  SetPasscodeViewModel()
     private init() {}
     
-    var username: String? = NoteViewModel.shared.username
+    var username: String? = UserDefaults.standard.string(forKey: "username")
     
 //    get and update passcode 
     public func updateUserPasscode(passcode: String, hint: String){

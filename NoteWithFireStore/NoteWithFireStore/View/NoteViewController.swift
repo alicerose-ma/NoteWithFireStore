@@ -249,11 +249,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     //  actual processes to delete note
     func executeDeleteNote(indexPath: IndexPath){
         //  delete on firebase
-        NoteViewModel.shared.deleteNote(email: NoteViewModel.shared.username!, uniqueID: self.filteredNoteList[indexPath.row].id, completion: { message in
-            print(message)
-        })
+        NoteViewModel.shared.deleteNote(uniqueID: self.filteredNoteList[indexPath.row].id)
         // delete note name in shared note list of some user that have access to this note
-        SharedNoteViewModel.shared.deleteNoteInSharedUsers(uniqueID: self.filteredNoteList[indexPath.row].id)
+        SharedNoteViewModel.shared.deleteOneNoteForAllSharedUsers(uniqueID: self.filteredNoteList[indexPath.row].id)
         
         // delete noteList UI
         for note in self.allNoteList {

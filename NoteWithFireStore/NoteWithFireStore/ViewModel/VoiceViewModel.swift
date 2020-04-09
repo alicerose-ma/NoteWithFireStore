@@ -116,6 +116,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
                 let bestStr = self.subStr1 + res.bestTranscription.formattedString +  " " + self.subStr2
                 let voiceText = self.subStr1 + res.bestTranscription.formattedString
                 print(bestStr)
+                
                 if titleTextField.isFirstResponder {
                     titleTextField.text = bestStr
                     
@@ -149,7 +150,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
 
 //    record voice to text for textfield and textview
 //    audiEngine running => stop , else => start
-    func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView) {
+    func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView, viewController: UIViewController ) {
         if audioEngine.isRunning {
             stopRecording()
         } else {
@@ -167,6 +168,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
                     cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start)
                 }
                 text = desTextView.text!
+                viewController.view.endEditing(true)
             }
             
             let selectedIndex = text.index(text.startIndex, offsetBy: cursorPosition)

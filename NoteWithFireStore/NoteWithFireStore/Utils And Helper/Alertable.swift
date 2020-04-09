@@ -123,34 +123,41 @@ public extension Alertable where Self: UIViewController {
     }
     
     
-    //    MARK: - SHOW SHARE ALERT
-    func showShareAlert(title: String, message: String, noteToShare: Int, completion: @escaping ((String) -> Void)) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        alert.addTextField(configurationHandler: { textField in
-            textField.placeholder = "Enter username to share"
-        })
-        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler:
-            { action in
-                let userToShare = alert.textFields?.first?.text
-                if userToShare != "" {
-                    SharedNoteViewModel.shared.share(userToShare: userToShare!, noteToShare: noteToShare, completion: { message in
-                        completion(message)
-                    })
-                    
-                    //                    SharedNoteViewModel.shared.updateUserForNote(username: NoteViewModel.shared.username!, id: noteToShare, userToShare: userToShare!)
-                }
-        }))
-        self.present(alert, animated: true)
-    }
-    
-    
-    func showResultShareAlert(title: String, message: String, preferredStyle: UIAlertController.Style = .alert, completion: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: title , message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        self.present(alert, animated: true, completion: completion)
-    }
-    
+//    //    MARK: - SHOW SHARE ALERT
+//    func showShareAlert(title: String, message: String, noteToShare: Int, completion: @escaping ((Bool, String) -> Void)) {
+//        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+//        alert.addTextField(configurationHandler: { textField in
+//            textField.placeholder = "Enter username to share"
+//        })
+//        alert.addAction(UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: nil))
+//        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler:
+//            { action in
+//                let userToShare = alert.textFields?.first?.text
+//                if userToShare != "" {
+//                    SharedNoteViewModel.shared.share(userToShare: userToShare!, noteToShare: noteToShare, completion: { isShared in
+//                        if isShared {
+//                            SharedNoteViewModel.shared.updateUserForNote(username: NoteViewModel.shared.username!, id: noteToShare, userToShare: userToShare!, completion:{ isUpdated in
+//                                if isUpdated {
+//                                    completion(true,"Note shared successfully")
+//                                } else {
+//                                    completion(false,"Username exists")
+//                                }
+//                            })
+//                        } else {
+//                            completion(false, "Username is invalid")
+//                        }
+//                    })
+//                }
+//        }))
+//        self.present(alert, animated: true)
+//    }
+//
+//
+//    func showResultShareAlert(title: String, message: String, preferredStyle: UIAlertController.Style = .alert, completion: (() -> Void)? = nil) {
+//        let alert = UIAlertController(title: title , message: message, preferredStyle: .alert)
+//        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
+//        self.present(alert, animated: true, completion: completion)
+//    }
     
 }
 

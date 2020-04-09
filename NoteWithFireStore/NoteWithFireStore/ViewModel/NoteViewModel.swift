@@ -29,11 +29,9 @@ public class NoteViewModel {
     }
     
 //    delete note based on documentID
-    public func deleteNote(email: String, uniqueID: Int, completion: @escaping (Bool) -> Void) {
-        let documentID = email +  "note" + String(uniqueID)
-        FireBaseProxy.shared.deleteNote(documentID: documentID, completion: { isDelete in
-            completion(isDelete)
-        })
+    public func deleteNote(uniqueID: Int) {
+        let documentID = username! +  "note" + String(uniqueID)
+        FireBaseProxy.shared.deleteNote(documentID: documentID)
     }
     
 //    logout and remove user default object

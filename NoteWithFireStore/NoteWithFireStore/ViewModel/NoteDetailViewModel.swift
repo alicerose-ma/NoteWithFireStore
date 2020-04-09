@@ -12,8 +12,7 @@ public class NoteDetailViewModel {
     static let shared =  NoteDetailViewModel()
     private init() {}
     
-    var username: String? = NoteViewModel.shared.username
-    
+    var username: String? = UserDefaults.standard.string(forKey: "username")
 //    edit note base on document ID
     public func editNote(uniqueID: Int, newNote: NoteData) {
         let documentID = username! + "note" + String(uniqueID)

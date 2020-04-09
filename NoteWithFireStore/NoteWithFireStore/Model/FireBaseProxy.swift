@@ -14,8 +14,11 @@ public class FireBaseProxy {
     let usersCollection = Firestore.firestore().collection("Users")
     let notesCollection = Firestore.firestore().collection("Notes")
     let imagesCollection = Firestore.firestore().collection("Images")
-    var noteList: [NoteData] = []
-    var maxNoteList: Int = 0
+
+    var finalSharedNotes: [NoteData] = []
+    var finalModeArr: [String] = []
+    var aa: [NoteData] = []
+
     var alert =  UIAlertController()
     var loadingIndicator = UIActivityIndicatorView()
     
@@ -143,7 +146,7 @@ public class FireBaseProxy {
         }
     }
     
-    public func deleteNote(documentID: String, completion: @escaping (Bool) -> Void) {
+    public func deleteNote(documentID: String) {
         notesCollection.document(documentID).delete() { err in
             if let err = err {
                 print("Error removing document: \(err)")
@@ -188,7 +191,7 @@ public class FireBaseProxy {
     
     
     //  MARK: - SHARE
-    public func getSharedNote(email: String,  completion: @escaping (([NoteData]) -> Void)) {
+    public func getSharedNote(email: String,  completion: @escaping ([String]) -> Void) {
         var sharedNotes: [String] = []
         usersCollection.whereField("email", isEqualTo: email)
             .getDocuments() { (querySnapshot, err) in
@@ -198,22 +201,7 @@ public class FireBaseProxy {
                     do {
                         let myUsers: [UserData] = try querySnapshot!.decoded()
                         sharedNotes = myUsers[0].sharedNotes
-                        let oldMaxNoteList = self.maxNoteList
-                        self.maxNoteList = myUsers[0].sharedNotes.count
-                        
-                        //                        if oldMaxNoteList != self.maxNoteList {
-                        //
-                        //                        }
-                        for note in sharedNotes{
-                            let userAndId = note.components(separatedBy: "note")
-                            let id = Int(userAndId[1])
-                            self.getNoteByID(email: userAndId[0], id: id!, completion: { note in
-                                self.noteList.append(note[0])
-                            })
-                        }
-                        print("AAA")
-                        print(self.noteList)
-                        completion(self.noteList)
+                        completion(sharedNotes)
                     } catch {
                         print("decoded User error")
                     }
@@ -221,55 +209,177 @@ public class FireBaseProxy {
         }
     }
     
-    public func updateSharedUserForSingleNote(email: String, id: Int, userToShare: String) {
-        var sharedUsers: [String] = []
-        
+
+    
+  
+    
+    //    MARK: - UPDATE NOTE & USER
+    //    update user for Single note
+    public func updateSharedUserForSingleNote(email: String, id: Int, userToShareAndMode: String, userToShare: String, completion: @escaping (Bool) -> Void) {
         usersCollection.document(userToShare).getDocument { (document, error) in
             if let document = document, document.exists {
-                
                 self.getNoteByID(email: email, id: id, completion: { notes in
-                    sharedUsers = notes[0].sharedUsers
-                    if !sharedUsers.contains(userToShare) {
-                        sharedUsers.append(userToShare)
-                    }
-                    print("shared USER = \(sharedUsers)")
-                    let documentId = email + "note" + String(id)
-                    self.notesCollection.document(documentId).updateData([
-                        "sharedUsers": sharedUsers
-                    ]) { err in
-                        if let err = err {
-                            print("Error updating shared user: \(err)")
-                        } else {
-                            print("Shared user successfully updated")
+                    var sharedUsers = notes[0].sharedUsers
+                    if !sharedUsers.contains(where: {$0.contains(userToShare)}) {
+                        sharedUsers.append(userToShareAndMode)
+                        let documentId = email + "note" + String(id)
+                        self.notesCollection.document(documentId).updateData([
+                            "sharedUsers": sharedUsers
+                        ]) { err in
+                            if let err = err {
+                                print("Error updating shared user: \(err)")
+                                completion(false)
+                            } else {
+                                print("Shared user successfully updated")
+                                completion(true)
+                            }
                         }
+                    } else {
+                        completion(false)
+                        print("Shared user exists")
                     }
                 })
+            } else {
+                print("Err for document exists")
             }
         }
     }
     
     
-    public func deleteNoteInSharedUsers(noteName: String) {
-        usersCollection.whereField("sharedNotes", arrayContains: noteName).getDocuments() {(querySnapshot, err) in
+    //  update note to a user
+    public func updateSharedNoteForSingleUser(emailToShare: String, noteEmailAndID: String ,noteName: String ,completion: @escaping (Bool) -> Void) {
+        usersCollection.whereField("email", isEqualTo: emailToShare)
+            .getDocuments() {(querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    do {
+                        let myUsers: [UserData] = try querySnapshot!.decoded()
+                        if myUsers.count == 1 {
+                            var sharedNotes = myUsers[0].sharedNotes
+                            if !sharedNotes.contains(where: {$0.contains(noteEmailAndID)}) {
+                                sharedNotes.append(noteName)
+                            }
+                            self.usersCollection.document(emailToShare).updateData([
+                                "sharedNotes": sharedNotes,
+                            ]) { err in
+                                if let err = err {
+                                    completion(false)
+                                    print("Error updating shared Notes: \(err)")
+                                } else {
+                                    completion(true)
+                                    print("Shared note successfully updated")
+                                }
+                            }
+                        } else {
+                            completion(false)
+                            print("err with wrong email")
+                        }
+                    } catch {
+                        print("decoded User error")
+                    }
+                }
+        }
+    }
+    
+  
+//    MARK: - GET SHARED USER  & NOTE
+//    get shared Users
+    public func getSharedUsers(email: String, id: Int, completion: @escaping (([String]) -> Void)) {
+        notesCollection.whereField("email", isEqualTo: email)
+        .whereField("id", isEqualTo: id).getDocuments() {(querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                do {
+                    let myNote: [NoteData] = try querySnapshot!.decoded()
+                    let sharedUserList: [String] = myNote[0].sharedUsers
+                    completion(sharedUserList)
+                } catch {
+                    print("decoded User error")
+                }
+            }
+        }
+    }
+    
+    
+//    MARK: - DELETE NOTE
+    
+//    click stop share => empty the shared users list for  note
+    public func deleteAllSharedUsersForOneNote(documentId: String) {
+        self.notesCollection.document(documentId).updateData([
+            "sharedUsers": []
+        ]) { err in
+            if let err = err {
+                print("Error delete ALL shared user: \(err)")
+            } else {
+                print("Delete ALL shared users successful")
+            }
+        }
+    }
+    
+    
+    
+    
+    
+//  Note is deleted
+    public func deleteOneNoteForAllSharedUsers(noteName: String) {
+        usersCollection.whereField("sharedNotes", arrayContains: noteName + "modeview").getDocuments() {(querySnapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")
             } else {
                 do {
                     let myUsers: [UserData] = try querySnapshot!.decoded()
-                    for user in myUsers {
-                        print("username = \(user.email) delete \(user.sharedNotes)")
-                        
-                        var sharedNotes = user.sharedNotes
-                        sharedNotes.removeAll{$0.contains(noteName)}
-                        
-                        print("shared Notes = \(sharedNotes)")
-                        self.usersCollection.document(user.email).updateData([
-                            "sharedNotes": sharedNotes,
-                        ]) { err in
-                            if let err = err {
-                                print("Error updating shared Notes: \(err)")
-                            } else {
-                                print("Shared note successfully updated")
+                    if myUsers.count != 0 {
+                        for user in myUsers {
+                            var sharedNotes = user.sharedNotes
+                            for (index,note) in sharedNotes.enumerated() {
+                                if note.contains(noteName) {
+                                    sharedNotes.remove(at: index)
+                                    break
+                                }
+                            }
+                            self.usersCollection.document(user.email).updateData([
+                                "sharedNotes": sharedNotes,
+                            ]) { err in
+                                if let err = err {
+                                    print("Error updating shared Notes: \(err)")
+                                } else {
+                                    print("Shared note successfully updated")
+                                }
+                            }
+                        }
+                    }
+                } catch {
+                    print("decoded User error")
+                }
+            }
+        }
+        
+        usersCollection.whereField("sharedNotes", arrayContains: noteName + "modeedit").getDocuments() {(querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                do {
+                    let myUsers: [UserData] = try querySnapshot!.decoded()
+                    if myUsers.count != 0 {
+                        for user in myUsers {
+//                            print("username = \(user.email) delete \(user.sharedNotes)")
+                            var sharedNotes = user.sharedNotes
+                            for (index,note) in sharedNotes.enumerated() {
+                                if note.contains(noteName) {
+                                    sharedNotes.remove(at: index)
+                                    break
+                                }
+                            }
+                            self.usersCollection.document(user.email).updateData([
+                                "sharedNotes": sharedNotes,
+                            ]) { err in
+                                if let err = err {
+                                    print("Error updating shared Notes: \(err)")
+                                } else {
+                                    print("Shared note successfully updated")
+                                }
                             }
                         }
                     }
@@ -281,31 +391,121 @@ public class FireBaseProxy {
     }
     
     
-    public func shareNoteToUser(userToShare: String, noteName: String ,completion: @escaping (Bool) -> Void) {
-        usersCollection.whereField("username", isEqualTo: userToShare)
-            .getDocuments() {(querySnapshot, err) in
+    public func deleteOneNoteForOneUser(userToShare: String, noteNameWitEmailAndIDAndMode: String) {
+        //        combine email  + note from view controller  AND get indexPath.row extract mode from anh@gmail.commodeview
+        usersCollection.whereField("email", isEqualTo: userToShare).getDocuments() { (querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                do {
+                    let myUsers: [UserData] = try querySnapshot!.decoded()
+                    print(myUsers[0])
+                    var sharedNotes = myUsers[0].sharedNotes
+                    sharedNotes.removeAll{$0.contains(noteNameWitEmailAndIDAndMode)}
+                    self.usersCollection.document(userToShare).updateData([
+                        "sharedNotes": sharedNotes,
+                    ]) { err in
+                        if let err = err {
+                            print("Error updating shared Notes: \(err)")
+                        } else {
+                            print("Shared note successfully updated")
+                        }
+                    }
+                } catch {
+                    print("decoded User error")
+                }
+            }
+        }
+    }
+    
+    public func deleteOneUserForOneNote(email: String, id: Int, emailAndMode: String, completion: @escaping (Bool) -> Void) {
+        notesCollection.whereField("email", isEqualTo: email)
+            .whereField("id", isEqualTo: id).getDocuments() { (querySnapshot, err) in
                 if let err = err {
                     print("Error getting documents: \(err)")
                 } else {
                     do {
-                        let myUsers: [UserData] = try querySnapshot!.decoded()
-                        if myUsers.count == 1 {
-                            var sharedNotes = myUsers[0].sharedNotes
-                            if !sharedNotes.contains(noteName) {
-                                sharedNotes.append(noteName)
+                        let myUsers: [NoteData] = try querySnapshot!.decoded()
+                        var sharedUsers = myUsers[0].sharedUsers
+                        sharedUsers.removeAll{$0.contains(emailAndMode)}
+                        let documentId = email + "note" + String(id)
+                        self.notesCollection.document(documentId).updateData([
+                            "sharedUsers": sharedUsers,
+                        ]) { err in
+                            if let err = err {
+                                print("Error updating shared Notes: \(err)")
+                                completion(false)
+                            } else {
+                                print("Shared note successfully updated")
+                                completion(true)
                             }
-                            self.usersCollection.document(userToShare).updateData([
-                                "sharedNotes": sharedNotes,
-                            ]) { err in
-                                if let err = err {
-                                    print("Error updating shared Notes: \(err)")
-                                } else {
-                                    print("Shared note successfully updated")
-                                }
-                            }
-                            completion(true)
+                        }
+                    } catch {
+                        print("decoded User error")
+                    }
+                }
+        }
+    }
+    
+    
+//    MARK: - CHANGE MODE
+    public func changeModeOneNoteForOneUser(userToShare: String, noteNameWitEmailAndID: String, mode: String) {
+        usersCollection.whereField("email", isEqualTo: userToShare).getDocuments() { (querySnapshot, err) in
+            if let err = err {
+                print("Error getting documents: \(err)")
+            } else {
+                do {
+                    let myUsers: [UserData] = try querySnapshot!.decoded()
+                    var sharedNotes = myUsers[0].sharedNotes
+                    for (index,note) in sharedNotes.enumerated() {
+                        if note.contains(noteNameWitEmailAndID) {
+                            sharedNotes[index] = noteNameWitEmailAndID + "mode" + mode
+                            break
+                        }
+                    }
+                    self.usersCollection.document(userToShare).updateData([
+                        "sharedNotes": sharedNotes,
+                    ]) { err in
+                        if let err = err {
+                            print("Error updating shared Notes: \(err)")
                         } else {
-                            completion(false)
+                            print("Shared note successfully updated")
+                        }
+                    }
+                } catch {
+                    print("decoded User error")
+                }
+            }
+        }
+    }
+    
+//    email = nguyen, email +mode = anh@gmail.comnoteview
+    public func changeModeOneUserForOneNote(email: String, id: Int, userToShare: String, mode: String ,completion: @escaping (Bool) -> Void) {
+        notesCollection.whereField("email", isEqualTo: email)
+            .whereField("id", isEqualTo: id).getDocuments() { (querySnapshot, err) in
+                if let err = err {
+                    print("Error getting documents: \(err)")
+                } else {
+                    do {
+                        let myUsers: [NoteData] = try querySnapshot!.decoded()
+                        var sharedUsers = myUsers[0].sharedUsers
+                        for (index, user) in sharedUsers.enumerated() {
+                            if user.contains(userToShare) {
+                                sharedUsers[index] = userToShare + "mode" + mode
+                                break
+                            }
+                        }
+                        let documentId = email + "note" + String(id)
+                        self.notesCollection.document(documentId).updateData([ //anh@gmail.commodeview
+                            "sharedUsers": sharedUsers,
+                        ]) { err in
+                            if let err = err {
+                                print("Error updating shared Notes: \(err)")
+                                completion(false)
+                            } else {
+                                print("Shared note successfully updated")
+                                completion(true)
+                            }
                         }
                     } catch {
                         print("decoded User error")
@@ -316,6 +516,8 @@ public class FireBaseProxy {
     
     
     
+    
+    //    MARK: - IMAGE
     func uploadImage(urlImgStr: URL, username: String,noteID: String ,imageName: String){
         let storageRef = Storage.storage().reference()
         let imageRef = storageRef.child("\(username)/\(noteID)/\(imageName)")
@@ -359,3 +561,37 @@ extension QuerySnapshot {
         return objects
     }
 }
+
+
+
+//                    if !sharedUsers.contains(userToShare) {
+//                        sharedUsers.append(userToShare)
+//                        print("shared USER = \(sharedUsers)")
+//                        let documentId = email + "note" + String(id)
+//                        self.notesCollection.document(documentId).updateData([
+//                            "sharedUsers": sharedUsers
+//                        ]) { err in
+//                            if let err = err {
+//                                print("Error updating shared user: \(err)")
+//                                completion(false)
+//                            } else {
+//                                print("Shared user successfully updated")
+//                                completion(true)
+//                            }
+//                        }
+
+
+
+//                            var isContained = false
+//                            for note in sharedNotes {
+//                                if !note.contains(noteEmailAndID) {
+//                                    isContained = false
+//                                } else {
+//                                    isContained = true
+//                                    break
+//                                }
+//                            }
+//
+//                            if !isContained {
+//                                sharedNotes.append(noteName)
+//                            }

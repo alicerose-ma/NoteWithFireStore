@@ -65,18 +65,18 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
                         self.errorLabel.text = message
                         if isSuccess {
                             DispatchQueue.main.async() {
-                                alert.dismiss(animated: false, completion: {
+                                self.dismiss(animated: false, completion: {
                                     self.showResultCreateUserAlert(title: "Create new user", message: "Success")
                                 })
                             }
                         } else {
-                            alert.dismiss(animated: false, completion: nil)
+                            self.dismiss(animated: false, completion: nil)
                         }
                     }
                 })
             } else {
                 DispatchQueue.main.async {
-                    alert.dismiss(animated: false, completion: {
+                    self.dismiss(animated: false, completion: {
                         self.errorLabel.text = "An account with this email exists"
                     })
                 }

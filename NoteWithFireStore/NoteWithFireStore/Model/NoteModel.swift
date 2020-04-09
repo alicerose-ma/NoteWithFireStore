@@ -15,6 +15,7 @@ public struct NoteData: Decodable {
     var title: String
     var des: String
     var isLocked: Bool
+//    var isShared: Bool
     var imageIDMax: Int
     var sharedUsers : [String]
     var imagePosition : [Int]
@@ -28,6 +29,7 @@ public struct NoteData: Decodable {
             "title": title,
             "des": des,
             "isLocked": isLocked,
+//            "isShared": isShared,
             "sharedUsers" : sharedUsers,
             "imageIDMax" : imageIDMax,
             "imagePosition" : imagePosition,
