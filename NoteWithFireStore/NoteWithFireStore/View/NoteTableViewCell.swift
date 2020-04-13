@@ -12,11 +12,13 @@ class NoteTableViewCell: UITableViewCell {
 
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var desLabel: UILabel!
+    @IBOutlet weak var modeLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         titleLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
         desLabel.font = UIFont.italicSystemFont(ofSize: 14.0)
+        modeLabel.font = UIFont.italicSystemFont(ofSize: 14.0)
         // Initialization code
     }
 

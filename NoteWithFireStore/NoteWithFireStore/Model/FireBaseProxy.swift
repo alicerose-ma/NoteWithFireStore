@@ -18,6 +18,8 @@ public class FireBaseProxy {
     var finalSharedNotes: [NoteData] = []
     var finalModeArr: [String] = []
     var aa: [NoteData] = []
+    
+    var arr : [NoteData] = []
 
     var alert =  UIAlertController()
     var loadingIndicator = UIActivityIndicatorView()
@@ -191,8 +193,9 @@ public class FireBaseProxy {
     
     
     //  MARK: - SHARE
-    public func getSharedNote(email: String,  completion: @escaping ([String]) -> Void) {
+    public func getSharedNote(email: String, completion: @escaping ([(NoteData, String)]) -> Void) {
         var sharedNotes: [String] = []
+        var noteDataList: [(NoteData, String)] = []
         usersCollection.whereField("email", isEqualTo: email)
             .getDocuments() { (querySnapshot, err) in
                 if let err = err {
@@ -201,13 +204,51 @@ public class FireBaseProxy {
                     do {
                         let myUsers: [UserData] = try querySnapshot!.decoded()
                         sharedNotes = myUsers[0].sharedNotes
-                        completion(sharedNotes)
+                        let dispatchGroup = DispatchGroup.init()
+                        for noteStr in sharedNotes {
+                            dispatchGroup.enter()
+                            let emailAndIDWithMode = noteStr.components(separatedBy: "note")
+                            let idAndMode = emailAndIDWithMode[1].components(separatedBy: "mode")
+                            
+                            let email = emailAndIDWithMode[0]
+                            let id = Int(idAndMode[0])!
+                            let mode = idAndMode[1]
+                            self.getNoteByID(email: email, id: id, completion: { notes in
+                                noteDataList.append((notes[0],mode))
+                                dispatchGroup.leave()
+                            })
+                        }
+                        
+                        dispatchGroup.notify(queue: .main) {
+                            completion(noteDataList)
+                        }
                     } catch {
                         print("decoded User error")
                     }
                 }
         }
     }
+    
+    
+//    public func getNoteArr(strArr: [[String]], completion: @escaping (([NoteData]) -> Void)) {
+//        let dispatchGroup = DispatchGroup.init()
+//        for str in strArr {
+//            dispatchGroup.enter()
+//            getNoteByID(email: str[0], id: Int(str[1])!, completion: { notes in
+//                self.arr.append(notes[0])
+//                dispatchGroup.leave()
+//                print("leave")
+//            })
+//        }
+//
+//        dispatchGroup.notify(queue: .main) {
+//            print("finish")
+//            print("firebase = \(self.arr)")
+//            completion(self.arr)
+//            self.arr = []
+//        }
+//    }
+    
     
 
     
@@ -391,7 +432,7 @@ public class FireBaseProxy {
     }
     
     
-    public func deleteOneNoteForOneUser(userToShare: String, noteNameWitEmailAndIDAndMode: String) {
+    public func deleteOneNoteForOneUser(userToShare: String, noteNameWitEmailAndIDAndMode: String,  completion: @escaping (Bool) -> Void) {
         //        combine email  + note from view controller  AND get indexPath.row extract mode from anh@gmail.commodeview
         usersCollection.whereField("email", isEqualTo: userToShare).getDocuments() { (querySnapshot, err) in
             if let err = err {
@@ -406,8 +447,10 @@ public class FireBaseProxy {
                         "sharedNotes": sharedNotes,
                     ]) { err in
                         if let err = err {
+                            completion(false)
                             print("Error updating shared Notes: \(err)")
                         } else {
+                            completion(true)
                             print("Shared note successfully updated")
                         }
                     }
@@ -515,6 +558,8 @@ public class FireBaseProxy {
     }
     
     
+   
+    
     
     
     //    MARK: - IMAGE
@@ -595,3 +640,4 @@ extension QuerySnapshot {
 //                            if !isContained {
 //                                sharedNotes.append(noteName)
 //                            }
+

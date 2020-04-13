@@ -92,9 +92,13 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             SharedNoteViewModel.shared.sharedUsers = sharedUserList
                  let numberOfUsers = SharedNoteViewModel.shared.sharedUsers.count
                  if numberOfUsers == 0 {
+                    if self.hasLock == true {
+                         self.userShareBtn.isEnabled = false
+                    } else {
+                         self.userShareBtn.isEnabled = true
+                    }
                     self.isShared = false
                     self.insertLockForNoteBtn.isEnabled = true
-                    self.userShareBtn.isEnabled = true
                  } else {
                     self.isShared = true
                     self.insertLockForNoteBtn.isEnabled = false
@@ -157,7 +161,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         VoiceViewModel.shared.stopRecording()
         deregisterFromKeyboardNotifications()
         let title = titleTextField.text!
-        let description = desTextView.text!
+        var description = desTextView.text!
+        description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
         
         let imagePosition = AttachmentViewModel.shared.oldPosition
         let imageURL = AttachmentViewModel.shared.oldURL
@@ -289,7 +294,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                         if passcode == "" {
                             self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
                         } else {
-                            self.hasLock = true
+//                            self.hasLock = true
                             self.addLockIconToNavBar()
                         }
                     })
@@ -398,7 +403,6 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     //    set up UI when note is unlock
     func setupUIWhenLockOFF(){
         lockView.isHidden = true
-        userShareBtn.isEnabled = true
         voiceBtn.isEnabled = true
         insertLockForNoteBtn.isEnabled = true
         addLockIconToNavBar()

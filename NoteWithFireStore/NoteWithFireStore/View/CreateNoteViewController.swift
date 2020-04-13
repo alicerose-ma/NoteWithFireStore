@@ -63,12 +63,18 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         if numberOfUsers == 0 {
             isShared = false
             if !titleTextField.text!.isEmpty || !desTextView.text!.isEmpty {
+                if self.hasLock == true {
+                     self.userShareBtn.isEnabled = false
+                } else {
+                     self.userShareBtn.isEnabled = true
+                }
                 insertLockForNoteBtn.isEnabled = true
-                userShareBtn.isEnabled = true
             } else {
                 insertLockForNoteBtn.isEnabled = false
                 userShareBtn.isEnabled = false
             }
+            
+            
         } else {
             isShared = true
             insertLockForNoteBtn.isEnabled = false
@@ -121,13 +127,15 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         VoiceViewModel.shared.stopRecording()
         deregisterFromKeyboardNotifications()
         let title = titleTextField.text!
-        let description = desTextView.attributedText.string
+        var description = desTextView.text!
+        description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
         let imagePosition = AttachmentViewModel.shared.newImagePosition
         let imageURL = AttachmentViewModel.shared.newImageURL
         
         let sharedUsers = SharedNoteViewModel.shared.sharedUsers
         //        print("!!!!!!!!!!!!!!!!!!!!!!!!!")
 //        print(sharedUsers)
+
     
         let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: NoteViewModel.shared.username!, uniqueID: uniqueID)
         var note = NoteData(id: uniqueID, email: NoteViewModel.shared.username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageID, sharedUsers: sharedUsers, imagePosition: imagePosition, imageURL: imageURL )
@@ -370,7 +378,6 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
     //    set up UI when note is unlock
     func setupUIWhenLockOFF(){
         lockView.isHidden = true
-        userShareBtn.isEnabled = true
         voiceBtn.isEnabled = true
         insertLockForNoteBtn.isEnabled = true
         addLockIconToNavBar()

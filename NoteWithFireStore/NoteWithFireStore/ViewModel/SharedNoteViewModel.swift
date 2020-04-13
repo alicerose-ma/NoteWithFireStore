@@ -14,7 +14,7 @@ public class SharedNoteViewModel {
     
     var username: String? = UserDefaults.standard.string(forKey: "username")
     var sharedUsers: [String] = []
-    var sharedNotes = [NoteData]()
+    var sharedNotes = [(NoteData, String)]()
     
     func updateSharedNoteForSingleUser(userToShare: String, noteToShare: Int, isEdit: Bool, completion: @escaping (Bool) -> Void) {
         let noteEmailAndID = username! + "note" + String(noteToShare)
@@ -57,8 +57,16 @@ public class SharedNoteViewModel {
 //    stop share for 1 user
     func deleteOneNoteForOneUser(userToShare: String,uniqueID: Int, mode: String) {
         let noteNameWitEmailAndIDAndMode = username! + "note" + String(uniqueID) + "mode" + mode
-        FireBaseProxy.shared.deleteOneNoteForOneUser(userToShare: userToShare, noteNameWitEmailAndIDAndMode: noteNameWitEmailAndIDAndMode)
+        FireBaseProxy.shared.deleteOneNoteForOneUser(userToShare: userToShare, noteNameWitEmailAndIDAndMode: noteNameWitEmailAndIDAndMode, completion: { _ in })
     }
+    
+    func deleteOneNoteForOneUserFromShareView(userToShare: String, uniqueID: Int, mode: String, completion: @escaping (Bool) -> Void) {
+           let noteNameWitEmailAndIDAndMode = userToShare + "note" + String(uniqueID) + "mode" + mode
+        FireBaseProxy.shared.deleteOneNoteForOneUser(userToShare: username!, noteNameWitEmailAndIDAndMode: noteNameWitEmailAndIDAndMode, completion: { deleted in
+            completion(deleted)
+        })
+       }
+    
     
     func deleteOneUserForOneNote(id: Int, noteNameWitEmail: String, completion: @escaping (Bool) -> Void) {
         FireBaseProxy.shared.deleteOneUserForOneNote(email: username!, id: id, emailAndMode: noteNameWitEmail, completion: { deleted in
@@ -66,10 +74,42 @@ public class SharedNoteViewModel {
         })
     }
     
+//
+//    func getSharedNoteStr(completion: @escaping ([[String]]) -> Void){
+//        FireBaseProxy.shared.getSharedNoteStr(email: username!, completion: { sharedNoteList in
+//            var arr: [[String]] = []
+//            for noteStr in sharedNoteList {
+//                let emailAndIDWithMode = noteStr.components(separatedBy: "note")
+//                let idAndMode = emailAndIDWithMode[1].components(separatedBy: "mode")
+//
+//                let email = emailAndIDWithMode[0]
+//                let id = idAndMode[0]
+//                let mode = idAndMode[1]
+//                var str: [String] = []
+//                str.append(email)
+//                str.append(id)
+//                str.append(mode)
+//
+//                arr.append(str)
+//            }
+//            completion(arr)
+//        })
+//    }
     
-    func getSharedNote(completion: @escaping ([String]) -> Void){
-        FireBaseProxy.shared.getSharedNote(email: username!, completion: { sharedNoteList in
-            completion(sharedNoteList)
+    
+//    func getSharedNotes(completion: @escaping ([NoteData]) -> Void) {
+//        getSharedNoteStr(completion: { arr in
+//            FireBaseProxy.shared.getNoteArr(strArr: arr, completion: { noteArr in
+//                completion(noteArr)
+//            })
+//        })
+//    }
+    
+    
+    
+    func getSharedNotes(completion: @escaping ([(NoteData, String)]) -> Void) {
+        FireBaseProxy.shared.getSharedNote(email: username!, completion: { noteList in
+            completion(noteList)
         })
     }
     
@@ -99,8 +139,12 @@ public class SharedNoteViewModel {
                 completion(updatedModeSuccess)
             })
         }
-        
-        
+    }
+    
+    
+    public func editSharedNote(email: String, id: Int, newNote: NoteData) {
+        let documentID = email + "note" + String(id)
+        FireBaseProxy.shared.editNote(documentID: documentID, newNote: newNote)
     }
     
     

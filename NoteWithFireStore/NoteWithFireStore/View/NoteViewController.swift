@@ -36,7 +36,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavUI()
-        setupSearchController()
+//        setupSearchController()
         VoiceViewModel.shared.voiceSetup()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
 
@@ -46,7 +46,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     // MARK: - CHECK USER LOGIN BEFORE
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setupSearchController()
         searchController.searchBar.text = nil
+        searchController.searchBar.selectedScopeButtonIndex = 0
         self.emptyNoteView.isHidden = true
         self.tabBarController?.tabBar.isHidden = false
     }
@@ -73,12 +75,11 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                 DispatchQueue.main.async {
                     alert.dismiss(animated: false, completion: {
                         self.emptyNoteView.isHidden = true
-                        self.noteTableView.reloadData()
+                        self.noteTableView.reloadData() // 003
                     })
                 }
             }
         })
-            
     }
     
     
@@ -101,6 +102,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             cell.titleLabel.text = filteredNoteList[indexPath.row].title
             cell.desLabel.text = "locked"
         }
+        cell.modeLabel.isHidden = true
         return cell
     }
     
@@ -117,6 +119,11 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             applySearch(searchText: searchBar.text!,scope: selectedScope)
         }
     }
+    
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+           searchController.isActive = true
+           return true
+       }
     
     func applySearch(searchText: String, scope: String = "All") {
         if searchController.searchBar.text! == "" {
