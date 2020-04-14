@@ -19,18 +19,8 @@ class SetPasscodeViewController: UIViewController, UITextFieldDelegate, Alertabl
     @IBOutlet weak var hintTextField: UITextField!
     var setPasscodeDelegate: SetPasscodeDelegate?
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupNavBarAndDelegate()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
     }
@@ -85,5 +75,16 @@ class SetPasscodeViewController: UIViewController, UITextFieldDelegate, Alertabl
                 showStoredPasscodeAlert(goBackPreviousView: false,title: .passcodeSetup, message: .invalidConfirm)
             }
         }
+    }
+}
+
+extension SetPasscodeViewController {
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

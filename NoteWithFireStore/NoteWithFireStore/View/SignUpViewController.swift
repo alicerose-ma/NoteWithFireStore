@@ -52,7 +52,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         self.errorLabel.isHidden = false
     }
     
-//  craete new auth account and firestore account
+    //  craete new auth account and firestore account
     func createNewAuthAndDatabaseAccount(emailText: String, passwordText: String, displayNameText: String, phoneText: String) {
         let alert = UIAlertController(title: "Creating" , message: nil, preferredStyle: .alert)
         waitAlert(alert: alert)
@@ -88,7 +88,6 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
 
 
 extension SignUpViewController{
-
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -114,7 +113,7 @@ extension SignUpViewController{
         phoneTextField.text = ""
         errorLabel.isHidden = true
         self.navigationController?.isNavigationBarHidden = false
-
+        
     }
     
     //    set up delegate

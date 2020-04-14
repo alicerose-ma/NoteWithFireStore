@@ -28,14 +28,7 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var desTextView: UITextView!
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -67,11 +60,15 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
             titleTextField.isEnabled = true
             desTextView.isSelectable = true
             setupTextViewWithDoneBtn()
-
+            
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        saveNote()
+    }
+    
+    func saveNote(){
         VoiceViewModel.shared.stopRecording()
         deregisterFromKeyboardNotifications()
         if mode == "edit" {
@@ -99,36 +96,11 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
         }
     }
     
-    //    MARK: - setup UI
-    func setupDelegate(){
-        titleTextField.delegate = self
-        desTextView.delegate = self
-        imagePicker.delegate = self
-    }
-    
-    func setUpNavBarItem() {
-        if #available(iOS 13.0, *) {
-            voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
-            imageBtn = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(self.addImage))
-        } else {
-            voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "mic", action:  #selector(self.voice)))
-            imageBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "photo", action:  #selector(self.addImage)))
-        }
-        
-    }
-    
-    func setupNavBarUI() {
-        setUpNavBarItem()
-        if mode == "edit" {
-            navigationItem.rightBarButtonItems = [voiceBtn ,imageBtn]
-        }
-    }
-    
     //  MARK: -  TEXT DESCRIBED FROM VOICE
     @objc func voice(){
         VoiceViewModel.shared.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView, viewController: self)
         if isRecord {
-            imageBtn.isEnabled = true
+            imageBtn.isEnabled = false
             changeNavButtonItemForIOS12AndIOS13(name: "mic")
         } else {
             imageBtn.isEnabled = false
@@ -141,8 +113,27 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
         }
         isRecord = !isRecord
     }
-
     
+    
+    //    MARK: - IMAGE
+    @objc func addImage(){
+        print("click add image")
+    }
+    
+}
+
+
+extension ViewModeShareViewController{
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    //    MARK: SWITCH BETWEEN TEXTFIELD & TEXTVIEW
     //    switch between textfield and textview => stop record
     func textFieldDidBeginEditing(_ textField: UITextField) {
         switchBetweenTextFieldAndTextView()
@@ -170,6 +161,30 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
         navigationItem.rightBarButtonItems = [voiceBtn,imageBtn]
     }
     
+    //    MARK: - SETUP UI
+    func setupDelegate(){
+        titleTextField.delegate = self
+        desTextView.delegate = self
+        imagePicker.delegate = self
+    }
+    
+    func setUpNavBarItem() {
+        if #available(iOS 13.0, *) {
+            voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
+            imageBtn = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(self.addImage))
+        } else {
+            voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "mic", action:  #selector(self.voice)))
+            imageBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "photo", action:  #selector(self.addImage)))
+        }
+        
+    }
+    
+    func setupNavBarUI() {
+        setUpNavBarItem()
+        if mode == "edit" {
+            navigationItem.rightBarButtonItems = [voiceBtn ,imageBtn]
+        }
+    }
     
     //MARK: - AUTO KEYBOARD FOR TEXTVIEW
     func registerForKeyboardNotifications(){
@@ -203,24 +218,16 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
     
     //      set up textview with done button to dimiss the keyboard
     func setupTextViewWithDoneBtn() {
-            let toolBar = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: view.frame.size.width, height: 30)))
-            let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
-            let barButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneBtnAction))
-            barButton.tintColor = .blue
-            toolBar.setItems([flexible, barButton], animated: false)
-            desTextView.inputAccessoryView = toolBar
+        let toolBar = UIToolbar(frame: CGRect(origin: .zero, size: CGSize(width: view.frame.size.width, height: 30)))
+        let flexible = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let barButton = UIBarButtonItem(title: "Done", style: .done, target: self, action: #selector(doneBtnAction))
+        barButton.tintColor = .blue
+        toolBar.setItems([flexible, barButton], animated: false)
+        desTextView.inputAccessoryView = toolBar
         
     }
     
     @objc func doneBtnAction() {
         self.view.endEditing(true)
     }
-    
-    
-
-    //    MARK: - IMAGE
-        @objc func addImage(){
-            print("click add image")
-        }
-    
 }

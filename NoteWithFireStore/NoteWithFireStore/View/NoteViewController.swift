@@ -16,37 +16,24 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     @IBOutlet weak var noteTableView: UITableView!
     let refreshControl = UIRefreshControl()
     
-//    var alert = UIAlertController()
-    
     //  list of note getting from Firestore
     var allNoteList = [NoteData]()
     var filteredNoteList = [NoteData]()
     var selectedRow: Int = -1 // current row selected in tableview
     let searchController = UISearchController(searchResultsController: nil)
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavUI()
-//        setupSearchController()
+        setupSearchController()
         VoiceViewModel.shared.voiceSetup()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
-
     }
     
     
-    // MARK: - CHECK USER LOGIN BEFORE
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupSearchController()
         searchController.searchBar.text = nil
         searchController.searchBar.selectedScopeButtonIndex = 0
         self.emptyNoteView.isHidden = true
@@ -57,8 +44,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         loadNoteList()
     }
     
-    
-    //    load note list of user
+    //    MARK: LOAD NOTE LIST
     func loadNoteList() {
         let alert = UIAlertController(title: "Loading" , message: nil, preferredStyle: .alert)
         waitAlert(alert: alert)
@@ -75,35 +61,11 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                 DispatchQueue.main.async {
                     alert.dismiss(animated: false, completion: {
                         self.emptyNoteView.isHidden = true
-                        self.noteTableView.reloadData() // 003
+                        self.noteTableView.reloadData()
                     })
                 }
             }
         })
-    }
-    
-    
-    //    MARK: - TABLEVIEW DISPLAY NOTE
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredNoteList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell =  noteTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
-        
-        if !filteredNoteList[indexPath.row].isLocked {
-            cell.titleLabel.text = filteredNoteList[indexPath.row].title
-            cell.desLabel.text = filteredNoteList[indexPath.row].des
-        } else {
-            cell.titleLabel.text = filteredNoteList[indexPath.row].title
-            cell.desLabel.text = "locked"
-        }
-        cell.modeLabel.isHidden = true
-        return cell
     }
     
     
@@ -121,9 +83,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-           searchController.isActive = true
-           return true
-       }
+        searchController.isActive = true
+        return true
+    }
     
     func applySearch(searchText: String, scope: String = "All") {
         if searchController.searchBar.text! == "" {
@@ -169,14 +131,14 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         applySearch(searchText: searchController.searchBar.text!,scope: searchBar.scopeButtonTitles![selectedScope])
     }
     
-    
+
     //    Search with voice
     func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
         showAlertWithInputStringForSearch(title: "Search", searchController: searchController)
     }
     
     
-    //    MARK: - SWIPE TO DELETE FOR IOS 10 and IOS 13
+    //    MARK: - SWIPE TO DELETE
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
     }
@@ -187,15 +149,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             self.deleteAction(indexPath: indexPath)
         })
         return [deleteAction]
-    }
-    
-    @available(iOS 11.0, *)
-    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        // DELETE ACTION
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete", handler: {(contextualAction, view, boolValue) in
-            self.deleteAction(indexPath: indexPath)
-        })
-        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
     
     //    delete action for swipe left
@@ -218,14 +171,14 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         var alert = UIAlertController()
         var message = ""
         switch NoteViewModel.shared.enterPasscodeCount {
-            case let x where x == 0:
-                message = ""
-            case let x where x >= 1 && x < 3:
-                message = "Wrong passcode, try again"
-            case let x where x >= 3:
-                message = "Wrong passcode, try again \nHint: \n\(hint)"
-            default:
-                print("this is impossible")
+        case let x where x == 0:
+            message = ""
+        case let x where x >= 1 && x < 3:
+            message = "Wrong passcode, try again"
+        case let x where x >= 3:
+            message = "Wrong passcode, try again \nHint: \n\(hint)"
+        default:
+            print("this is impossible")
         }
         alert = UIAlertController(title: "Enter Passcode", message: message, preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -243,9 +196,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.executeDeleteNote(indexPath: indexPath) //execute delete
                 } else {
                     NoteViewModel.shared.enterPasscodeCount += 1
-                          self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
+                    self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
                     self.dismiss(animated: false, completion: {
-                      self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
+                        self.enterPasscodeToDelete(passcode: passcode, hint: hint, indexPath: indexPath)
                     })
                 }
             }})
@@ -301,7 +254,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             let destinationVC  = segue.destination as! CreateNoteViewController
             destinationVC.uniqueID = NoteViewModel.shared.createNewUniqueNoteID(noteList: allNoteList)
         }
-
+        
         if segue.identifier == "EditNote" {
             let destinationVC  = segue.destination as! NoteDetailViewController
             selectedRow = noteTableView.indexPathForSelectedRow!.row
@@ -317,6 +270,36 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
+}
+
+extension NoteViewController {
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    
+    //    MARK: - TABLEVIEW DISPLAY NOTE
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return filteredNoteList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell =  noteTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
+        
+        if !filteredNoteList[indexPath.row].isLocked {
+            cell.titleLabel.text = filteredNoteList[indexPath.row].title
+            cell.desLabel.text = filteredNoteList[indexPath.row].des
+        } else {
+            cell.titleLabel.text = filteredNoteList[indexPath.row].title
+            cell.desLabel.text = "locked"
+        }
+        cell.modeLabel.isHidden = true
+        return cell
+    }
     
     //    MARK: - SET UP UI NAV & SEARCH CONTROLLER
     func setupNavUI() {
@@ -343,8 +326,6 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         refreshControl.addTarget(self, action: #selector(refreshTableView(_:)), for: .valueChanged)
     }
     
-    
-    
     func setupSearchController(){
         self.navigationController!.navigationBar.barTintColor = .blue
         searchController.delegate = self
@@ -353,17 +334,16 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         
         searchController.obscuresBackgroundDuringPresentation = false
         definesPresentationContext = true
-
+        
         searchController.searchBar.scopeButtonTitles = ["All", "Lock", "Unlock"]
-//        change color of scope bar
+        //        change color of scope bar
         searchController.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.white], for: UIControl.State.normal)
         searchController.searchBar.setScopeBarButtonTitleTextAttributes([NSAttributedString.Key.foregroundColor: UIColor.black], for: UIControl.State.selected)
-
+        
         searchController.searchBar.placeholder = "Enter Keywords to search"
         searchController.hidesNavigationBarDuringPresentation = true
         searchController.searchBar.showsBookmarkButton = true
         searchController.searchBar.sizeToFit()
-        
         
         if #available(iOS 13.0, *) {
             self.navigationItem.searchController = searchController
@@ -377,9 +357,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             searchController.searchBar.setImage(UIImage(named: "searchVoice"), for: .bookmark, state: .normal)
             
         }
-        // to hide it when the view is first presented.
-        //        noteTableView.contentOffset = CGPoint(x: 0, y: searchController.searchBar.frame.height)
     }
     
+    
 }
-

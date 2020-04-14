@@ -18,39 +18,18 @@ class ShareSettingViewController: UIViewController, UITextFieldDelegate, UITable
     @IBOutlet weak var editBtn: UIButton!
     @IBOutlet weak var viewBtn: UIButton!
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-           textField.resignFirstResponder()
-           return true
-       }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(noteID)
         sharedUserTableView.dataSource = self
         sharedUserTableView.delegate = self
-        
-        viewBtn.isSelected = true
-        editBtn.isSelected = false
+        shareEmailTextField.delegate = self
+        KeyboardHelper.shared.dismissKeyboard(viewController: self)
     }
-    
-    @IBAction func clickView(_ sender: Any) {
-        viewBtn.isSelected = true
-        editBtn.isSelected = false
-        isEdit = false
-    }
-    
-    @IBAction func clickEdit(_ sender: Any) {
-        viewBtn.isSelected = false
-        editBtn.isSelected = true
-        isEdit = true
-    }
-    
     
     override func viewDidAppear(_ animated: Bool) {
+        viewBtn.isSelected = true
+        editBtn.isSelected = false
         loadSharedUsers()
     }
     
@@ -105,17 +84,6 @@ class ShareSettingViewController: UIViewController, UITextFieldDelegate, UITable
     }
     
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return SharedNoteViewModel.shared.sharedUsers.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell =  sharedUserTableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath)
-        let emailAndMode = SharedNoteViewModel.shared.sharedUsers[indexPath.row].components(separatedBy: "mode")
-        cell.textLabel?.text = emailAndMode[0]
-        cell.detailTextLabel?.text = emailAndMode[1]
-        return cell
-    }
     
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         return true
@@ -149,17 +117,43 @@ class ShareSettingViewController: UIViewController, UITextFieldDelegate, UITable
         })
         
         shareAction.backgroundColor = .blue
-
         return [deleteAction, shareAction]
     }
     
-    
-    
-    
-    func showResultShareAlert(title: String, message: String, preferredStyle: UIAlertController.Style = .alert) {
-        let alert = UIAlertController(title: title , message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: UIAlertAction.Style.default, handler: nil))
-        self.present(alert, animated: true)
-    }
+}
 
+
+extension ShareSettingViewController{
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
+    }
+    
+    @IBAction func clickView(_ sender: Any) {
+        viewBtn.isSelected = true
+        editBtn.isSelected = false
+        isEdit = false
+    }
+    
+    @IBAction func clickEdit(_ sender: Any) {
+        viewBtn.isSelected = false
+        editBtn.isSelected = true
+        isEdit = true
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return SharedNoteViewModel.shared.sharedUsers.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell =  sharedUserTableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath)
+        let emailAndMode = SharedNoteViewModel.shared.sharedUsers[indexPath.row].components(separatedBy: "mode")
+        cell.textLabel?.text = emailAndMode[0]
+        cell.detailTextLabel?.text = emailAndMode[1]
+        return cell
+    }
 }

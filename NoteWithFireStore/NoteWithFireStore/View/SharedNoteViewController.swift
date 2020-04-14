@@ -20,26 +20,17 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     let refreshControl = UIRefreshControl()
     let searchController = UISearchController(searchResultsController: nil)
     
-    override var prefersStatusBarHidden: Bool {
-        return true
-    }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        sharedTableView.delegate = self
-        sharedTableView.dataSource = self
-        self.title = "Shared Notes"
         setupNavUI()
         setupSearchController()
-        print(SharedNoteViewModel.shared.sharedNotes) 
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         searchController.searchBar.text = nil
         searchController.searchBar.selectedScopeButtonIndex = 0
-        
-        
     }
 
     
@@ -93,8 +84,6 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
         return true
     }
 
-    
-     
      func applySearch(searchText: String, scope: String = "All") {
          if searchController.searchBar.text! == "" {
              switch scope {
@@ -131,8 +120,6 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
                  }
              }
          }
-        
-        print("filter = \(filteredSharedList)")
          self.sharedTableView.reloadData()
      }
      
@@ -141,34 +128,10 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
          applySearch(searchText: searchController.searchBar.text!,scope: searchBar.scopeButtonTitles![selectedScope])
      }
      
-     
      //    Search with voice
      func searchBarBookmarkButtonClicked(_ searchBar: UISearchBar) {
          showAlertWithInputStringForSearch(title: "Search", searchController: searchController)
      }
-    
-    
-
-    //    MARK: - TABLEVIEW DISPLAY NOTE
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 130
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return filteredSharedList.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell =  sharedTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
-        cell.titleLabel.text = filteredSharedList[indexPath.row].0.title
-        cell.desLabel.text = filteredSharedList[indexPath.row].0.des
-        cell.modeLabel.text = "Mode: \(filteredSharedList[indexPath.row].1)"
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "ShowViewMode", sender: self)
-    }
     
     
     //    MARK: DELETE
@@ -191,8 +154,75 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
         return [deleteAction]
     }
 
-//    MARK: SET UP UI & SEARCH CONTROLLER
+
+    // MARK: - SEGUE
+    @objc func exit() {
+        exitAlert(identifier: "ShowLoginViewFromSharedNote")
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        performSegue(withIdentifier: "ShowViewMode", sender: self)
+    }
+    
+    @objc func refreshTableView(_ sender: Any) {
+        loadNoteList()
+        self.refreshControl.endRefreshing()
+    }
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "ShowLoginViewFromSharedNote" {
+            let nav = segue.destination as! UINavigationController
+            nav.modalPresentationStyle = .fullScreen
+        }
+        
+        if segue.identifier == "ShowViewMode" {
+            let destinationVC  = segue.destination as! ViewModeShareViewController
+            selectedRow = sharedTableView.indexPathForSelectedRow!.row
+            let mode = filteredSharedList[selectedRow].1
+            destinationVC.mode = mode
+            destinationVC.titleStr = filteredSharedList[selectedRow].0.title
+            destinationVC.desStr = filteredSharedList[selectedRow].0.des
+            destinationVC.email = filteredSharedList[selectedRow].0.email
+            destinationVC.id = filteredSharedList[selectedRow].0.id
+            destinationVC.sharedUsers = filteredSharedList[selectedRow].0.sharedUsers
+            destinationVC.imageIDMax = filteredSharedList[selectedRow].0.imageIDMax
+            destinationVC.imagePosition = filteredSharedList[selectedRow].0.imagePosition
+            destinationVC.imageURL = filteredSharedList[selectedRow].0.imageURL
+        }
+    }
+
+}
+
+
+extension SharedNoteViewController{
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
+    
+    //    MARK: - TABLEVIEW DISPLAY NOTE
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 130
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return filteredSharedList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell =  sharedTableView.dequeueReusableCell(withIdentifier: "NoteTableViewCell", for: indexPath) as! NoteTableViewCell
+        cell.titleLabel.text = filteredSharedList[indexPath.row].0.title
+        cell.desLabel.text = filteredSharedList[indexPath.row].0.des
+        cell.modeLabel.text = "Mode: \(filteredSharedList[indexPath.row].1)"
+        return cell
+    }
+    
+    //    MARK: SET UP UI & SEARCH CONTROLLER
     func setupNavUI() {
+        sharedTableView.delegate = self
+        sharedTableView.dataSource = self
+        self.title = "Shared Notes"
+        
         let exitBtn = UIBarButtonItem(title: "Log out", style: .done, target: self, action: #selector(exit))
         self.navigationItem.leftBarButtonItem = exitBtn
         self.tabBarController?.navigationController?.navigationBar.isHidden = true
@@ -242,39 +272,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         
-
-    @objc func exit() {
-        exitAlert(identifier: "ShowLoginViewFromSharedNote")
-    }
     
-    @objc func refreshTableView(_ sender: Any) {
-        loadNoteList()
-        self.refreshControl.endRefreshing()
-    }
-
-    // MARK: - Navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "ShowLoginViewFromSharedNote" {
-            let nav = segue.destination as! UINavigationController
-            nav.modalPresentationStyle = .fullScreen
-        }
-        
-        if segue.identifier == "ShowViewMode" {
-            let destinationVC  = segue.destination as! ViewModeShareViewController
-            selectedRow = sharedTableView.indexPathForSelectedRow!.row
-            let mode = filteredSharedList[selectedRow].1
-            destinationVC.mode = mode
-            destinationVC.titleStr = filteredSharedList[selectedRow].0.title
-            destinationVC.desStr = filteredSharedList[selectedRow].0.des
-            destinationVC.email = filteredSharedList[selectedRow].0.email
-            destinationVC.id = filteredSharedList[selectedRow].0.id
-            destinationVC.sharedUsers = filteredSharedList[selectedRow].0.sharedUsers
-            destinationVC.imageIDMax = filteredSharedList[selectedRow].0.imageIDMax
-            destinationVC.imagePosition = filteredSharedList[selectedRow].0.imagePosition
-            destinationVC.imageURL = filteredSharedList[selectedRow].0.imageURL
-        }
-    }
-
 }
 
 
