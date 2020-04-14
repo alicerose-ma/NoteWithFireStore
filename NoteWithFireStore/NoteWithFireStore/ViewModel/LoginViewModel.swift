@@ -12,14 +12,14 @@ public class LoginViewModel {
     static let shared = LoginViewModel()
     private init() {}
     
-    //    check input username & password vs firebase
-    public func checkLogin(username: String, password: String, completion: @escaping (Bool) -> Void) {
-        FireBaseProxy.shared.sendUserRequest(username: username, password: password ,completion: { users in
-            if users.count == 0 {
-                completion(false)
-            } else {
+    func login(email: String, password: String, completion: @escaping (Bool) -> Void){
+        FireBaseProxy.shared.login(email: email, password: password, completion: { isLogin in
+            if isLogin {
                 completion(true)
+            } else {
+                completion(false)
             }
+            
         })
     }
     

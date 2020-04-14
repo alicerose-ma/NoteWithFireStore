@@ -85,7 +85,7 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
     
     
 //    start record for note
-    func startRecording(titleTextField: UITextField, desTextView: UITextView) {
+    func startRecording(titleTextField: UITextField, desTextView: UITextView, isTextFieldSelected: Bool) {
         prepareAudioSession()
         
         recognitionRequest = SFSpeechAudioBufferRecognitionRequest() //read from buffer
@@ -114,11 +114,25 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
             var isLast = false
             if let res = res {
                 let bestStr = self.subStr1 + res.bestTranscription.formattedString +  " " + self.subStr2
+                let voiceText = self.subStr1 + res.bestTranscription.formattedString
                 print(bestStr)
-                if titleTextField.isFirstResponder {
+                
+                if isTextFieldSelected {
                     titleTextField.text = bestStr
+                        print("field")
+                    let positionOriginal = titleTextField.beginningOfDocument
+                    let cursorLocation = titleTextField.position(from: positionOriginal, offset: (voiceText.count))
+                    if let cursorLocation = cursorLocation {
+                        titleTextField.selectedTextRange = titleTextField.textRange(from: cursorLocation, to: cursorLocation)
+                    }
                 } else {
+                         print("view")
                     desTextView.text = bestStr
+                    let positionOriginal = desTextView.beginningOfDocument
+                    let cursorLocation = desTextView.position(from: positionOriginal, offset: (voiceText.count))
+                    if let cursorLocation = cursorLocation {
+                        desTextView.selectedTextRange = desTextView.textRange(from: cursorLocation, to: cursorLocation)
+                    }
                 }
                 
                 isLast = (res.isFinal)
@@ -137,31 +151,35 @@ public class VoiceViewModel: NSObject, SFSpeechRecognizerDelegate {
 
 //    record voice to text for textfield and textview
 //    audiEngine running => stop , else => start
-    func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView) {
+    func clickRecordBtn(titleTextField: UITextField, desTextView: UITextView, viewController: UIViewController ) {
         if audioEngine.isRunning {
             stopRecording()
         } else {
             
             var cursorPosition = 0
             var text = ""
+            var isTextFieldSelected = true
             
             if titleTextField.isFirstResponder {
+                isTextFieldSelected = true
                 if let selectedRange = titleTextField.selectedTextRange {
                     cursorPosition = titleTextField.offset(from: titleTextField.beginningOfDocument, to: selectedRange.start)
                 }
                 text = titleTextField.text!
             } else {
+                isTextFieldSelected = false
                 if let selectedRange = desTextView.selectedTextRange {
                     cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start)
                 }
                 text = desTextView.text!
             }
+            viewController.view.endEditing(true)
             
             let selectedIndex = text.index(text.startIndex, offsetBy: cursorPosition)
             subStr1 = String(text[text.startIndex..<selectedIndex])
             subStr2 = String(text[selectedIndex..<text.endIndex])
             
-            startRecording(titleTextField: titleTextField, desTextView: desTextView)
+            startRecording(titleTextField: titleTextField, desTextView: desTextView, isTextFieldSelected: isTextFieldSelected)
             
         }
     }

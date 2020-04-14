@@ -16,8 +16,8 @@ public class NoteViewModel {
     var enterPasscodeCount = 0;
     
 //  get all notes based on username
-    public func getNoteList(completion: @escaping ([NoteData]) -> Void) {
-        FireBaseProxy.shared.sendNoteRequest(username: username!, completion: { notes in
+    public func getNoteList(email: String,completion: @escaping ([NoteData]) -> Void) {
+        FireBaseProxy.shared.getNoteList(email: email, completion: { notes in
             completion(notes)
         })
     }
@@ -29,20 +29,9 @@ public class NoteViewModel {
     }
     
 //    delete note based on documentID
-    public func deleteNote(uniqueID: Int, completion: @escaping (Bool) -> Void) {
+    public func deleteNote(uniqueID: Int) {
         let documentID = username! +  "note" + String(uniqueID)
-        FireBaseProxy.shared.deleteNote(documentID: documentID, completion: { isDelete in
-            completion(isDelete)
-        })
-    }
-    
-//    check if username exists => logined  else => change view
-    public func didLogin() -> Bool {
-        if username == nil {
-            return false
-        } else {
-            return true
-        }
+        FireBaseProxy.shared.deleteNote(documentID: documentID)
     }
     
 //    logout and remove user default object

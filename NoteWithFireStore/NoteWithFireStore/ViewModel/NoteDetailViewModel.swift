@@ -12,8 +12,7 @@ public class NoteDetailViewModel {
     static let shared =  NoteDetailViewModel()
     private init() {}
     
-    var username: String? = NoteViewModel.shared.username
-    
+    var username: String? = UserDefaults.standard.string(forKey: "username")
 //    edit note base on document ID
     public func editNote(uniqueID: Int, newNote: NoteData) {
         let documentID = username! + "note" + String(uniqueID)
@@ -21,7 +20,7 @@ public class NoteDetailViewModel {
     }
     
     public func getNoteByID(id: Int, completion: @escaping (([NoteData]) -> Void)) {
-        FireBaseProxy.shared.getNoteByID(username: username!, id: id, completion: { notes in
+        FireBaseProxy.shared.getNoteByID(email: username!, id: id, completion: { notes in
             completion(notes)
         })
     }    

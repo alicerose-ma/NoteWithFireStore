@@ -42,6 +42,7 @@
 		18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE54992402DE9A00B6307E /* NoteDetailViewController.swift */; };
 		18FE549C2402DEA600B6307E /* CreateNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE549B2402DEA600B6307E /* CreateNoteViewController.swift */; };
 		18FE549E2402DEB400B6307E /* SetPasscodeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FE549D2402DEB400B6307E /* SetPasscodeViewController.swift */; };
+		18FFA2832441A690009E77A8 /* ViewModeShareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18FFA2822441A690009E77A8 /* ViewModeShareViewController.swift */; };
 		2109D1A6CF2860C2B00E596E /* libPods-NoteWithFireStore-NoteWithFireStoreUITests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8CE050BD8C8E787784F1633F /* libPods-NoteWithFireStore-NoteWithFireStoreUITests.a */; };
 		A4C35274172E57B21B9E2FFD /* libPods-NoteWithFireStoreTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9F1E2DAD276C4751D0B84728 /* libPods-NoteWithFireStoreTests.a */; };
 		DC2110FE6602C802D8387749 /* libPods-NoteWithFireStore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B97A03C3C735A541DE616DB /* libPods-NoteWithFireStore.a */; };
@@ -120,6 +121,7 @@
 		18FE54992402DE9A00B6307E /* NoteDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailViewController.swift; sourceTree = "<group>"; };
 		18FE549B2402DEA600B6307E /* CreateNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNoteViewController.swift; sourceTree = "<group>"; };
 		18FE549D2402DEB400B6307E /* SetPasscodeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetPasscodeViewController.swift; sourceTree = "<group>"; };
+		18FFA2822441A690009E77A8 /* ViewModeShareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModeShareViewController.swift; sourceTree = "<group>"; };
 		212C8A0552F96FB701658B73 /* libPods-WatchNoteWithFireStore Extension.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WatchNoteWithFireStore Extension.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2CBF31316CA232F2C6ED8A38 /* Pods-NoteWithFireStore.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NoteWithFireStore.release.xcconfig"; path = "Target Support Files/Pods-NoteWithFireStore/Pods-NoteWithFireStore.release.xcconfig"; sourceTree = "<group>"; };
 		3B97A03C3C735A541DE616DB /* libPods-NoteWithFireStore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-NoteWithFireStore.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -302,6 +304,7 @@
 				18FE549D2402DEB400B6307E /* SetPasscodeViewController.swift */,
 				18039462242B66C60047773F /* SharedNoteViewController.swift */,
 				18BC8EB82431A62200FB842F /* ShareSettingViewController.swift */,
+				18FFA2822441A690009E77A8 /* ViewModeShareViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -571,6 +574,7 @@
 				18BC8EB92431A62200FB842F /* ShareSettingViewController.swift in Sources */,
 				18FE54862402DDAA00B6307E /* LoginViewModel.swift in Sources */,
 				180922862403993E0073E3F9 /* Alertable.swift in Sources */,
+				18FFA2832441A690009E77A8 /* ViewModeShareViewController.swift in Sources */,
 				18FE54922402DE3D00B6307E /* LoginViewController.swift in Sources */,
 				18FE54962402DE6000B6307E /* NoteViewController.swift in Sources */,
 				18E1B2F02410F9F400E479C1 /* FireBaseProxy.swift in Sources */,
