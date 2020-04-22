@@ -50,8 +50,10 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
     }
     
     func loadNoteByID() {
-        self.titleTextField.text = titleStr
-        self.desTextView.text = desStr
+        SharedNoteViewModel.shared.getNoteByIDForShare(email: email, id: id, completion: { notes in
+            self.titleTextField.text = notes[0].title
+            self.desTextView.text = notes[0].des
+        })
         
         if mode == "view" {
             titleTextField.isEnabled = false
