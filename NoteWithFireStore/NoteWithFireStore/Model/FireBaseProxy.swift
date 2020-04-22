@@ -33,6 +33,10 @@ public class FireBaseProxy {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
             if error == nil {
                 print("sign up success")
+                Auth.auth().currentUser?.sendEmailVerification {(error) in
+                  if let error = error {
+                    print("Error when sending Email verification is \(error)")}
+                    }
                 completion(true)
             } else {
                 print("create new user err \(String(describing: error))")
@@ -61,11 +65,19 @@ public class FireBaseProxy {
     //    login with email
     func login(email: String, password: String, completion: @escaping (Bool) -> Void){
         Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-            if error != nil {
-                print("login in err")
+//            if let authResult = authResult {
+//              let user = authResult.user
+//              print("User has Signed In")
+//              if user.isEmailVerified {
+//                completion(true)
+//              } else {
+//                completion(false)
+//              }
+//            }
+            if let error = error {
+              print("Cant Sign in user \(error)")
                 completion(false)
             } else {
-                print("login done")
                 completion(true)
             }
         }

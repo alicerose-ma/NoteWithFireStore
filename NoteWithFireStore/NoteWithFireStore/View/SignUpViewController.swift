@@ -66,7 +66,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
                         if isSuccess {
                             DispatchQueue.main.async() {
                                 self.dismiss(animated: false, completion: {
-                                    self.showResultCreateUserAlert(title: "Create new user", message: "Success")
+                                    self.showResultCreateUserAlert(title: "Create new user", message: "Success, please verify email to login")
                                 })
                             }
                         } else {

@@ -74,6 +74,13 @@ public class SharedNoteViewModel {
         })
     }
     
+    
+    func getNoteByIDForShare(email: String,id: Int, completion: @escaping ([NoteData]) -> Void) {
+        FireBaseProxy.shared.getNoteByID(email: email, id: id, completion: { notes in
+            completion(notes)
+        })
+    }
+    
 //
 //    func getSharedNoteStr(completion: @escaping ([[String]]) -> Void){
 //        FireBaseProxy.shared.getSharedNoteStr(email: username!, completion: { sharedNoteList in

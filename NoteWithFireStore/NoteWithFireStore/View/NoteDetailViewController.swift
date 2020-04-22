@@ -40,7 +40,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavBarUI()
+        setUpNavBarItem()
         setupDelegate()
         VoiceViewModel.shared.voiceSetup()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
@@ -50,7 +50,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     
     
     override func viewWillAppear(_ animated: Bool) {
-        titleTextField.becomeFirstResponder()
+        setupNavBarUI()
         checkIfDisableShareBtn()
         getNoteDetail()
     }
@@ -62,11 +62,13 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             if numberOfUsers == 0 {
                 if self.hasLock == true {
                     self.userShareBtn.isEnabled = false
+                    self.insertLockForNoteBtn.isEnabled = false
                 } else {
                     self.userShareBtn.isEnabled = true
+                    self.insertLockForNoteBtn.isEnabled = true
                 }
                 self.isShared = false
-                self.insertLockForNoteBtn.isEnabled = true
+
             } else {
                 self.isShared = true
                 self.insertLockForNoteBtn.isEnabled = false
@@ -374,7 +376,6 @@ extension NoteDetailViewController {
     }
     
     func setupNavBarUI() {
-        setUpNavBarItem()
         if lockStatus == true {
             lockView.isHidden = false
             hasLock = true
@@ -391,6 +392,7 @@ extension NoteDetailViewController {
             userShareBtn.isEnabled = true
             insertLockForNoteBtn.isEnabled = true
             desTextView.autocorrectionType = .no
+            titleTextField.becomeFirstResponder()
             navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
         }
         self.tabBarController?.tabBar.isHidden = true
