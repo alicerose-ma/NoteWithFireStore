@@ -8,7 +8,13 @@
 
 import UIKit
 
-class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable,  UITextFieldDelegate, UITextViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditingDelegate, Alertable,  UITextFieldDelegate, UITextViewDelegate,UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func sendBackNoteID(noteID: Int) {
+        let documentID =  NoteViewModel.shared.username! + "note" + String(noteID)
+        FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
+    }
+    
     var imagePicker = UIImagePickerController()
     var uniqueID = -1
     
@@ -53,6 +59,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         setupNavBarUI()
         checkIfDisableShareBtn()
         getNoteDetail()
+        sendBackNoteID(noteID: uniqueID)
     }
     
     func checkIfDisableShareBtn() {
@@ -68,7 +75,6 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                     self.insertLockForNoteBtn.isEnabled = true
                 }
                 self.isShared = false
-
             } else {
                 self.isShared = true
                 self.insertLockForNoteBtn.isEnabled = false
@@ -135,7 +141,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
             
             let sharedUsers = SharedNoteViewModel.shared.sharedUsers
             
-            var note = NoteData(id: uniqueID, email:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+        var note = NoteData(id: uniqueID, email:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
             
             if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
                 NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
@@ -199,7 +205,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
                         if passcode == "" {
                             self.performSegue(withIdentifier: "ShowSetPassViewFromEdit", sender: self)
                         } else {
-//                            self.hasLock = true
+                            self.hasLock = true
                             self.addLockIconToNavBar()
                         }
                     })
@@ -317,6 +323,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
     func addLockIconToNavBar() {
         hasLock = true
         userShareBtn.isEnabled = false
+        insertLockForNoteBtn.isEnabled = true
         navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn,unlockStatusBtn]
     }
     
@@ -334,6 +341,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, Alertable
         }
         if segue.identifier == "ShowShareSettingFromEdit" {
             let destinationVC  = segue.destination as! ShareSettingViewController
+            destinationVC.isEditingDelegate = self
             destinationVC.noteID = uniqueID
         }
     }
@@ -376,6 +384,7 @@ extension NoteDetailViewController {
     }
     
     func setupNavBarUI() {
+        print(lockStatus)
         if lockStatus == true {
             lockView.isHidden = false
             hasLock = true
@@ -389,8 +398,8 @@ extension NoteDetailViewController {
             lockView.isHidden = true
             voiceBtn.isEnabled = true
             imageBtn.isEnabled = true
-            userShareBtn.isEnabled = true
-            insertLockForNoteBtn.isEnabled = true
+            userShareBtn.isEnabled = false
+            insertLockForNoteBtn.isEnabled = false
             desTextView.autocorrectionType = .no
             titleTextField.becomeFirstResponder()
             navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
@@ -489,7 +498,10 @@ extension NoteDetailViewController {
     func switchBetweenTextFieldAndTextView() {
         VoiceViewModel.shared.stopRecording()
         isRecord = false
+        hasLock = false
+        checkIfDisableShareBtn()
         changeNavButtonItemForIOS12AndIOS13(name: "mic")
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]        
     }
     
     func changeNavButtonItemForIOS12AndIOS13(name: String){

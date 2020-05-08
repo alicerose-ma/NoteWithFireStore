@@ -62,7 +62,8 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
             titleTextField.isEnabled = true
             desTextView.isSelectable = true
             setupTextViewWithDoneBtn()
-            
+            let documentID =  email + "note" + String(id)
+            FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
         }
     }
     
@@ -78,7 +79,7 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
             var description = desTextView.text!
             description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
             
-            var note = NoteData(id: id, email: email, title: title, des: description, isLocked: false, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+            var note = NoteData(id: id, email: email, title: title, des: description, isLocked: false, isEditing: false, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
             
             if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
                 SharedNoteViewModel.shared.editSharedNote(email: email, id: id, newNote: note)

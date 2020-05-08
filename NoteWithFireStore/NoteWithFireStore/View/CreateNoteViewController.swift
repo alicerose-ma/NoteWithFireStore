@@ -14,7 +14,14 @@ public enum InputPasscodeCase: String {
     case unlockNote
 }
 
-class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable, UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
+class CreateNoteViewController: UIViewController, SetPasscodeDelegate, IsEditingDelegate ,Alertable, UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate  {
+    
+    func sendBackNoteID(noteID: Int) {
+        let documentID =  NoteViewModel.shared.username! + "note" + String(noteID)
+        FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
+    }
+     
+    
     var imagePicker = UIImagePickerController()
     var imageID: Int = -1
     
@@ -94,7 +101,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         let sharedUsers = SharedNoteViewModel.shared.sharedUsers
         
         let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: NoteViewModel.shared.username!, uniqueID: uniqueID)
-        var note = NoteData(id: uniqueID, email: NoteViewModel.shared.username!, title: title, des: description, isLocked: lockStatus, imageIDMax: imageID, sharedUsers: sharedUsers, imagePosition: imagePosition, imageURL: imageURL )
+        var note = NoteData(id: uniqueID, email: NoteViewModel.shared.username!, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: imageID, sharedUsers: sharedUsers, imagePosition: imagePosition, imageURL: imageURL )
         
         if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
             CreateNoteViewModel.shared.addNewNote(documentID: noteID, newNote: note)
@@ -300,6 +307,7 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, Alertable
         
         if segue.identifier == "ShowShareSettingFromCreate" {
             let destinationVC  = segue.destination as! ShareSettingViewController
+            destinationVC.isEditingDelegate = self
             destinationVC.noteID = uniqueID
         }
     }
@@ -599,7 +607,10 @@ extension CreateNoteViewController {
     func switchBetweenTextFieldAndTextView() {
         VoiceViewModel.shared.stopRecording()
         isRecord = false
+        hasLock = false
+        checkIfDisableShareBtn()
         changeNavButtonItemForIOS12AndIOS13(name: "mic")
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
     }
     
     func changeNavButtonItemForIOS12AndIOS13(name: String){

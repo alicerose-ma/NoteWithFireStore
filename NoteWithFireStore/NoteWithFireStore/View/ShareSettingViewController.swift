@@ -8,6 +8,9 @@
 
 import UIKit
 
+protocol IsEditingDelegate {
+    func sendBackNoteID(noteID: Int)
+}
 class ShareSettingViewController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource, Alertable {
     
     var noteID: Int = -1
@@ -17,6 +20,7 @@ class ShareSettingViewController: UIViewController, UITextFieldDelegate, UITable
     @IBOutlet weak var shareEmailTextField: UITextField!
     @IBOutlet weak var editBtn: UIButton!
     @IBOutlet weak var viewBtn: UIButton!
+    var isEditingDelegate: IsEditingDelegate?
     
     
     override func viewDidLoad() {
@@ -31,6 +35,11 @@ class ShareSettingViewController: UIViewController, UITextFieldDelegate, UITable
         viewBtn.isSelected = true
         editBtn.isSelected = false
         loadSharedUsers()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        print("disappear")
+        self.isEditingDelegate.self?.sendBackNoteID(noteID: noteID)
     }
     
     

@@ -125,10 +125,12 @@ public class FireBaseProxy {
     
     public func getNoteByID(email: String, id: Int, completion: @escaping (([NoteData]) -> Void)) {
         notesCollection.whereField("email", isEqualTo: email)
-            .whereField("id", isEqualTo: id).getDocuments() {(querySnapshot, err) in
-                if let err = err {
-                    print("Error getting documents: \(err)")
+            .whereField("id", isEqualTo: id)
+            .getDocuments()  { (querySnapshot, error) in
+                if let error = error {
+                    print("Error getting documents: \(error)")
                 } else {
+                    print("change data")
                     do {
                         let notes: [NoteData] = try querySnapshot!.decoded()
                         completion(notes)
@@ -137,6 +139,20 @@ public class FireBaseProxy {
                     }
                 }
         }
+        
+//        notesCollection.whereField("email", isEqualTo: email)
+//            .whereField("id", isEqualTo: id).getDocuments() {(querySnapshot, err) in
+//                if let err = err {
+//                    print("Error getting documents: \(err)")
+//                } else {
+//                    do {
+//                        let notes: [NoteData] = try querySnapshot!.decoded()
+//                        completion(notes)
+//                    } catch {
+//                        print("decoded User error")
+//                    }
+//                }
+//        }
     }
     
     
@@ -158,6 +174,38 @@ public class FireBaseProxy {
                 print("Document successfully updated")
             }
         }
+        
+//        let sfReference = notesCollection.document(documentID)
+//
+//        Firestore.firestore().runTransaction({ (transaction, errorPointer) -> Any? in
+//            let sfDocument: DocumentSnapshot
+//            do {
+//                try sfDocument = transaction.getDocument(sfReference)
+//            } catch let fetchError as NSError {
+//                errorPointer?.pointee = fetchError
+//                return nil
+//            }
+//
+//            guard sfDocument.data() != nil else {
+//                let error = NSError(
+//                    domain: "AppErrorDomain",
+//                    code: -1,
+//                    userInfo: [
+//                        NSLocalizedDescriptionKey: "Unable to retrieve note from snapshot \(sfDocument)"
+//                    ]
+//                )
+//                errorPointer?.pointee = error
+//                return nil
+//            }
+//            transaction.updateData(newNote.dictionary, forDocument: sfReference)
+//            return nil
+//        }) { (object, error) in
+//            if let error = error {
+//                print("Transaction failed: \(error)")
+//            } else {
+//                print("Transaction successfully committed!")
+//            }
+//        }
     }
     
     public func deleteNote(documentID: String) {
@@ -501,6 +549,38 @@ public class FireBaseProxy {
                 }
         }
     }
+    
+    
+    
+    public func updateIsEditing(documentID: String, isEditing: Bool) {
+         notesCollection.document(documentID).updateData(
+         ["isEditing": isEditing]) { err in
+             if let err = err {
+                 print("Error updating isEditing: \(err)")
+             } else {
+                 print("isEditing successfully updated")
+             }
+         }
+    }
+    
+    public func getEditingValue(email: String, id: Int, completion: @escaping (Bool) -> Void) {
+        notesCollection.whereField("email", isEqualTo: email)
+            .whereField("id", isEqualTo: id)
+             .getDocuments() { (querySnapshot, err) in
+                 if let err = err {
+                     print("Error getting documents: \(err)")
+                 } else {
+                     do {
+                         let myNotes: [NoteData] = try querySnapshot!.decoded()
+                        print(myNotes[0].isEditing)
+                        completion(myNotes[0].isEditing)
+                     } catch {
+                         print("decoded User error")
+                     }
+                 }
+         }
+     }
+    
     
     
 //    MARK: - CHANGE MODE
