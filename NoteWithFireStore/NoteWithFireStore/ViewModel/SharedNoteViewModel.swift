@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Firebase
 
 public class SharedNoteViewModel {
     static let shared =  SharedNoteViewModel()

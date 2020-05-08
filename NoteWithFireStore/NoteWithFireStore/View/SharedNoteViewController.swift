@@ -19,6 +19,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet weak var sharedTableView: UITableView!
     let refreshControl = UIRefreshControl()
     let searchController = UISearchController(searchResultsController: nil)
+    let alert = UIAlertController(title: "Loading" , message: nil, preferredStyle: .alert)
     
 
     override func viewDidLoad() {
@@ -35,17 +36,16 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
 
     
     override func viewDidAppear(_ animated: Bool) {
-        loadNoteList()
+        loadNoteList(completion: { _ in })
     }
     
-    func loadNoteList() {
-        let alert = UIAlertController(title: "Loading" , message: nil, preferredStyle: .alert)
+    func loadNoteList(completion: @escaping ([(NoteData,String)]) -> Void) {
         waitAlert(alert: alert)
         SharedNoteViewModel.shared.getSharedNotes(completion: { noteArr in
-            print("arr = \(noteArr)")
+//            print("arr = \(noteArr)")
             if noteArr.count == 0 {
                 DispatchQueue.main.async {
-                    alert.dismiss(animated: false, completion: {
+                    self.alert.dismiss(animated: false, completion: {
                         self.emptyNoteView.isHidden = false
                     })
                 }
@@ -57,12 +57,13 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.filteredSharedList = self.filteredSharedList.sorted(by: {$0.0.title.lowercased() < $1.0.title.lowercased()})
                 
                 DispatchQueue.main.async {
-                    alert.dismiss(animated: false, completion: {
+                    self.alert.dismiss(animated: false, completion: {
                         self.emptyNoteView.isHidden = true
                         self.sharedTableView.reloadData()
                     })
                 }
             }
+            completion(noteArr)
         })
     }
     
@@ -147,7 +148,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
             let mode = self.filteredSharedList[indexPath.row].1
             SharedNoteViewModel.shared.deleteOneNoteForOneUserFromShareView(userToShare: email, uniqueID: id, mode: mode, completion: { deleted in
                 if deleted {
-                    self.loadNoteList()
+                    self.loadNoteList(completion: { _ in })
                 }
             })
         })
@@ -161,11 +162,53 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "ShowViewMode", sender: self)
+        selectedRow = self.sharedTableView.indexPathForSelectedRow!.row
+        let email = self.filteredSharedList[self.selectedRow].0.email
+        let id = self.filteredSharedList[self.selectedRow].0.id
+        var isExist = false
+        
+        loadNoteList(completion: {noteList in
+            print(noteList)
+            for note in noteList {
+                if (note.0.email == email && note.0.id == id) {
+                    isExist = true
+                    break
+                }
+            }
+            
+            if isExist {
+                print("exist ")
+//                print(self.filteredSharedList[self.selectedRow].1)
+//                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
+            } else {
+                print("nooo")
+                self.alert.dismiss(animated: false, completion: {
+                    self.showResultShareAlert(title: "", message: "Access deny or this note is no longer exist")
+                })
+            }
+        })
+
+//
+        
+    
+//        selectedRow = sharedTableView.indexPathForSelectedRow!.row
+//        let email = filteredSharedList[selectedRow].0.email
+//        let uniqueID = filteredSharedList[selectedRow].0.id
+//        print(email)
+//        FireBaseProxy.shared.getEditingValue(email: email, id: uniqueID, completion: { isEditing in
+//            if !isEditing {
+//                 print("OK")
+//                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
+//            } else {
+//                print("NOT OK")
+//                self.showResultShareAlert(title: "", message: "Someone is editing this note, please wait")
+//            }
+//        })
+        
     }
     
     @objc func refreshTableView(_ sender: Any) {
-        loadNoteList()
+        loadNoteList(completion: { _ in })
         self.refreshControl.endRefreshing()
     }
 

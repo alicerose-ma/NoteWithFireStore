@@ -246,7 +246,15 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        performSegue(withIdentifier: "EditNote", sender: self)
+        selectedRow = noteTableView.indexPathForSelectedRow!.row
+        let uniqueID = filteredNoteList[selectedRow].id
+        FireBaseProxy.shared.getEditingValue(email: NoteDetailViewModel.shared.username!, id: uniqueID, completion: { isEditing in
+            if !isEditing {
+                self.performSegue(withIdentifier: "EditNote", sender: self)
+            } else {
+                self.showResultShareAlert(title: "", message: "Someone is editing this note, please wait")
+            }
+        })
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
