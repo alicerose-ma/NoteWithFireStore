@@ -179,7 +179,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
             if isExist {
                 print("exist ")
 //                print(self.filteredSharedList[self.selectedRow].1)
-//                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
+                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
             } else {
                 print("nooo")
                 self.alert.dismiss(animated: false, completion: {

@@ -764,7 +764,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="962"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="3kf-hz-014">
-                                                <rect key="frame" x="37.666666666666657" y="100" width="300" height="400"/>
+                                                <rect key="frame" x="37.666666666666657" y="100" width="300" height="440"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="d8H-eu-bQi">
                                                         <rect key="frame" x="0.0" y="0.0" width="300" height="80"/>
@@ -844,6 +844,33 @@
                                                             <segue destination="LD8-9j-yHo" kind="show" id="HhT-3W-WVq"/>
                                                         </connections>
                                                     </button>
+                                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="98h-g6-OK2">
+                                                        <rect key="frame" x="0.0" y="415" width="300" height="25"/>
+                                                        <subviews>
+                                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Forget password? " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QfP-l6-WFH">
+                                                                <rect key="frame" x="0.0" y="0.0" width="140.66666666666666" height="25"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="25" id="TQE-Sl-2Ix"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                                <nil key="highlightedColor"/>
+                                                            </label>
+                                                            <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r7z-x7-PXT">
+                                                                <rect key="frame" x="140.66666666666669" y="0.0" width="159.33333333333331" height="25"/>
+                                                                <constraints>
+                                                                    <constraint firstAttribute="height" constant="25" id="srk-4O-zwe"/>
+                                                                </constraints>
+                                                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                                <state key="normal" title="Reset password">
+                                                                    <color key="titleColor" red="0.40000000000000002" green="0.98823529409999999" blue="0.94509803920000002" alpha="1" colorSpace="calibratedRGB"/>
+                                                                </state>
+                                                                <connections>
+                                                                    <action selector="resetPassword:" destination="a4x-Lk-9sg" eventType="touchUpInside" id="03S-Rj-Evx"/>
+                                                                </connections>
+                                                            </button>
+                                                        </subviews>
+                                                    </stackView>
                                                 </subviews>
                                                 <variation key="heightClass=compact-widthClass=regular">
                                                     <mask key="subviews">
@@ -971,7 +998,6 @@
         <!--My Notes-->
         <scene sceneID="1nT-tb-KyB">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="L0H-w1-2TO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ZQL-en-csB" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="My Notes" image="doc.fill" catalog="system" id="SlT-cU-5Ft"/>
                     <toolbarItems/>
@@ -984,6 +1010,7 @@
                         <segue destination="p21-s3-dt9" kind="relationship" relationship="rootViewController" id="BPd-Lm-8AN"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="L0H-w1-2TO" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="6920.8000000000002" y="94.581280788177338"/>
         </scene>

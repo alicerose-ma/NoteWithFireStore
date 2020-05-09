@@ -56,7 +56,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
     func createNewAuthAndDatabaseAccount(emailText: String, passwordText: String, displayNameText: String, phoneText: String) {
         let alert = UIAlertController(title: "Creating" , message: nil, preferredStyle: .alert)
         waitAlert(alert: alert)
-        SignUpViewModel.shared.signUpUser(email: emailText, password: passwordText, displayName: displayNameText, completion: { isSignUp  in
+        SignUpViewModel.shared.signUpUser(email: emailText, password: passwordText, displayName: displayNameText, completion: { (isSignUp, message)  in
             if isSignUp {
                 //  sign up succes  => create user in database
                 let newUser = UserData(email: emailText, password: passwordText, phone: phoneText, displayName: displayNameText, passcode: "", hint: "", sharedNotes: [])
@@ -77,7 +77,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
             } else {
                 DispatchQueue.main.async {
                     self.dismiss(animated: false, completion: {
-                        self.errorLabel.text = "An account with this email exists"
+                        self.errorLabel.text = message
                     })
                 }
             }

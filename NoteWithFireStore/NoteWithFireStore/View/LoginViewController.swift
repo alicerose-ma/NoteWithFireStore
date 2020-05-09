@@ -15,6 +15,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var loginStatus: UILabel!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,27 +41,52 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         } else {
             let alert = UIAlertController(title: "Verifying" , message: nil, preferredStyle: .alert)
             waitAlert(alert: alert)
-            LoginViewModel.shared.login(email: emailText, password: passwordText, completion: { isLogin in
+            LoginViewModel.shared.login(email: emailText, password: passwordText, completion: { (isLogin, message) in
                 if isLogin{
                     LoginViewModel.shared.updateCurrentUsername(newUsername: emailText)
                     DispatchQueue.main.async {
                         self.dismiss(animated: false, completion: {
-                            self.loginStatus.text = "Successed"
                             self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
                         })
                     }
                 } else {
                     DispatchQueue.main.async {
                         self.dismiss(animated: false, completion: {
-                            self.loginStatus.text = "Failed"
+                            let failAlert = UIAlertController(title: "Login Failed", message: message, preferredStyle: .alert)
+                            failAlert .addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                            self.present(failAlert, animated: true, completion: nil)
                         })
                     }
                 }
             })
         }
-        self.loginStatus.isHidden = false
         self.view.endEditing(true)
     }
+    
+    @IBAction func resetPassword(_ sender: Any) {
+        let forgotPasswordAlert = UIAlertController(title: "Forgot password?", message: "Enter email address", preferredStyle: .alert)
+        forgotPasswordAlert.addTextField { (textField) in
+            textField.placeholder = "Enter email address"
+        }
+        forgotPasswordAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        forgotPasswordAlert.addAction(UIAlertAction(title: "Reset Password", style: .default, handler: { (action) in
+            let resetEmail = forgotPasswordAlert.textFields?.first?.text
+            FireBaseProxy.shared.resetPassword(resetEmail: resetEmail!, completion: { (isSuccess, message) in
+                if isSuccess {
+                    let resetEmailSentAlert = UIAlertController(title: "Reset email sent successfully", message: "Check your email", preferredStyle: .alert)
+                    resetEmailSentAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(resetEmailSentAlert, animated: true, completion: nil)
+                } else {
+                    let resetFailedAlert = UIAlertController(title: "Reset Failed", message: message, preferredStyle: .alert)
+                    resetFailedAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                    self.present(resetFailedAlert, animated: true, completion: nil)
+                }
+            })
+        }))
+        //PRESENT ALERT
+        self.present(forgotPasswordAlert, animated: true, completion: nil)
+    }
+    
     
     func didLogin(){
         FireBaseProxy.shared.didLogin(completion: { (didLogin, email) in
