@@ -88,11 +88,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
             for note in notes {
                 self.titleTextField.text = note.title
                 self.desTextView.text = note.des
-                
-                
-                AttachmentViewModel.shared.oldPosition = note.imagePosition
-                AttachmentViewModel.shared.oldURL = note.imageURL
-                AttachmentViewModel.shared.imageIDMax = note.imageIDMax
+            
                 
                 SharedNoteViewModel.shared.sharedUsers = note.sharedUsers
                 
@@ -135,13 +131,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
             var description = desTextView.text!
             description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
             
-            let imagePosition = AttachmentViewModel.shared.oldPosition
-            let imageURL = AttachmentViewModel.shared.oldURL
-            let imageIDMax = AttachmentViewModel.shared.imageIDMax
             
             let sharedUsers = SharedNoteViewModel.shared.sharedUsers
             
-        var note = NoteData(id: uniqueID, email:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+        var note = NoteData(id: uniqueID, email:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: 0, sharedUsers: sharedUsers ,imagePosition: [], imageURL: [] ) //create a new note model with lock
             
             if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
                 NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)
@@ -163,12 +156,10 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
     @objc func voice(){
         VoiceViewModel.shared.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView, viewController: self)
         if isRecord {
-            imageBtn.isEnabled = false
             insertLockForNoteBtn.isEnabled = true
             userShareBtn.isEnabled = true
             changeNavButtonItemForIOS12AndIOS13(name: "mic")
         } else {
-            imageBtn.isEnabled = false
             insertLockForNoteBtn.isEnabled = false
             userShareBtn.isEnabled = false
             if #available(iOS 13.0, *) {
@@ -176,7 +167,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
             } else {
                 voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "micSlash", action:  #selector(self.voice)))
             }
-            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
+            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn]
         }
         isRecord = !isRecord
     }
@@ -194,7 +185,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
             alert.addAction(UIAlertAction(title: "Remove Lock", style: .default, handler: { (_) in
                 self.hasLock = false
                 self.userShareBtn.isEnabled = true
-                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn,self.voiceBtn, self.imageBtn, self.userShareBtn]
+                self.navigationItem.rightBarButtonItems = [self.insertLockForNoteBtn,self.voiceBtn, self.userShareBtn]
             }))
         } else {
             alert.addAction(UIAlertAction(title: "Add Lock", style: .default, handler: { (_) in
@@ -249,9 +240,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
         lockView.isHidden = false
         voiceBtn.isEnabled = false
         userShareBtn.isEnabled = false
-        imageBtn.isEnabled = false
         insertLockForNoteBtn.isEnabled = false
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn,lockStatusBtn]
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn,lockStatusBtn]
     }
     
     //    MARK: - NOTE IS UNLOCKED
@@ -288,8 +278,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
         alert.addTextField(configurationHandler: { textField in
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
-            ShowPasscodeViewModel.shared.textField = textField
-            ShowPasscodeViewModel.shared.setupPasswordIcon(color: .black)
+            PasscodeShowOrHideHelper.shared.textField = textField
+            PasscodeShowOrHideHelper.shared.setupPasswordIcon(color: .black)
             
         })
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
@@ -324,7 +314,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
         hasLock = true
         userShareBtn.isEnabled = false
         insertLockForNoteBtn.isEnabled = true
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn,unlockStatusBtn]
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn,unlockStatusBtn]
     }
     
     
@@ -370,14 +360,12 @@ extension NoteDetailViewController {
             lockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock"), style: .plain, target: self, action: #selector(self.lockOFF))
             unlockStatusBtn = UIBarButtonItem(image: UIImage(systemName: "lock.open"), style: .plain, target: self, action: #selector(self.lockON))
             voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
-            imageBtn = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(self.addImage))
             userShareBtn = UIBarButtonItem(image: UIImage(systemName: "person.badge.plus.fill"), style: .plain, target: self, action: #selector(self.shareNote))
         } else {
             insertLockForNoteBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "security", action:  #selector(self.addOrRemoveLock)))
             lockStatusBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "lock", action:  #selector(self.lockOFF)))
             unlockStatusBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "lockOpen", action:  #selector(self.lockON)))
             voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "mic", action:  #selector(self.voice)))
-            imageBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "photo", action:  #selector(self.addImage)))
             userShareBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "userPlus", action:  #selector(self.addImage)))
         }
         
@@ -389,20 +377,18 @@ extension NoteDetailViewController {
             lockView.isHidden = false
             hasLock = true
             voiceBtn.isEnabled = false
-            imageBtn.isEnabled = false
             userShareBtn.isEnabled = false
             insertLockForNoteBtn.isEnabled = false
             desTextView.autocorrectionType = .no
-            navigationItem.rightBarButtonItems = [insertLockForNoteBtn, voiceBtn ,imageBtn,userShareBtn,lockStatusBtn]
+            navigationItem.rightBarButtonItems = [insertLockForNoteBtn, voiceBtn ,userShareBtn,lockStatusBtn]
         } else {
             lockView.isHidden = true
             voiceBtn.isEnabled = true
-            imageBtn.isEnabled = true
             userShareBtn.isEnabled = false
             insertLockForNoteBtn.isEnabled = false
             desTextView.autocorrectionType = .no
             titleTextField.becomeFirstResponder()
-            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
+            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn]
         }
         self.tabBarController?.tabBar.isHidden = true
     }
@@ -478,7 +464,7 @@ extension NoteDetailViewController {
             hasLock = false
             insertLockForNoteBtn.isEnabled = false
             userShareBtn.isEnabled = false
-            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn, userShareBtn]
+            navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn]
         }
     }
     
@@ -486,13 +472,12 @@ extension NoteDetailViewController {
     //    switch between textfield and textview => stop record
     func textFieldDidBeginEditing(_ textField: UITextField) {
         switchBetweenTextFieldAndTextView()
-        imageBtn.isEnabled = false
     }
     
     //     image only add in textview
     func textViewDidBeginEditing(_ textView: UITextView) {
         switchBetweenTextFieldAndTextView()
-        imageBtn.isEnabled = true
+        
     }
     
     func switchBetweenTextFieldAndTextView() {
@@ -501,7 +486,7 @@ extension NoteDetailViewController {
         hasLock = false
         checkIfDisableShareBtn()
         changeNavButtonItemForIOS12AndIOS13(name: "mic")
-        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]        
+        navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn]
     }
     
     func changeNavButtonItemForIOS12AndIOS13(name: String){
@@ -510,97 +495,12 @@ extension NoteDetailViewController {
         } else {
             voiceBtn = UIBarButtonItem(customView: UIImageIO12And13Helper.shared.createBarButtonItem(name: name, action:  #selector(self.voice)))
             if hasLock {
-                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn,unlockStatusBtn]
+                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn,unlockStatusBtn]
             } else {
-                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,imageBtn,userShareBtn]
+                navigationItem.rightBarButtonItems = [insertLockForNoteBtn,voiceBtn,userShareBtn]
             }
         }
         
     }
 }
-
-
-
-
-//func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
-//    var cursorPosition = 0
-//    if text.isBackspace {
-//        if let selectedRange = desTextView.selectedTextRange {
-//            cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start) - 1
-//        }
-//        print("cursor REMOVE")
-//        print(cursorPosition)
-//
-//        var deleteImage = false
-//        let imagePositionArr = AttachmentViewModel.shared.oldPosition
-//        for (index, position) in imagePositionArr.enumerated() {
-//            if cursorPosition < position  {
-//                if !deleteImage {
-//                    AttachmentViewModel.shared.oldPosition[index] = position - 1
-//                } else {
-//                    AttachmentViewModel.shared.oldPosition[index-1] = position - 1
-//                }
-//            } else if cursorPosition == position {
-//                deleteImage = true
-//                AttachmentViewModel.shared.oldPosition.remove(at: index)
-//                AttachmentViewModel.shared.oldURL.remove(at: index)
-//            }
-//        }
-//    } else {
-//        if let selectedRange = desTextView.selectedTextRange {
-//            cursorPosition = desTextView.offset(from: desTextView.beginningOfDocument, to: selectedRange.start) + 1
-//        }
-//        print("cursor ADD")
-//        print(cursorPosition)
-//
-//        let imagePositionArr = AttachmentViewModel.shared.oldPosition
-//        for (index, position) in imagePositionArr.enumerated() {
-//            if cursorPosition <= position + 1 {
-//                AttachmentViewModel.shared.oldPosition[index] = position + 1
-//            }
-//        }
-//        print("cursor Array OLD")
-//        print(AttachmentViewModel.shared.oldPosition)
-//
-//    }
-//    return true
-//}
-
-
-//
-//
-//
-//func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-//    self.dismiss(animated: true, completion: nil)
-//
-//    if let imgUrl = info[UIImagePickerController.InfoKey.imageURL] as? URL{
-//        let imgName = imgUrl.lastPathComponent
-//        let documentDirectory = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first
-//        let localPath = documentDirectory?.appending(imgName)
-//
-//        let image = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
-//        let data = image.pngData()! as NSData
-//        data.write(toFile: localPath!, atomically: true)
-//        let photoURL = URL.init(fileURLWithPath: localPath!)//NSURL(fileURLWithPath: localPath!)
-//        AttachmentViewModel.shared.stringImageURL = "\(photoURL)"
-//
-//
-//        let types = AttachmentViewModel.shared.stringImageURL.components(separatedBy: ".")
-//        let noteID = NoteDetailViewModel.shared.username! + "note" + String(uniqueID)
-//        let imageName = noteID + String(AttachmentViewModel.shared.imageIDMax + 1)
-//        let name = imageName + ".\(types[1])"
-//
-//        AttachmentViewModel.shared.imageEditLink = (username: CreateNoteViewModel.shared.username! , noteID: noteID, imageName: name)
-//        FireBaseProxy.shared.uploadImage(urlImgStr: photoURL,username: CreateNoteViewModel.shared.username!, noteID: noteID, imageName: name)
-//    }
-//
-//    if let possibleImage = info[.editedImage] as? UIImage {
-//        AttachmentViewModel.shared.pickedImage = possibleImage
-//    } else if let possibleImage = info[.originalImage] as? UIImage {
-//        AttachmentViewModel.shared.pickedImage = possibleImage
-//    } else {
-//        return
-//    }
-//    AttachmentViewModel.shared.editImage(desTextView: desTextView)
-//}
 

@@ -8,6 +8,7 @@ target 'NoteWithFireStore' do
 
   # Pods for NoteWithFireStore
   pod 'BoringSSL-GRPC'
+  pod 'Firebase/Performance'
   pod 'Firebase/Analytics'
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'

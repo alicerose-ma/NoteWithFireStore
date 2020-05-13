@@ -11,7 +11,6 @@ import Foundation
 // user data model in fire store
 public struct UserData: Decodable {
     var email: String
-    var password: String
     var phone: String
     var displayName: String
     var passcode: String
@@ -23,7 +22,6 @@ public struct UserData: Decodable {
     var dictionary: [String: Any] {
         return [
             "email": email,
-            "password": password,
             "phone": phone,
             "displayName": email,
             "passcode": passcode,

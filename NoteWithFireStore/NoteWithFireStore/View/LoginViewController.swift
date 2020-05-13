@@ -15,16 +15,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
-    @IBOutlet weak var loginStatus: UILabel!
-
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupDelegate()
         customUI()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
-        ShowPasscodeViewModel.shared.textField = passwordTextField
-        ShowPasscodeViewModel.shared.setupPasswordIcon(color: .white)
+        PasscodeShowOrHideHelper.shared.textField = passwordTextField
+        PasscodeShowOrHideHelper.shared.setupPasswordIcon(color: .white)
         didLogin()
     }
     
@@ -38,25 +36,23 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         let passwordText = passwordTextField.text!
         
         if(emailText.isEmpty == true || passwordText.isEmpty == true) {
-            self.loginStatus.text = "Enter username & password"
+            SCLAlertView().showNotice("", subTitle: "Enter username & password")
         } else {
-            let alert = UIAlertController(title: "Verifying" , message: nil, preferredStyle: .alert)
-            waitAlert(alert: alert)
+            let appearance = SCLAlertView.SCLAppearance(
+                 showCloseButton: false
+             )
+             let alert = SCLAlertView(appearance: appearance).showWait("Verifying", subTitle: "", closeButtonTitle: nil, timeout: nil, colorStyle: nil, colorTextButton: 0xFFFFFF, circleIconImage: nil, animationStyle: SCLAnimationStyle.topToBottom)
             LoginViewModel.shared.login(email: emailText, password: passwordText, completion: { (isLogin, message) in
                 if isLogin{
                     LoginViewModel.shared.updateCurrentUsername(newUsername: emailText)
                     DispatchQueue.main.async {
-                        self.dismiss(animated: false, completion: {
-                            self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
-                        })
+                        alert.close()
+                        self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
                     }
                 } else {
                     DispatchQueue.main.async {
-                        self.dismiss(animated: false, completion: {
-                            let failAlert = UIAlertController(title: "Login Failed", message: message, preferredStyle: .alert)
-                            failAlert .addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                            self.present(failAlert, animated: true, completion: nil)
-                        })
+                        alert.close()
+                        SCLAlertView().showError("Login Fail", subTitle: message, closeButtonTitle: "OK")
                     }
                 }
             })
@@ -133,7 +129,6 @@ extension LoginViewController {
     func setupUI() {
         emailTextField.text = ""
         passwordTextField.text = ""
-        loginStatus.isHidden = true
         passwordTextField.isSecureTextEntry = true
         self.navigationController?.isNavigationBarHidden = true
         self.tabBarController?.tabBar.isHidden = true
@@ -157,12 +152,6 @@ extension LoginViewController {
         TextFieldAndButtonCustomUI.shared.customButton(loginButton)
     }
 }
-
-
-
-
-//        let nav = segue.destination as! UINavigationController
-//        nav.modalPresentationStyle = .fullScreen
 
 
 

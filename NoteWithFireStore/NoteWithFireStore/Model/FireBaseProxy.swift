@@ -13,16 +13,6 @@ import Firebase
 public class FireBaseProxy {
     let usersCollection = Firestore.firestore().collection("Users")
     let notesCollection = Firestore.firestore().collection("Notes")
-    let imagesCollection = Firestore.firestore().collection("Images")
-
-    var finalSharedNotes: [NoteData] = []
-    var finalModeArr: [String] = []
-    var aa: [NoteData] = []
-    
-    var arr : [NoteData] = []
-
-    var alert =  UIAlertController()
-    var loadingIndicator = UIActivityIndicatorView()
     
     static let shared = FireBaseProxy()
     private init() {}
@@ -713,38 +703,4 @@ extension QuerySnapshot {
         return objects
     }
 }
-
-
-
-//                    if !sharedUsers.contains(userToShare) {
-//                        sharedUsers.append(userToShare)
-//                        print("shared USER = \(sharedUsers)")
-//                        let documentId = email + "note" + String(id)
-//                        self.notesCollection.document(documentId).updateData([
-//                            "sharedUsers": sharedUsers
-//                        ]) { err in
-//                            if let err = err {
-//                                print("Error updating shared user: \(err)")
-//                                completion(false)
-//                            } else {
-//                                print("Shared user successfully updated")
-//                                completion(true)
-//                            }
-//                        }
-
-
-
-//                            var isContained = false
-//                            for note in sharedNotes {
-//                                if !note.contains(noteEmailAndID) {
-//                                    isContained = false
-//                                } else {
-//                                    isContained = true
-//                                    break
-//                                }
-//                            }
-//
-//                            if !isContained {
-//                                sharedNotes.append(noteName)
-//                            }
 

@@ -774,7 +774,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="962"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="3kf-hz-014">
-                                                <rect key="frame" x="37.666666666666657" y="100" width="300" height="440"/>
+                                                <rect key="frame" x="37.666666666666657" y="100" width="300" height="400"/>
                                                 <subviews>
                                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="logo" translatesAutoresizingMaskIntoConstraints="NO" id="d8H-eu-bQi">
                                                         <rect key="frame" x="0.0" y="0.0" width="300" height="80"/>
@@ -826,17 +826,8 @@
                                                             <action selector="loginAction:" destination="a4x-Lk-9sg" eventType="touchUpInside" id="qaT-IF-bEY"/>
                                                         </connections>
                                                     </button>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t6j-KM-Wc2">
-                                                        <rect key="frame" x="0.0" y="290" width="300" height="25"/>
-                                                        <constraints>
-                                                            <constraint firstAttribute="height" constant="25" id="Lc5-zd-YY8"/>
-                                                        </constraints>
-                                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                        <nil key="highlightedColor"/>
-                                                    </label>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don’t have an account yet ?" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="niz-iZ-3er">
-                                                        <rect key="frame" x="0.0" y="330" width="300" height="25"/>
+                                                        <rect key="frame" x="0.0" y="290" width="300" height="25"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="25" id="del-18-5n6"/>
                                                         </constraints>
@@ -845,7 +836,7 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <button opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MoF-D9-dXW">
-                                                        <rect key="frame" x="0.0" y="370" width="300" height="30"/>
+                                                        <rect key="frame" x="0.0" y="330" width="300" height="30"/>
                                                         <constraints>
                                                             <constraint firstAttribute="height" constant="30" id="hrk-aM-GCB"/>
                                                         </constraints>
@@ -858,7 +849,7 @@
                                                         </connections>
                                                     </button>
                                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="98h-g6-OK2">
-                                                        <rect key="frame" x="0.0" y="415" width="300" height="25"/>
+                                                        <rect key="frame" x="0.0" y="375" width="300" height="25"/>
                                                         <subviews>
                                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Forget password? " textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QfP-l6-WFH">
                                                                 <rect key="frame" x="0.0" y="0.0" width="141.66666666666666" height="25"/>
@@ -985,7 +976,6 @@
                     <connections>
                         <outlet property="emailTextField" destination="oms-xk-hrm" id="7if-0M-S5y"/>
                         <outlet property="loginButton" destination="awB-Zc-0i4" id="nXZ-4R-b6x"/>
-                        <outlet property="loginStatus" destination="t6j-KM-Wc2" id="3fl-bb-Wg2"/>
                         <outlet property="passwordTextField" destination="EGf-vj-ebf" id="r52-51-Goh"/>
                         <segue destination="kFv-oF-tdb" kind="show" identifier="ShowNoteViewSegue" animates="NO" id="8bW-6o-LUJ"/>
                     </connections>

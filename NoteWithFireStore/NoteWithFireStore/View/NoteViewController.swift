@@ -47,25 +47,30 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     //    MARK: LOAD NOTE LIST
     func loadNoteList() {
-        let appearance = SCLAlertView.SCLAppearance(
-            showCloseButton: false
-        )
-        let alert = SCLAlertView(appearance: appearance).showWait("Loading", subTitle: "", closeButtonTitle: nil, timeout: nil, colorStyle: nil, colorTextButton: 0xFFFFFF, circleIconImage: nil, animationStyle: SCLAnimationStyle.topToBottom)
+        let alert = UIAlertController(title: "Loading.." , message: nil, preferredStyle: .alert)
+        waitAlert(alert: alert)
+        
         NoteViewModel.shared.getNoteList(email: NoteViewModel.shared.username!, completion: { notes in
             if notes.count == 0 {
                 DispatchQueue.main.async {
-                    alert.close()
-                    self.emptyNoteView.isHidden = false
+                    self.dismiss(animated: false, completion: {
+                        self.emptyNoteView.isHidden = false
+                    })
                 }
             } else {
                 self.allNoteList = notes
                 self.filteredNoteList = notes
-                alert.close()
-                self.emptyNoteView.isHidden = true
-                self.noteTableView.reloadData()
-            }
+                
+                DispatchQueue.main.async {
+                    self.dismiss(animated: false, completion: {
+                        self.emptyNoteView.isHidden = true
+                        self.noteTableView.reloadData()
+                    })
+                }
+        }
     })
     }
+    
     
     
     //  MARK: - SEARCH FEATURE
@@ -185,8 +190,8 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             textField.delegate = self
             textField.placeholder = "Enter Passcode"
             textField.isSecureTextEntry = true
-            ShowPasscodeViewModel.shared.textField = textField
-            ShowPasscodeViewModel.shared.setupPasswordIcon(color: .black)
+            PasscodeShowOrHideHelper.shared.textField = textField
+            PasscodeShowOrHideHelper.shared.setupPasswordIcon(color: .black)
         })
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { action in
             if let password = alert.textFields?.first?.text {
@@ -283,7 +288,6 @@ extension NoteViewController {
     override var prefersStatusBarHidden: Bool {
         return true
     }
-    
     
     //    MARK: - TABLEVIEW DISPLAY NOTE
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
