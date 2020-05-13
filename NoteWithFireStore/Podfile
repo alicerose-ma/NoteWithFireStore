@@ -12,6 +12,7 @@ target 'NoteWithFireStore' do
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'
   pod 'Firebase/Auth'
+  pod 'SCLAlertView'
   pod 'BoringSSL-GRPC', '= 0.0.3', :modular_headers => false
   pod 'gRPC-Core', '= 1.21.0', :modular_headers => false
 

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SCLAlertView
 
 class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchControllerDelegate ,UISearchBarDelegate {
 
@@ -40,14 +41,17 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func loadNoteList(completion: @escaping ([(NoteData,String)]) -> Void) {
-        waitAlert(alert: alert)
+        let appearance = SCLAlertView.SCLAppearance(
+                   showCloseButton: false
+               )
+        let alert = SCLAlertView(appearance: appearance).showWait("Loading", subTitle: "", closeButtonTitle: nil, timeout: nil, colorStyle: nil, colorTextButton: 0xFFFFFF, circleIconImage: nil, animationStyle: SCLAnimationStyle.topToBottom)
+        
         SharedNoteViewModel.shared.getSharedNotes(completion: { noteArr in
 //            print("arr = \(noteArr)")
             if noteArr.count == 0 {
                 DispatchQueue.main.async {
-                    self.alert.dismiss(animated: false, completion: {
-                        self.emptyNoteView.isHidden = false
-                    })
+                    alert.close()
+                    self.emptyNoteView.isHidden = false
                 }
             } else {
                 SharedNoteViewModel.shared.sharedNotes = noteArr
@@ -57,10 +61,9 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.filteredSharedList = self.filteredSharedList.sorted(by: {$0.0.title.lowercased() < $1.0.title.lowercased()})
                 
                 DispatchQueue.main.async {
-                    self.alert.dismiss(animated: false, completion: {
+                    alert.close()
                         self.emptyNoteView.isHidden = true
                         self.sharedTableView.reloadData()
-                    })
                 }
             }
             completion(noteArr)
@@ -179,7 +182,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
             if isExist {
                 print("exist ")
 //                print(self.filteredSharedList[self.selectedRow].1)
-//                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
+                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
             } else {
                 print("nooo")
                 self.alert.dismiss(animated: false, completion: {

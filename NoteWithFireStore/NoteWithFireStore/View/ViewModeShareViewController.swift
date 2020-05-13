@@ -9,10 +9,7 @@
 import UIKit
 
 class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UITextViewDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
-    
-    var imagePicker = UIImagePickerController()
     var voiceBtn = UIBarButtonItem()
-    var imageBtn = UIBarButtonItem()
     var isRecord: Bool = false
     
     var mode: String = ""
@@ -103,16 +100,14 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
     @objc func voice(){
         VoiceViewModel.shared.clickRecordBtn(titleTextField: titleTextField, desTextView: desTextView, viewController: self)
         if isRecord {
-            imageBtn.isEnabled = false
             changeNavButtonItemForIOS12AndIOS13(name: "mic")
         } else {
-            imageBtn.isEnabled = false
             if #available(iOS 13.0, *) {
                 voiceBtn.image = UIImage(systemName: "mic.slash")
             } else {
                 voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "micSlash", action:  #selector(self.voice)))
             }
-            navigationItem.rightBarButtonItems = [voiceBtn,imageBtn]
+            navigationItem.rightBarButtonItems = [voiceBtn]
         }
         isRecord = !isRecord
     }
@@ -140,13 +135,11 @@ extension ViewModeShareViewController{
     //    switch between textfield and textview => stop record
     func textFieldDidBeginEditing(_ textField: UITextField) {
         switchBetweenTextFieldAndTextView()
-        imageBtn.isEnabled = false
     }
     
     //     image only add in textview
     func textViewDidBeginEditing(_ textView: UITextView) {
         switchBetweenTextFieldAndTextView()
-        imageBtn.isEnabled = true
     }
     
     func switchBetweenTextFieldAndTextView() {
@@ -161,31 +154,27 @@ extension ViewModeShareViewController{
         } else {
             voiceBtn = UIBarButtonItem(customView: UIImageIO12And13Helper.shared.createBarButtonItem(name: name, action:  #selector(self.voice)))
         }
-        navigationItem.rightBarButtonItems = [voiceBtn,imageBtn]
+        navigationItem.rightBarButtonItems = [voiceBtn]
     }
     
     //    MARK: - SETUP UI
     func setupDelegate(){
         titleTextField.delegate = self
         desTextView.delegate = self
-        imagePicker.delegate = self
     }
     
     func setUpNavBarItem() {
         if #available(iOS 13.0, *) {
             voiceBtn = UIBarButtonItem(image: UIImage(systemName: "mic"), style: .plain, target: self, action: #selector(self.voice))
-            imageBtn = UIBarButtonItem(image: UIImage(systemName: "photo"), style: .plain, target: self, action: #selector(self.addImage))
         } else {
             voiceBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "mic", action:  #selector(self.voice)))
-            imageBtn = UIBarButtonItem(customView:  UIImageIO12And13Helper.shared.createBarButtonItem(name: "photo", action:  #selector(self.addImage)))
         }
-        
     }
     
     func setupNavBarUI() {
         setUpNavBarItem()
         if mode == "edit" {
-            navigationItem.rightBarButtonItems = [voiceBtn ,imageBtn]
+            navigationItem.rightBarButtonItems = [voiceBtn]
         }
     }
     

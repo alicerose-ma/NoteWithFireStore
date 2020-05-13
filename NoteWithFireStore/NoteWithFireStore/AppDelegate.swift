@@ -20,7 +20,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = UIColor.black
+            appearance.backgroundColor = UIColor.init(patternImage: UIImage(imageLiteralResourceName: "BG1"))
             appearance.titleTextAttributes = [
                     NSAttributedString.Key.foregroundColor: UIColor.white
             ]

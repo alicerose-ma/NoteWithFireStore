@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SCLAlertView
 
 class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     
@@ -15,6 +16,7 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     @IBOutlet weak var passwordTextField: UITextField!
     @IBOutlet weak var loginButton: UIButton!
     @IBOutlet weak var loginStatus: UILabel!
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -40,27 +42,52 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
         } else {
             let alert = UIAlertController(title: "Verifying" , message: nil, preferredStyle: .alert)
             waitAlert(alert: alert)
-            LoginViewModel.shared.login(email: emailText, password: passwordText, completion: { isLogin in
+            LoginViewModel.shared.login(email: emailText, password: passwordText, completion: { (isLogin, message) in
                 if isLogin{
                     LoginViewModel.shared.updateCurrentUsername(newUsername: emailText)
                     DispatchQueue.main.async {
                         self.dismiss(animated: false, completion: {
-                            self.loginStatus.text = "Successed"
                             self.performSegue(withIdentifier: "ShowNoteViewSegue", sender: self)
                         })
                     }
                 } else {
                     DispatchQueue.main.async {
                         self.dismiss(animated: false, completion: {
-                            self.loginStatus.text = "Failed"
+                            let failAlert = UIAlertController(title: "Login Failed", message: message, preferredStyle: .alert)
+                            failAlert .addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+                            self.present(failAlert, animated: true, completion: nil)
                         })
                     }
                 }
             })
         }
-        self.loginStatus.isHidden = false
         self.view.endEditing(true)
     }
+    
+    @IBAction func resetPassword(_ sender: Any) {
+         let appearance = SCLAlertView.SCLAppearance(
+                 kTextFieldHeight: 60,
+                 showCloseButton: true
+        )
+        if #available(iOS 13.0, *) {
+            let alert = SCLAlertView(appearance: appearance)
+            let txt = alert.addTextField("Enter your email")
+            alert.addButton("Reset Password") {
+                let resetEmail = txt.text
+                FireBaseProxy.shared.resetPassword(resetEmail: resetEmail!, completion: { (isSuccess, message) in
+                    if isSuccess {
+                        SCLAlertView().showSuccess("Reset email sent successfully", subTitle: message, closeButtonTitle: "OK")
+                    } else {
+                        SCLAlertView().showError("Reset Failed", subTitle: message, closeButtonTitle: "OK")
+                    }
+                })
+            }
+            alert.showInfo("Forget password", subTitle: "Enter email address", closeButtonTitle: "Cancel")
+        } else {
+            // Fallback on earlier versions
+        }
+    }
+    
     
     func didLogin(){
         FireBaseProxy.shared.didLogin(completion: { (didLogin, email) in

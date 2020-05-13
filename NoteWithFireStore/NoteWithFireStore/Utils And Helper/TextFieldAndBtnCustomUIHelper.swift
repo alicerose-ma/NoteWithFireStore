@@ -27,9 +27,12 @@ class TextFieldAndButtonCustomUI {
         textField.layer.borderWidth = 1
         textField.layer.borderColor = UIColor.white.cgColor
         textField.clipsToBounds = true
+        textField.font = UIFont(name: "Baskerville", size:  14)
     }
     
     let customButton: (UIButton) -> Void = { (button) in
         button.layer.cornerRadius = 18
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.white.cgColor
     }
 }

@@ -29,21 +29,33 @@ public class FireBaseProxy {
     
     //  MARK: - USERS
     //    sign up to auth
-    func signup(email: String, password: String, displayName: String, completion: @escaping (Bool) -> Void) {
+    func signup(email: String, password: String, displayName: String, completion: @escaping (Bool, String) -> Void) {
         Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-            if error == nil {
-                print("sign up success")
-                Auth.auth().currentUser?.sendEmailVerification {(error) in
-                  if let error = error {
-                    print("Error when sending Email verification is \(error)")}
-                    }
-                completion(true)
-            } else {
+            if let error = error {
                 print("create new user err \(String(describing: error))")
-                completion(false)
+                completion(false, String(describing: error.localizedDescription))
+            } else {
+                Auth.auth().currentUser?.sendEmailVerification {(error) in
+                    if let error = error {
+                        print("Error when sending Email verification is \(error)")}
+                    }
+                completion(true, "")
             }
         }
     }
+    
+    
+    func resetPassword(resetEmail: String, completion: @escaping (Bool, String) -> Void) {
+        Auth.auth().sendPasswordReset(withEmail: resetEmail, completion: { (error) in
+            if let error = error {
+                print("reset password failed \(String(describing: error.localizedDescription))")
+                completion(false, String(describing: error.localizedDescription))
+            } else {
+                print("reset password sent success")
+                completion(true, "")
+            }
+        })
+       }
     
     //    create database account
     public func addNewUserToDatabase(email: String, newUser: UserData, completion: @escaping (Bool, String) -> Void) {
@@ -63,22 +75,23 @@ public class FireBaseProxy {
     }
     
     //    login with email
-    func login(email: String, password: String, completion: @escaping (Bool) -> Void){
+    func login(email: String, password: String, completion: @escaping (Bool, String) -> Void){
         Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
-//            if let authResult = authResult {
-//              let user = authResult.user
-//              print("User has Signed In")
-//              if user.isEmailVerified {
-//                completion(true)
-//              } else {
-//                completion(false)
-//              }
-//            }
+            if let authResult = authResult {
+              let user = authResult.user
+              print("User has Signed In")
+              if user.isEmailVerified {
+                print("verified")
+                completion(true, "")
+              } else {
+                print("not yet verify" )
+                completion(false, "Account does not exist or waiting to be veried")
+              }
+            }
+            
             if let error = error {
               print("Cant Sign in user \(error)")
-                completion(false)
-            } else {
-                completion(true)
+                completion(false, String(describing: error.localizedDescription))
             }
         }
     }
@@ -584,7 +597,9 @@ public class FireBaseProxy {
     
     
 //    MARK: - CHANGE MODE
-    public func changeModeOneNoteForOneUser(userToShare: String, noteNameWitEmailAndID: String, mode: String) {
+    public func
+
+changeModeOneNoteForOneUser(userToShare: String, noteNameWitEmailAndID: String, mode: String){
         usersCollection.whereField("email", isEqualTo: userToShare).getDocuments() { (querySnapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")

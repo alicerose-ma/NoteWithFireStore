@@ -8,6 +8,7 @@
 
 import UIKit
 import Speech
+import SCLAlertView
 
 public enum InputPasscodeCase: String {
     case editPasscode

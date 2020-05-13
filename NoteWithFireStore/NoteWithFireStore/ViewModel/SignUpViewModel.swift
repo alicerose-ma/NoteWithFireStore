@@ -19,12 +19,12 @@ public class SignUpViewModel {
         })
     }
     
-    func signUpUser(email: String, password: String, displayName: String, completion: @escaping (Bool) -> Void) {
-        FireBaseProxy.shared.signup(email: email, password: password, displayName: displayName, completion: { isSignUp in
+    func signUpUser(email: String, password: String, displayName: String, completion: @escaping (Bool, String) -> Void) {
+        FireBaseProxy.shared.signup(email: email, password: password, displayName: displayName, completion: { (isSignUp, message) in
             if isSignUp {
-                completion(true)
+                completion(true, message)
             } else {
-                completion(false)
+                completion(false, message)
             }
         })
     }
@@ -54,7 +54,7 @@ public class SignUpViewModel {
         }
         
         if email.trimmingCharacters(in: .whitespaces).isEmpty {
-            errorMessage.append("\nusername can not empty")
+            errorMessage.append("\nemail can not empty")
         }
         
         if password.trimmingCharacters(in: .whitespaces).isEmpty {
