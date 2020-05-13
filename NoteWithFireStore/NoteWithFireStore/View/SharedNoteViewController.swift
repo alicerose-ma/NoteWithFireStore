@@ -41,17 +41,21 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     }
     
     func loadNoteList(completion: @escaping ([(NoteData,String)]) -> Void) {
-        let appearance = SCLAlertView.SCLAppearance(
-                   showCloseButton: false
-               )
-        let alert = SCLAlertView(appearance: appearance).showWait("Loading", subTitle: "", closeButtonTitle: nil, timeout: nil, colorStyle: nil, colorTextButton: 0xFFFFFF, circleIconImage: nil, animationStyle: SCLAnimationStyle.topToBottom)
-        
+      let alert = UIAlertController(title: "Loading.." , message: nil, preferredStyle: .alert)
+      waitAlert(alert: alert)
+      
         SharedNoteViewModel.shared.getSharedNotes(completion: { noteArr in
-//            print("arr = \(noteArr)")
             if noteArr.count == 0 {
                 DispatchQueue.main.async {
-                    alert.close()
-                    self.emptyNoteView.isHidden = false
+                    self.dismiss(animated: false, completion: {
+                        self.emptyNoteView.isHidden = false
+                    })
+                }
+                
+                DispatchQueue.main.async {
+                    self.dismiss(animated: false, completion: {
+                        self.emptyNoteView.isHidden = false
+                    })
                 }
             } else {
                 SharedNoteViewModel.shared.sharedNotes = noteArr
@@ -61,9 +65,10 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
                 self.filteredSharedList = self.filteredSharedList.sorted(by: {$0.0.title.lowercased() < $1.0.title.lowercased()})
                 
                 DispatchQueue.main.async {
-                    alert.close()
+                    self.dismiss(animated: false, completion: {
                         self.emptyNoteView.isHidden = true
                         self.sharedTableView.reloadData()
+                    })
                 }
             }
             completion(noteArr)

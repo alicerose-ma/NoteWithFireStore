@@ -62,7 +62,7 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
         SignUpViewModel.shared.signUpUser(email: emailText, password: passwordText, displayName: displayNameText, completion: { (isSignUp, message)  in
             if isSignUp {
                 //  sign up succes  => create user in database
-                let newUser = UserData(email: emailText, password: passwordText, phone: phoneText, displayName: displayNameText, passcode: "", hint: "", sharedNotes: [])
+                let newUser = UserData(email: emailText, phone: phoneText, displayName: displayNameText, passcode: "", hint: "", sharedNotes: [])
                 SignUpViewModel.shared.addNewUserToDatabase(email: emailText, newUser: newUser, completion: { (isSuccess,message) in
                     DispatchQueue.main.async {
                         self.errorLabel.text = message
