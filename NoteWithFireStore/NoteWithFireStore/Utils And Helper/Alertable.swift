@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import SCLAlertView
 
 
 //set up passcode
@@ -35,10 +36,12 @@ public extension Alertable where Self: UIViewController {
         loadingIndicator.hidesWhenStopped = true
         loadingIndicator.style = UIActivityIndicatorView.Style.gray
         loadingIndicator.startAnimating();
-        
+
         alert.view.addSubview(loadingIndicator)
         self.present(alert, animated: true, completion: nil)
-    }
+
+        
+     }
     
     //    exit confirm alert
     func exitAlert(identifier: String) {

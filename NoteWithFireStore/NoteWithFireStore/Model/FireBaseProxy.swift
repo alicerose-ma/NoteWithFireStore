@@ -597,7 +597,9 @@ public class FireBaseProxy {
     
     
 //    MARK: - CHANGE MODE
-    public func changeModeOneNoteForOneUser(userToShare: String, noteNameWitEmailAndID: String, mode: String) {
+    public func
+
+changeModeOneNoteForOneUser(userToShare: String, noteNameWitEmailAndID: String, mode: String){
         usersCollection.whereField("email", isEqualTo: userToShare).getDocuments() { (querySnapshot, err) in
             if let err = err {
                 print("Error getting documents: \(err)")

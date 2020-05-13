@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SCLAlertView
 
 class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
     
@@ -54,8 +55,10 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
     
     //  craete new auth account and firestore account
     func createNewAuthAndDatabaseAccount(emailText: String, passwordText: String, displayNameText: String, phoneText: String) {
-        let alert = UIAlertController(title: "Creating" , message: nil, preferredStyle: .alert)
-        waitAlert(alert: alert)
+       let appearance = SCLAlertView.SCLAppearance(
+           showCloseButton: false
+       )
+       let alert = SCLAlertView(appearance: appearance).showWait("Creating", subTitle: "", closeButtonTitle: nil, timeout: nil, colorStyle: nil, colorTextButton: 0xFFFFFF, circleIconImage: nil, animationStyle: SCLAnimationStyle.topToBottom)
         SignUpViewModel.shared.signUpUser(email: emailText, password: passwordText, displayName: displayNameText, completion: { (isSignUp, message)  in
             if isSignUp {
                 //  sign up succes  => create user in database
@@ -65,20 +68,19 @@ class SignUpViewController: UIViewController, UITextFieldDelegate, Alertable {
                         self.errorLabel.text = message
                         if isSuccess {
                             DispatchQueue.main.async() {
-                                self.dismiss(animated: false, completion: {
-                                    self.showResultCreateUserAlert(title: "Create new user", message: "Success, please verify email to login")
-                                })
+                                alert.close()
+                                SCLAlertView().showSuccess("Create new user", subTitle: "Success, please verify email to login", closeButtonTitle: "OK")
                             }
                         } else {
-                            self.dismiss(animated: false, completion: nil)
+                            alert.close()
                         }
                     }
                 })
             } else {
                 DispatchQueue.main.async {
-                    self.dismiss(animated: false, completion: {
+                    alert.close()
+
                         self.errorLabel.text = message
-                    })
                 }
             }
         })

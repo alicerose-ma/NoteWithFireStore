@@ -10,6 +10,7 @@
 		18039461242B49600047773F /* SharedNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18039460242B49600047773F /* SharedNoteViewModel.swift */; };
 		18039463242B66C60047773F /* SharedNoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18039462242B66C60047773F /* SharedNoteViewController.swift */; };
 		180922862403993E0073E3F9 /* Alertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 180922852403993E0073E3F9 /* Alertable.swift */; };
+		1811D4472469AD830044DC09 /* ColorNavViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1811D4462469AD830044DC09 /* ColorNavViewController.swift */; };
 		18BC8EB1242F7EBC00FB842F /* KeyboardHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC8EB0242F7EBC00FB842F /* KeyboardHelper.swift */; };
 		18BC8EB5242FC29000FB842F /* TextFieldAndBtnCustomUIHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC8EB4242FC29000FB842F /* TextFieldAndBtnCustomUIHelper.swift */; };
 		18BC8EB7243054BB00FB842F /* UIImageIO12And13Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18BC8EB6243054BA00FB842F /* UIImageIO12And13Helper.swift */; };
@@ -83,6 +84,7 @@
 		18039460242B49600047773F /* SharedNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedNoteViewModel.swift; sourceTree = "<group>"; };
 		18039462242B66C60047773F /* SharedNoteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedNoteViewController.swift; sourceTree = "<group>"; };
 		180922852403993E0073E3F9 /* Alertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alertable.swift; sourceTree = "<group>"; };
+		1811D4462469AD830044DC09 /* ColorNavViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorNavViewController.swift; sourceTree = "<group>"; };
 		18BC8EB0242F7EBC00FB842F /* KeyboardHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardHelper.swift; sourceTree = "<group>"; };
 		18BC8EB4242FC29000FB842F /* TextFieldAndBtnCustomUIHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextFieldAndBtnCustomUIHelper.swift; sourceTree = "<group>"; };
 		18BC8EB6243054BA00FB842F /* UIImageIO12And13Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageIO12And13Helper.swift; sourceTree = "<group>"; };
@@ -202,6 +204,7 @@
 				18BC8EB0242F7EBC00FB842F /* KeyboardHelper.swift */,
 				18BC8EB4242FC29000FB842F /* TextFieldAndBtnCustomUIHelper.swift */,
 				18BC8EB6243054BA00FB842F /* UIImageIO12And13Helper.swift */,
+				1811D4462469AD830044DC09 /* ColorNavViewController.swift */,
 			);
 			path = "Utils And Helper";
 			sourceTree = "<group>";
@@ -572,6 +575,7 @@
 				18FE549A2402DE9A00B6307E /* NoteDetailViewController.swift in Sources */,
 				18FE54982402DE7E00B6307E /* NoteTableViewCell.swift in Sources */,
 				18BC8EB92431A62200FB842F /* ShareSettingViewController.swift in Sources */,
+				1811D4472469AD830044DC09 /* ColorNavViewController.swift in Sources */,
 				18FE54862402DDAA00B6307E /* LoginViewModel.swift in Sources */,
 				180922862403993E0073E3F9 /* Alertable.swift in Sources */,
 				18FFA2832441A690009E77A8 /* ViewModeShareViewController.swift in Sources */,

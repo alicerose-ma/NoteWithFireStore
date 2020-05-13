@@ -1,4 +1,4 @@
-framework module Pods_NoteWithFireStore_NoteWithFireStoreUITests {
+module Pods_NoteWithFireStore_NoteWithFireStoreUITests {
   umbrella header "Pods-NoteWithFireStore-NoteWithFireStoreUITests-umbrella.h"
 
   export *

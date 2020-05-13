@@ -8,6 +8,7 @@
 
 import UIKit
 import Speech
+import SCLAlertView
 
 
 class NoteViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, Alertable, UISearchResultsUpdating, UISearchControllerDelegate ,UISearchBarDelegate, SFSpeechRecognizerDelegate, UITextFieldDelegate {
@@ -46,26 +47,24 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     //    MARK: LOAD NOTE LIST
     func loadNoteList() {
-        let alert = UIAlertController(title: "Loading" , message: nil, preferredStyle: .alert)
-        waitAlert(alert: alert)
+        let appearance = SCLAlertView.SCLAppearance(
+            showCloseButton: false
+        )
+        let alert = SCLAlertView(appearance: appearance).showWait("Loading", subTitle: "", closeButtonTitle: nil, timeout: nil, colorStyle: nil, colorTextButton: 0xFFFFFF, circleIconImage: nil, animationStyle: SCLAnimationStyle.topToBottom)
         NoteViewModel.shared.getNoteList(email: NoteViewModel.shared.username!, completion: { notes in
             if notes.count == 0 {
                 DispatchQueue.main.async {
-                    alert.dismiss(animated: false, completion: {
-                        self.emptyNoteView.isHidden = false
-                    })
+                    alert.close()
+                    self.emptyNoteView.isHidden = false
                 }
             } else {
                 self.allNoteList = notes
                 self.filteredNoteList = notes
-                DispatchQueue.main.async {
-                    alert.dismiss(animated: false, completion: {
-                        self.emptyNoteView.isHidden = true
-                        self.noteTableView.reloadData()
-                    })
-                }
+                alert.close()
+                self.emptyNoteView.isHidden = true
+                self.noteTableView.reloadData()
             }
-        })
+    })
     }
     
     

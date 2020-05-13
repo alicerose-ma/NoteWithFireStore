@@ -8,6 +8,7 @@
 
 import UIKit
 import Firebase
+import SCLAlertView
 
 class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     
@@ -64,27 +65,27 @@ class LoginViewController: UIViewController, UITextFieldDelegate, Alertable {
     }
     
     @IBAction func resetPassword(_ sender: Any) {
-        let forgotPasswordAlert = UIAlertController(title: "Forgot password?", message: "Enter email address", preferredStyle: .alert)
-        forgotPasswordAlert.addTextField { (textField) in
-            textField.placeholder = "Enter email address"
+         let appearance = SCLAlertView.SCLAppearance(
+                 kTextFieldHeight: 60,
+                 showCloseButton: true
+        )
+        if #available(iOS 13.0, *) {
+            let alert = SCLAlertView(appearance: appearance)
+            let txt = alert.addTextField("Enter your email")
+            alert.addButton("Reset Password") {
+                let resetEmail = txt.text
+                FireBaseProxy.shared.resetPassword(resetEmail: resetEmail!, completion: { (isSuccess, message) in
+                    if isSuccess {
+                        SCLAlertView().showSuccess("Reset email sent successfully", subTitle: message, closeButtonTitle: "OK")
+                    } else {
+                        SCLAlertView().showError("Reset Failed", subTitle: message, closeButtonTitle: "OK")
+                    }
+                })
+            }
+            alert.showInfo("Forget password", subTitle: "Enter email address", closeButtonTitle: "Cancel")
+        } else {
+            // Fallback on earlier versions
         }
-        forgotPasswordAlert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        forgotPasswordAlert.addAction(UIAlertAction(title: "Reset Password", style: .default, handler: { (action) in
-            let resetEmail = forgotPasswordAlert.textFields?.first?.text
-            FireBaseProxy.shared.resetPassword(resetEmail: resetEmail!, completion: { (isSuccess, message) in
-                if isSuccess {
-                    let resetEmailSentAlert = UIAlertController(title: "Reset email sent successfully", message: "Check your email", preferredStyle: .alert)
-                    resetEmailSentAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(resetEmailSentAlert, animated: true, completion: nil)
-                } else {
-                    let resetFailedAlert = UIAlertController(title: "Reset Failed", message: message, preferredStyle: .alert)
-                    resetFailedAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-                    self.present(resetFailedAlert, animated: true, completion: nil)
-                }
-            })
-        }))
-        //PRESENT ALERT
-        self.present(forgotPasswordAlert, animated: true, completion: nil)
     }
     
     
