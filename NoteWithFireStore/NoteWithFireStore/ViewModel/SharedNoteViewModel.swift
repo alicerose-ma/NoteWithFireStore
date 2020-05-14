@@ -127,6 +127,16 @@ public class SharedNoteViewModel {
         })
     }
     
+    func listenNotesChange(_ code: @escaping () -> ()) {
+        FireBaseProxy.shared.listenNoteUpdate { (error) in
+            if let error = error {
+                //
+            } else {
+                code()
+            }
+        }
+    }
+    
     func changeModeOneNoteForOneUser(userToShare: String, uniqueID: Int, mode: String){
         let noteNameWitEmailAndID = username! + "note" + String(uniqueID)
         if mode == "view" {

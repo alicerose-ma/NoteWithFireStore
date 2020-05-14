@@ -27,6 +27,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         setupNavUI()
         setupSearchController()
+        updateRealData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -218,6 +219,13 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     @objc func refreshTableView(_ sender: Any) {
         loadNoteList(completion: { _ in })
         self.refreshControl.endRefreshing()
+    }
+    
+    private func updateRealData() {
+        // call firebase viewmodel lister
+        SharedNoteViewModel.shared.listenNotesChange {
+            self.loadNoteList(completion: { _ in })
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

@@ -292,6 +292,23 @@ public class FireBaseProxy {
         }
     }
     
+    func listenNoteUpdate(_ code: @escaping (Error?) -> ()) {
+        notesCollection.addSnapshotListener { (snapshot, error) in
+            if let error = error {
+                // error
+                code(error)
+            } else if let snapshot = snapshot, !snapshot.isEmpty {
+                code(nil)
+            } else {
+                //
+            }
+        }
+    }
+//
+//    if let snapshot = snapshot, snapshot.exists, let data = snapshot.data() {
+//                  self.messageLabel.text = data[kNameField] as? String ?? "error"
+//              }
+//
     
 //    public func getNoteArr(strArr: [[String]], completion: @escaping (([NoteData]) -> Void)) {
 //        let dispatchGroup = DispatchGroup.init()
