@@ -39,4 +39,15 @@ public class NoteViewModel {
         UserDefaults.standard.removeObject(forKey: "username")
     }
     
+    func listenNotesOwnerChange(_ code: @escaping () -> ()) {
+        print(username!)
+        FireBaseProxy.shared.listenNoteOwnerUpdate(email: username!, { (error) in
+             if let error = error {
+                 //
+             } else {
+                 code()
+             }
+         })
+     }
+    
 }

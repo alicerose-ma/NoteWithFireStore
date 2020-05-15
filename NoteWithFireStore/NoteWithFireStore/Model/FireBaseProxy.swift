@@ -9,10 +9,12 @@
 import Foundation
 import UIKit
 import Firebase
+import FirebasePerformance
 
 public class FireBaseProxy {
     let usersCollection = Firestore.firestore().collection("Users")
     let notesCollection = Firestore.firestore().collection("Notes")
+    var tabIndex = -1
     
     static let shared = FireBaseProxy()
     private init() {}
@@ -66,7 +68,9 @@ public class FireBaseProxy {
     
     //    login with email
     func login(email: String, password: String, completion: @escaping (Bool, String) -> Void){
+        let trace = Performance.startTrace(name: "customTraceName")
         Auth.auth().signIn(withEmail: email, password: password) { authResult, error in
+            trace!.stop()
             if let authResult = authResult {
               let user = authResult.user
               print("User has Signed In")
@@ -84,6 +88,7 @@ public class FireBaseProxy {
                 completion(false, String(describing: error.localizedDescription))
             }
         }
+        
     }
     
     //    check if user did login before
@@ -257,6 +262,27 @@ public class FireBaseProxy {
     
     //  MARK: - SHARE
     public func getSharedNote(email: String, completion: @escaping ([(NoteData, String)]) -> Void) {
+//        var noteDataList: [(NoteData, String)] = []
+//        notesCollection.whereField("sharedUsers", arrayContainsAny: ["\(email)modeview","\(email)modeedit"]).getDocuments { (snapshot, error) in
+//            if let error = error {
+//                print("err")
+//            } else {
+//                do {
+//                    let data: [NoteData] = try snapshot!.decoded()
+//                    for note in data {
+//                        if note.sharedUsers.contains("\(email)modeview") {
+//                            noteDataList.append((note,"view"))
+//                        } else {
+//                            noteDataList.append((note,"edit"))
+//                        }
+//                    }
+//                    completion(noteDataList)
+//                } catch {
+//                    print("err")
+//                }
+//            }
+//        }
+        
         var sharedNotes: [String] = []
         var noteDataList: [(NoteData, String)] = []
         usersCollection.whereField("email", isEqualTo: email)
@@ -272,7 +298,7 @@ public class FireBaseProxy {
                             dispatchGroup.enter()
                             let emailAndIDWithMode = noteStr.components(separatedBy: "note")
                             let idAndMode = emailAndIDWithMode[1].components(separatedBy: "mode")
-                            
+
                             let email = emailAndIDWithMode[0]
                             let id = Int(idAndMode[0])!
                             let mode = idAndMode[1]
@@ -281,7 +307,7 @@ public class FireBaseProxy {
                                 dispatchGroup.leave()
                             })
                         }
-                        
+
                         dispatchGroup.notify(queue: .main) {
                             completion(noteDataList)
                         }
@@ -292,6 +318,41 @@ public class FireBaseProxy {
         }
     }
     
+    func listenNoteOwnerUpdate(email: String,_ code: @escaping (Error?) -> ()) {
+        notesCollection.whereField("email", isEqualTo: email).addSnapshotListener { (snapshot, error) in
+            print("Email: \(email)")
+            if let error = error {
+                // error
+                code(error)
+            } else if let snapshot = snapshot, !snapshot.isEmpty, self.tabIndex == 0  {
+                code(nil)
+            } else {
+                //
+            }
+        }
+    }
+    
+    
+    func listenSharedNoteUpdate(email: String, _ code: @escaping (Error?) -> ()) {
+        notesCollection.whereField("sharedUsers", arrayContainsAny: ["\(email)modeview","\(email)modeedit"]).addSnapshotListener { (snapshot, error) in
+             if let error = error {
+                 // error
+                 code(error)
+             } else if let snapshot = snapshot, !snapshot.isEmpty, self.tabIndex == 1 {
+                 code(nil)
+             } else {
+                 //
+             }
+         }
+     }
+    
+    
+    
+//
+//    if let snapshot = snapshot, snapshot.exists, let data = snapshot.data() {
+//                  self.messageLabel.text = data[kNameField] as? String ?? "error"
+//              }
+//
     
 //    public func getNoteArr(strArr: [[String]], completion: @escaping (([NoteData]) -> Void)) {
 //        let dispatchGroup = DispatchGroup.init()

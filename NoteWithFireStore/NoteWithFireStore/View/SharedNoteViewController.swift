@@ -27,6 +27,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
         setupNavUI()
         setupSearchController()
+        updateRealData()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -38,6 +39,7 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     
     override func viewDidAppear(_ animated: Bool) {
         loadNoteList(completion: { _ in })
+        FireBaseProxy.shared.tabIndex = 1
     }
     
     func loadNoteList(completion: @escaping ([(NoteData,String)]) -> Void) {
@@ -173,28 +175,40 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
         selectedRow = self.sharedTableView.indexPathForSelectedRow!.row
         let email = self.filteredSharedList[self.selectedRow].0.email
         let id = self.filteredSharedList[self.selectedRow].0.id
-        var isExist = false
-        
-        loadNoteList(completion: {noteList in
-            print(noteList)
-            for note in noteList {
-                if (note.0.email == email && note.0.id == id) {
-                    isExist = true
-                    break
-                }
-            }
-            
-            if isExist {
-                print("exist ")
-//                print(self.filteredSharedList[self.selectedRow].1)
+        FireBaseProxy.shared.getEditingValue(email: email, id: id, completion: { isEditing in
+            if !isEditing {
                 self.performSegue(withIdentifier: "ShowViewMode", sender: self)
             } else {
-                print("nooo")
-                self.alert.dismiss(animated: false, completion: {
-                    self.showResultShareAlert(title: "", message: "Access deny or this note is no longer exist")
-                })
+                self.showResultShareAlert(title: "", message: "Someone is editing this note, please wait")
             }
         })
+        
+        
+//        selectedRow = self.sharedTableView.indexPathForSelectedRow!.row
+//        let email = self.filteredSharedList[self.selectedRow].0.email
+//        let id = self.filteredSharedList[self.selectedRow].0.id
+//        var isExist = false
+//
+//        loadNoteList(completion: {noteList in
+//            print(noteList)
+//            for note in noteList {
+//                if (note.0.email == email && note.0.id == id) {
+//                    isExist = true
+//                    break
+//                }
+//            }
+            
+//            if isExist {
+//                print("exist ")
+//                print(self.filteredSharedList[self.selectedRow].1)
+//                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
+//            } else {
+//                print("nooo")
+//                self.alert.dismiss(animated: false, completion: {
+//                    self.showResultShareAlert(title: "", message: "Access deny or this note is no longer exist")
+//                })
+//            }
+//        })
 
 //
         
@@ -218,6 +232,13 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     @objc func refreshTableView(_ sender: Any) {
         loadNoteList(completion: { _ in })
         self.refreshControl.endRefreshing()
+    }
+    
+    private func updateRealData() {
+        // call firebase viewmodel lister
+        SharedNoteViewModel.shared.listenNotesChange {
+            self.loadNoteList(completion: { _ in })
+        }
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
