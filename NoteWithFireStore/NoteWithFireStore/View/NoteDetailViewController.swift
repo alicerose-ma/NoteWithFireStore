@@ -89,32 +89,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
             for note in notes {
                 self.titleTextField.text = note.title
                 self.desTextView.text = note.des
-            
-                
                 SharedNoteViewModel.shared.sharedUsers = note.sharedUsers
-                
-                var attributedString = NSMutableAttributedString()
-                for (index, position) in note.imagePosition.enumerated() {
-                    if let newPosition = self.desTextView.position(from: self.desTextView.beginningOfDocument, offset: position) {
-                        self.desTextView.selectedTextRange = self.desTextView.textRange(from: newPosition, to: newPosition)
-                        attributedString = NSMutableAttributedString(attributedString: self.desTextView.attributedText)
-                        
-                        let textAttachment = NSTextAttachment()
-                        do {
-                            let imageData = try Data(contentsOf: URL(string: note.imageURL[index])!)
-                            let image = UIImage(data: imageData)!
-                            textAttachment.image = image
-                            let oldWidth = textAttachment.image!.size.width;
-                            let scaleFactor = oldWidth / (self.desTextView.frame.size.width - 10);
-                            textAttachment.image = UIImage(cgImage:  textAttachment.image!.cgImage!, scale: scaleFactor, orientation: .up)
-                            let attrStringWithImage = NSMutableAttributedString(attachment: textAttachment)
-                            attributedString.replaceCharacters(in: NSMakeRange(position, 1), with: attrStringWithImage)
-                        } catch {
-                            print("Err")
-                        }
-                        self.desTextView.attributedText = attributedString;
-                    }
-                }
             }
         })
     }
@@ -134,11 +109,17 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
             let sharedUsers = SharedNoteViewModel.shared.sharedUsers
         
         let email = NoteViewModel.shared.username!
-        let currentTime = Int64(NSDate().timeIntervalSince1970 * 1000)
-        
-        var isEditing = false
-//        if ( (currentTime - lastUpdateTime)  > (5 * 60 * 1000) ) {
-//            isEditing = 
+        let lastTime = Int64(NSDate().timeIntervalSince1970 * 1000)
+//        print("last Update Time = \(lastUpdateTime)")÷
+//        let d = ((lastTime - lastUpdateTime) / 1000)
+//        print("time distance = \(d)")
+//
+//        var isEditing = false
+//        if ( (lastTime - lastUpdateTime)  > (30 * 1000) ) {
+//            print("> 30s ")
+//            isEditing = true
+//        } else {
+//            print("< 30 s")
 //        }
             
         var note = NoteData(id: uniqueID, email: email, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: 0, sharedUsers: sharedUsers ,imagePosition: [], imageURL: [], lastUpdateTime: lastTime, lastUpdateUser: email) //create a new note model with lock
