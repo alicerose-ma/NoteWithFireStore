@@ -98,9 +98,13 @@ class CreateNoteViewController: UIViewController, SetPasscodeDelegate, IsEditing
         var description = desTextView.text!
         description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
         let sharedUsers = SharedNoteViewModel.shared.sharedUsers
+        let email = NoteViewModel.shared.username!
+        let lastTime = Int64(NSDate().timeIntervalSince1970 * 1000)
         
         let noteID = CreateNoteViewModel.shared.createUniqueNoteDocID(username: NoteViewModel.shared.username!, uniqueID: uniqueID)
-        var note = NoteData(id: uniqueID, email: NoteViewModel.shared.username!, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: imageID, sharedUsers: sharedUsers, imagePosition: [], imageURL: [] )
+        var note = NoteData(id: uniqueID, email: email, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: imageID, sharedUsers: sharedUsers, imagePosition: [], imageURL: [], lastUpdateTime: lastTime,
+                            lastUpdateUser: email)
+
         
         if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
             CreateNoteViewModel.shared.addNewNote(documentID: noteID, newNote: note)

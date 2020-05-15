@@ -75,8 +75,9 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
             let title = titleTextField.text!
             var description = desTextView.text!
             description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
+            let lastTime = Int64(NSDate().timeIntervalSince1970 * 1000)
             
-            var note = NoteData(id: id, email: email, title: title, des: description, isLocked: false, isEditing: false, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL ) //create a new note model with lock
+            var note = NoteData(id: id, email: email, title: title, des: description, isLocked: false, isEditing: false, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL, lastUpdateTime: lastTime, lastUpdateUser: NoteViewModel.shared.username!) //create a new note model with lock
             
             if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
                 SharedNoteViewModel.shared.editSharedNote(email: email, id: id, newNote: note)
@@ -94,6 +95,7 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
             
             SharedNoteViewModel.shared.sharedUsers = []
         }
+         self.tabBarController?.tabBar.isHidden = false
     }
     
     //  MARK: -  TEXT DESCRIBED FROM VOICE
@@ -176,6 +178,7 @@ extension ViewModeShareViewController{
         if mode == "edit" {
             navigationItem.rightBarButtonItems = [voiceBtn]
         }
+        self.tabBarController?.tabBar.isHidden = true
     }
     
     //MARK: - AUTO KEYBOARD FOR TEXTVIEW

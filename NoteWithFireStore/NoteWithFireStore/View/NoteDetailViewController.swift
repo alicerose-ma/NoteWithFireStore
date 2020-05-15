@@ -33,7 +33,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
     var lockStatus: Bool = false
     var isRecord: Bool = false
     var isShared: Bool = false
-    
+    var lastUpdateTime: Int64 = -1
+    var lastUpdateUser: String = ""
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -130,11 +131,17 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
         let title = titleTextField.text!
             var description = desTextView.text!
             description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
-            
-            
             let sharedUsers = SharedNoteViewModel.shared.sharedUsers
+        
+        let email = NoteViewModel.shared.username!
+        let currentTime = Int64(NSDate().timeIntervalSince1970 * 1000)
+        
+        var isEditing = false
+//        if ( (currentTime - lastUpdateTime)  > (5 * 60 * 1000) ) {
+//            isEditing = 
+//        }
             
-        var note = NoteData(id: uniqueID, email:NoteDetailViewModel.shared .username!, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: 0, sharedUsers: sharedUsers ,imagePosition: [], imageURL: [] ) //create a new note model with lock
+        var note = NoteData(id: uniqueID, email: email, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: 0, sharedUsers: sharedUsers ,imagePosition: [], imageURL: [], lastUpdateTime: lastTime, lastUpdateUser: email) //create a new note model with lock
             
             if !title.isEmpty && !desTextView.attributedText.string.isEmpty  {
                 NoteDetailViewModel.shared.editNote(uniqueID: uniqueID, newNote: note)

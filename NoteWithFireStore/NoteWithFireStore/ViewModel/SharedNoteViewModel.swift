@@ -128,7 +128,7 @@ public class SharedNoteViewModel {
     }
     
     func listenNotesChange(_ code: @escaping () -> ()) {
-        FireBaseProxy.shared.listenNoteUpdate { (error) in
+        FireBaseProxy.shared.listenSharedNoteUpdate(email: username!) { (error) in
             if let error = error {
                 //
             } else {

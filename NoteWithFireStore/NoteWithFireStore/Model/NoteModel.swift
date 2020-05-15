@@ -21,6 +21,8 @@ public struct NoteData: Decodable {
     var sharedUsers : [String]
     var imagePosition : [Int]
     var imageURL : [String]
+    var lastUpdateTime: Int64
+    var lastUpdateUser: String
     
 //    dictionary to add to fire store
     var dictionary: [String: Any] {
@@ -35,7 +37,9 @@ public struct NoteData: Decodable {
             "sharedUsers" : sharedUsers,
             "imageIDMax" : imageIDMax,
             "imagePosition" : imagePosition,
-            "imageURL" : imageURL
+            "imageURL" : imageURL,
+            "lastUpdateTime": lastUpdateTime,
+            "lastUpdateUser": lastUpdateUser
         ]
     }
     

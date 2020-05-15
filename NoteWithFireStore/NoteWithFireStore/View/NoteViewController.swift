@@ -30,6 +30,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         setupSearchController()
         VoiceViewModel.shared.voiceSetup()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
+        updateRealData()
     }
     
     
@@ -43,6 +44,7 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     override func viewDidAppear(_ animated: Bool) {
         loadNoteList()
+        FireBaseProxy.shared.tabIndex = 0
     }
     
     //    MARK: LOAD NOTE LIST
@@ -249,6 +251,13 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
         self.refreshControl.endRefreshing()
     }
     
+    private func updateRealData() {
+          // call firebase viewmodel lister
+          NoteViewModel.shared.listenNotesOwnerChange {
+              self.loadNoteList()
+          }
+      }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedRow = noteTableView.indexPathForSelectedRow!.row
         let uniqueID = filteredNoteList[selectedRow].id
@@ -274,6 +283,9 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
             destinationVC.uniqueID = uniqueID
             let lockStatus = filteredNoteList[selectedRow].isLocked
             destinationVC.lockStatus = lockStatus
+            destinationVC.lastUpdateTime = filteredNoteList[selectedRow].lastUpdateTime
+            destinationVC.lastUpdateUser = filteredNoteList[selectedRow].lastUpdateUser
+            
         }
         
         if segue.identifier == "ShowLoginViewFromYourNote" {
