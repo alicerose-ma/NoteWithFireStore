@@ -261,6 +261,13 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedRow = noteTableView.indexPathForSelectedRow!.row
         let uniqueID = filteredNoteList[selectedRow].id
+        
+        let lastUpdateTime = filteredNoteList[selectedRow].lastUpdateTime
+        let currentTime = Int64(NSDate().timeIntervalSince1970 * 1000)
+        let d = ((currentTime - lastUpdateTime) / 1000)
+        print("time distance = \(d)")
+
+        
         FireBaseProxy.shared.getEditingValue(email: NoteDetailViewModel.shared.username!, id: uniqueID, completion: { isEditing in
             if !isEditing {
                 self.performSegue(withIdentifier: "EditNote", sender: self)
