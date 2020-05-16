@@ -60,7 +60,12 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
         setupNavBarUI()
         checkIfDisableShareBtn()
         getNoteDetail()
-        sendBackNoteID(noteID: uniqueID)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        let documentID =  NoteViewModel.shared.username! + "note" + String(uniqueID)
+        FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
+        
     }
     
     func checkIfDisableShareBtn() {
@@ -110,17 +115,6 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
         
         let email = NoteViewModel.shared.username!
         let lastTime = Int64(NSDate().timeIntervalSince1970 * 1000)
-//        print("last Update Time = \(lastUpdateTime)")÷
-//        let d = ((lastTime - lastUpdateTime) / 1000)
-//        print("time distance = \(d)")
-//
-//        var isEditing = false
-//        if ( (lastTime - lastUpdateTime)  > (30 * 1000) ) {
-//            print("> 30s ")
-//            isEditing = true
-//        } else {
-//            print("< 30 s")
-//        }
             
         var note = NoteData(id: uniqueID, email: email, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: 0, sharedUsers: sharedUsers ,imagePosition: [], imageURL: [], lastUpdateTime: lastTime, lastUpdateUser: email) //create a new note model with lock
             
