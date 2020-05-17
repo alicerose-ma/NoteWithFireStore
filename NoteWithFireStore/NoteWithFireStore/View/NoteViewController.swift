@@ -45,6 +45,12 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     override func viewDidAppear(_ animated: Bool) {
         loadNoteList()
         FireBaseProxy.shared.tabIndex = 0
+        FireBaseProxy.shared.isEditing = false
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        FireBaseProxy.shared.isEditing = true
+        super.viewDidDisappear(animated)
     }
     
     //    MARK: LOAD NOTE LIST
@@ -260,21 +266,16 @@ class NoteViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         selectedRow = noteTableView.indexPathForSelectedRow!.row
-        let uniqueID = filteredNoteList[selectedRow].id
-        
-        let lastUpdateTime = filteredNoteList[selectedRow].lastUpdateTime
-        let currentTime = Int64(NSDate().timeIntervalSince1970 * 1000)
-        let d = ((currentTime - lastUpdateTime) / 1000)
-        print("time distance = \(d)")
+        let documentId = NoteViewModel.shared.username! + "note" + String(filteredNoteList[selectedRow].id)
 
-        
-        FireBaseProxy.shared.getEditingValue(email: NoteDetailViewModel.shared.username!, id: uniqueID, completion: { isEditing in
-            if !isEditing {
+        FireBaseProxy.shared.canEditNote(documentId: documentId, user: NoteViewModel.shared.username!) { (canEdit) in
+            if canEdit {
+                print("Can edit this note")
                 self.performSegue(withIdentifier: "EditNote", sender: self)
             } else {
                 self.showResultShareAlert(title: "", message: "Someone is editing this note, please wait")
             }
-        })
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {

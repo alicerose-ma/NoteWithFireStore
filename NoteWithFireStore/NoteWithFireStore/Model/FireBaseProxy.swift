@@ -15,6 +15,7 @@ public class FireBaseProxy {
     let usersCollection = Firestore.firestore().collection("Users")
     let notesCollection = Firestore.firestore().collection("Notes")
     var tabIndex = -1
+    var isEditing = false
     
     static let shared = FireBaseProxy()
     private init() {}
@@ -147,20 +148,6 @@ public class FireBaseProxy {
                     }
                 }
         }
-        
-//        notesCollection.whereField("email", isEqualTo: email)
-//            .whereField("id", isEqualTo: id).getDocuments() {(querySnapshot, err) in
-//                if let err = err {
-//                    print("Error getting documents: \(err)")
-//                } else {
-//                    do {
-//                        let notes: [NoteData] = try querySnapshot!.decoded()
-//                        completion(notes)
-//                    } catch {
-//                        print("decoded User error")
-//                    }
-//                }
-//        }
     }
     
     
@@ -324,7 +311,7 @@ public class FireBaseProxy {
             if let error = error {
                 // error
                 code(error)
-            } else if let snapshot = snapshot, !snapshot.isEmpty, self.tabIndex == 0  {
+            } else if let snapshot = snapshot, !snapshot.isEmpty, self.tabIndex == 0, self.isEditing == false  {
                 code(nil)
             } else {
                 //
@@ -338,7 +325,7 @@ public class FireBaseProxy {
              if let error = error {
                  // error
                  code(error)
-             } else if let snapshot = snapshot, !snapshot.isEmpty, self.tabIndex == 1 {
+             } else if let snapshot = snapshot, !snapshot.isEmpty, self.tabIndex == 1, self.isEditing == false {
                  code(nil)
              } else {
                  //
@@ -625,6 +612,33 @@ public class FireBaseProxy {
                  print("isEditing successfully updated")
              }
          }
+    }
+    
+    public func canEditNote(documentId: String, user: String, _ code: @escaping (Bool) -> ()){
+        var canEdit = false
+        notesCollection.document(documentId).getDocument { (snapshot, error) in
+            if let snapshot = snapshot, snapshot.exists {
+                let updateTime: Int64 = snapshot.data()?["lastUpdateTime"] as? Int64 ?? 0
+                let now = Int64(NSDate().timeIntervalSince1970)
+                if (now - updateTime) > 5000 {
+                    canEdit = true
+                } else {
+                    let lastUpdateUser: String = snapshot.data()?["lastUpdateUser"] as? String ?? ""
+                    if user == lastUpdateUser {
+                        canEdit = true
+                    }
+                }
+            } else {
+                print("Error")
+            }
+            code(canEdit)
+        }
+    }
+    
+    public func updateNoteEditing(documentId: String, timeStamp: Int64, user: String) {
+        notesCollection.document(documentId).updateData(["lastUpdateTime":timeStamp, "lastUpdateUser":user]) { (error) in
+            //
+        }
     }
     
     public func getEditingValue(email: String, id: Int, completion: @escaping (Bool) -> Void) {

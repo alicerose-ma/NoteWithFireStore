@@ -22,10 +22,10 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
     var imagePosition: [Int]  = []
     var imageURL: [String] = []
     
+    var timer = Timer()
+    
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var desTextView: UITextView!
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,8 +33,22 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
         VoiceViewModel.shared.voiceSetup()
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
         registerForKeyboardNotifications()
+        scheduleEditPermission()
     }
     
+    func scheduleEditPermission() {
+        if mode == "view" {
+            return
+        }
+        timer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(_scheduleEditPermission), userInfo: nil, repeats: true)
+    }
+    
+    @objc func _scheduleEditPermission() {
+        let documentId = email + "note" + String(id)
+        let now = Int64(NSDate().timeIntervalSince1970)
+        print("_scheduleEditPermission: email: \(email), time: \(now)")
+        FireBaseProxy.shared.updateNoteEditing(documentId: documentId, timeStamp: now, user: NoteViewModel.shared.username!)
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         setupNavBarUI()
@@ -60,11 +74,14 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
             desTextView.isSelectable = true
             setupTextViewWithDoneBtn()
             let documentID =  email + "note" + String(id)
-            FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
+            let now = Int64(NSDate().timeIntervalSince1970)
+            FireBaseProxy.shared.updateNoteEditing(documentId: documentID, timeStamp: now, user: NoteViewModel.shared.username!)
+//            FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
         }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        timer.invalidate()
         saveNote()
     }
     
@@ -75,7 +92,7 @@ class ViewModeShareViewController: UIViewController, UITextFieldDelegate, UIText
             let title = titleTextField.text!
             var description = desTextView.text!
             description  = description.replacingOccurrences(of: "^\\s*", with: "", options: .regularExpression)
-            let lastTime = Int64(NSDate().timeIntervalSince1970 * 1000)
+            let lastTime = Int64(NSDate().timeIntervalSince1970 - 5000)
             
             var note = NoteData(id: id, email: email, title: title, des: description, isLocked: false, isEditing: false, imageIDMax: imageIDMax, sharedUsers: sharedUsers ,imagePosition: imagePosition, imageURL: imageURL, lastUpdateTime: lastTime, lastUpdateUser: NoteViewModel.shared.username!) //create a new note model with lock
             

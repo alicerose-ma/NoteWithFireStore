@@ -36,6 +36,8 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
     var lastUpdateTime: Int64 = -1
     var lastUpdateUser: String = ""
     
+    var timer = Timer()
+    
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -53,6 +55,18 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
         KeyboardHelper.shared.dismissKeyboard(viewController: self)
         registerForKeyboardNotifications()
         setupTextViewWithDoneBtn()
+        scheduleEditPermission()
+    }
+    
+    func scheduleEditPermission() {
+        timer = Timer.scheduledTimer(timeInterval: 30, target: self, selector: #selector(_scheduleEditPermission), userInfo: nil, repeats: true)
+    }
+    
+    @objc func _scheduleEditPermission() {
+        let documentId = NoteViewModel.shared.username! + "note" + String(uniqueID)
+        let now = Int64(NSDate().timeIntervalSince1970)
+        print("_scheduleEditPermission: documentId: \(documentId), time: \(now)")
+        FireBaseProxy.shared.updateNoteEditing(documentId: documentId, timeStamp: now, user: NoteViewModel.shared.username!)
     }
     
     
@@ -64,7 +78,9 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
     
     override func viewDidAppear(_ animated: Bool) {
         let documentID =  NoteViewModel.shared.username! + "note" + String(uniqueID)
-        FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
+//        FireBaseProxy.shared.updateIsEditing(documentID: documentID, isEditing: true)
+        let now = Int64(NSDate().timeIntervalSince1970)
+        FireBaseProxy.shared.updateNoteEditing(documentId: documentID, timeStamp: now, user: NoteViewModel.shared.username!)
         
     }
     
@@ -101,10 +117,11 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
     
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
+        timer.invalidate()
         VoiceViewModel.shared.stopRecording()
         deregisterFromKeyboardNotifications()
         saveNote()
+        super.viewWillDisappear(animated)
     }
     
     func saveNote() {
@@ -114,7 +131,7 @@ class NoteDetailViewController: UIViewController, SetPasscodeDelegate, IsEditing
             let sharedUsers = SharedNoteViewModel.shared.sharedUsers
         
         let email = NoteViewModel.shared.username!
-        let lastTime = Int64(NSDate().timeIntervalSince1970 * 1000)
+        let lastTime = Int64(NSDate().timeIntervalSince1970 - 5000)
             
         var note = NoteData(id: uniqueID, email: email, title: title, des: description, isLocked: lockStatus, isEditing: false, imageIDMax: 0, sharedUsers: sharedUsers ,imagePosition: [], imageURL: [], lastUpdateTime: lastTime, lastUpdateUser: email) //create a new note model with lock
             

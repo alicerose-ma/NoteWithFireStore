@@ -40,6 +40,12 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
     override func viewDidAppear(_ animated: Bool) {
         loadNoteList(completion: { _ in })
         FireBaseProxy.shared.tabIndex = 1
+        FireBaseProxy.shared.isEditing = false
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        FireBaseProxy.shared.isEditing = true
+        super.viewDidDisappear(animated)
     }
     
     func loadNoteList(completion: @escaping ([(NoteData,String)]) -> Void) {
@@ -175,58 +181,16 @@ class SharedNoteViewController: UIViewController, UITableViewDelegate, UITableVi
         selectedRow = self.sharedTableView.indexPathForSelectedRow!.row
         let email = self.filteredSharedList[self.selectedRow].0.email
         let id = self.filteredSharedList[self.selectedRow].0.id
-        FireBaseProxy.shared.getEditingValue(email: email, id: id, completion: { isEditing in
-            if !isEditing {
+        let documentId = email + "note" + String(id)
+
+        FireBaseProxy.shared.canEditNote(documentId: documentId, user: NoteViewModel.shared.username!) { (canEdit) in
+            if canEdit {
+                print("Can edit this note")
                 self.performSegue(withIdentifier: "ShowViewMode", sender: self)
             } else {
                 self.showResultShareAlert(title: "", message: "Someone is editing this note, please wait")
             }
-        })
-        
-        
-//        selectedRow = self.sharedTableView.indexPathForSelectedRow!.row
-//        let email = self.filteredSharedList[self.selectedRow].0.email
-//        let id = self.filteredSharedList[self.selectedRow].0.id
-//        var isExist = false
-//
-//        loadNoteList(completion: {noteList in
-//            print(noteList)
-//            for note in noteList {
-//                if (note.0.email == email && note.0.id == id) {
-//                    isExist = true
-//                    break
-//                }
-//            }
-            
-//            if isExist {
-//                print("exist ")
-//                print(self.filteredSharedList[self.selectedRow].1)
-//                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
-//            } else {
-//                print("nooo")
-//                self.alert.dismiss(animated: false, completion: {
-//                    self.showResultShareAlert(title: "", message: "Access deny or this note is no longer exist")
-//                })
-//            }
-//        })
-
-//
-        
-    
-//        selectedRow = sharedTableView.indexPathForSelectedRow!.row
-//        let email = filteredSharedList[selectedRow].0.email
-//        let uniqueID = filteredSharedList[selectedRow].0.id
-//        print(email)
-//        FireBaseProxy.shared.getEditingValue(email: email, id: uniqueID, completion: { isEditing in
-//            if !isEditing {
-//                 print("OK")
-//                self.performSegue(withIdentifier: "ShowViewMode", sender: self)
-//            } else {
-//                print("NOT OK")
-//                self.showResultShareAlert(title: "", message: "Someone is editing this note, please wait")
-//            }
-//        })
-        
+        }        
     }
     
     @objc func refreshTableView(_ sender: Any) {
